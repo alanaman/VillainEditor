@@ -6,4 +6,10 @@ cmake_minimum_required (VERSION 3.8)
 project ("VillainEditor")
 
 # Include sub-projects.
+add_subdirectory(external/glfw)
 add_subdirectory ("VillainEditor")
+
+target_include_directories(${PROJECT_NAME}
+	PUBLIC external/glfw/include
+	PUBLIC shared)
+
