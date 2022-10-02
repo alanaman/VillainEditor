@@ -8,7 +8,14 @@
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "ASSIMP_BUILD_DOCS",
+          "value": "false",
+          "type": "BOOL"
+        }
+      ]
     }
   ]
 }

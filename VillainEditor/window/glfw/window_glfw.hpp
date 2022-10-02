@@ -1,5 +1,5 @@
 #pragma once
-#include "window.hpp"
+#include "window/window.hpp"
 
 namespace villain {
 class WindowGLFW : public Window

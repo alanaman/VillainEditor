@@ -2,7 +2,7 @@
 //
 
 #include "VillainEditor.hpp"
-#include "window.hpp"
+#include "window/window.hpp"
 
 using namespace villain;
 int main()
