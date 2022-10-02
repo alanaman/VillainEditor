@@ -4,11 +4,11 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_executable (${PROJECT_NAME} "VillainEditor.cpp" "VillainEditor.hpp" "window.hpp"  "window/glfw/window_glfw.hpp" "window/glfw/window_glfw.cpp")
+add_executable (${PROJECT_NAME} "VillainEditor.cpp" "VillainEditor.hpp" "window/window.hpp"  "window/glfw/window_glfw.hpp" "window/glfw/window_glfw.cpp" "model.hpp" "mesh.hpp")
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC .)
 
 
-target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} glfw assimp)
 # TODO: Add tests and install targets if needed.
