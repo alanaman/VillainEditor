@@ -1,7 +1,9 @@
 #pragma once
+#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include "window_glfw.hpp"
 #include "logging.hpp"
+
 
 namespace villain {
 
@@ -17,9 +19,7 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
   m_height = props.height;
 
   if (!glfwInit())
-  {
     ERROR("glfw initialization failed (might be reinitialization)");
-  }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -31,22 +31,19 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
     ERROR("failed to create window");
   }
 
-  /* Make the window's context current */
   glfwMakeContextCurrent(window);
-
-  /* Loop until the user closes the window */
-  while (!glfwWindowShouldClose(window))
+  int version = gladLoadGL();
+  if (!version)
   {
-    /* Render here */
-    //glClear(GL_COLOR_BUFFER_BIT);
-
-    /* Swap front and back buffers */
-    glfwSwapBuffers(window);
-
-    /* Poll for and process events */
-    glfwPollEvents();
+   ERROR("Could not initialize GLAD");
+   exit(1);
   }
 
+  while (!glfwWindowShouldClose(window))
+  {
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
   glfwTerminate();
 }
 }
