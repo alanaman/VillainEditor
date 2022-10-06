@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
 add_library (VillainGraphics
-	"opengl/shader_opengl.cpp")
+	"opengl/shader_opengl.cpp" "opengl/context_opengl.cpp")
 
 add_subdirectory("opengl/libraries/GLAD")
 

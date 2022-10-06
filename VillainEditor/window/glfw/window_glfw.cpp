@@ -1,8 +1,8 @@
 #pragma once
-#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include "window_glfw.hpp"
 #include "logging.hpp"
+#include "opengl/context_opengl.hpp"
 
 
 namespace villain {
@@ -24,24 +24,20 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window = glfwCreateWindow(m_width, m_height, m_name.c_str(), NULL, NULL);
-  if (!window)
+  m_window = glfwCreateWindow(m_width, m_height, m_name.c_str(), NULL, NULL);
+  if (!m_window)
   {
     glfwTerminate();
-    ERROR("failed to create window");
+    ERROR("failed to create m_window");
   }
 
-  glfwMakeContextCurrent(window);
-  int version = gladLoadGL();
-  if (!version)
-  {
-   ERROR("Could not initialize GLAD");
-   exit(1);
-  }
+  glfwMakeContextCurrent(m_window);
+  
+  m_context = new ContextOpengl();//TODO: fix this when adding other APIs
 
-  while (!glfwWindowShouldClose(window))
+  while (!glfwWindowShouldClose(m_window))
   {
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(m_window);
     glfwPollEvents();
   }
   glfwTerminate();
