@@ -18,7 +18,9 @@ class Window
 
 public:
   static Window* create(const WindowProperties& props);
-
+  virtual bool shouldClose() const = 0;
+  virtual void update() const = 0;
+  virtual void terminate() const = 0;
   //virtual void setVSync(bool enabled);
 };
 }

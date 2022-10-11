@@ -10,18 +10,14 @@ add_executable (${PROJECT_NAME}
 	"window/window.hpp" 
 	"window/glfw/window_glfw.hpp" 
 	"window/glfw/window_glfw.cpp" 
-	"model.hpp" 
-	"mesh.hpp" )
+	"scene.hpp")
 
 add_subdirectory("graphics")
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC "."
 	PUBLIC "external/glfw/include"
-	PUBLIC "external/assimp/include"
-	PUBLIC "external/glm/glm"
-	PUBLIC "external/GLAD/include"
 	PUBLIC "shared")
 
-target_link_libraries(${PROJECT_NAME} glfw assimp VillainGraphics)
+target_link_libraries(${PROJECT_NAME} glfw VillainGraphics)
 # TODO: Add tests and install targets if needed.

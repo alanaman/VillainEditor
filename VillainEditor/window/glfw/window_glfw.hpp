@@ -15,6 +15,8 @@ private:
 
 public:
   WindowGLFW(const WindowProperties& props);
-
+  bool shouldClose() const;
+  void update() const;
+  void terminate() const;
 };
 }

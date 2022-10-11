@@ -20,8 +20,8 @@ struct Vertex
 class Mesh
 {
   std::vector<Vertex> m_vertices;
-  vector<unsigned int> m_indices;
+  std::vector<unsigned int> m_indices;
 public:
-  Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices);
+  Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 };
 }
