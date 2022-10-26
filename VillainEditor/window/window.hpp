@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "scene.hpp"
 
 namespace villain {
 
@@ -15,12 +16,16 @@ struct WindowProperties
 
 class Window
 {
-
+protected:
+ std::string m_name;
+ int m_width, m_height;
+ Scene* m_scene;
 public:
   static Window* create(const WindowProperties& props);
   virtual bool shouldClose() const = 0;
   virtual void update() const = 0;
   virtual void terminate() const = 0;
+  void attachScene(Scene* scene) { m_scene = scene; };
   //virtual void setVSync(bool enabled);
 };
 }

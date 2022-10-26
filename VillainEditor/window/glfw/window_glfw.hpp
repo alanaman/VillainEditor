@@ -9,8 +9,7 @@ private:
   GLFWwindow* m_window;
   GraphicsContext* m_context;
 
-  std::string m_name;
-  int m_width, m_height;
+
 
 
 public:

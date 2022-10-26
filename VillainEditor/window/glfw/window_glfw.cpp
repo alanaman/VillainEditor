@@ -35,6 +35,8 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
   
  m_context = new ContextOpengl();//TODO: fix this when adding other APIs
  m_context->initiate();
+
+ glfwSetWindowUserPointer(m_window, &m_scene);
 }
 
 void WindowGLFW::update() const
