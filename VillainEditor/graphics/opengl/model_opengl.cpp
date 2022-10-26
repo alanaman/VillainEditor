@@ -20,7 +20,6 @@ ModelOpengl::ModelOpengl(const std::string& name, const std::string& path)
  m_path = path;
 }
 
-
 void ModelOpengl::loadMeshes()
 {
  Assimp::Importer importer;
@@ -88,8 +87,10 @@ MeshOpengl ModelOpengl::processMesh(aiMesh* mesh, const aiScene* scene)
  return { vao, vbo, ibo, indices.size() };
 }
 
-void ModelOpengl::draw()
+void ModelOpengl::draw(glm::mat4& cameraMatrix)
 {
+ m_shader->bind();
+ m_shader->setUniformMat4("uProjViewModelMat", cameraMatrix);
  for (const auto &mesh : m_meshes)
  {
   glBindVertexArray(mesh.vao);

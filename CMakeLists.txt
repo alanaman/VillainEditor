@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project ("VillainEditor")
+project (VillainEditor)
 
 # Include sub-projects.
 add_subdirectory("external/glfw")
@@ -19,3 +19,11 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC "external/glm/glm"
 	PUBLIC "shared"
 	)
+
+add_custom_target(copy_resources ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/resources
+        ${PROJECT_BINARY_DIR}/VillainEditor/resources
+        COMMENT "Copying resources into binary directory")
+
+add_dependencies(VillainEditor copy_resources)

@@ -23,7 +23,7 @@ private:
 public:
  ModelOpengl(const std::string& name, const std::string& path);
  void loadMeshes();
- void draw();
+ void draw(glm::mat4& cameraMatrix);
 };
 
 

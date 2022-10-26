@@ -5,6 +5,7 @@
 #include "window/window.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/model.hpp"
+#include "scene.hpp"
 #include <memory>
 
 using namespace villain;
@@ -13,17 +14,19 @@ int main()
 	WindowProperties props("Editor", 1080, 720);
 	Window* window = Window::create(props);
 
-	auto shader = Shader::create(
-		"resources/shaders/basic_vertex.glsl",
-		"resources/shaders/basic_fragment.glsl");
+	Scene scene("Scene", 1080, 720);
+
 	auto model = Model::create("cube", "resources/models/cube.fbx");
+	model->setShader(Shader::create(
+		"resources/shaders/basic_vertex2.glsl",
+		"resources/shaders/basic_fragment2.glsl"));
 	model->loadMeshes();
+
+	scene.addModel(model);
 
 	while (!window->shouldClose())
 	{
-		shader->bind();
-		model->draw();
-
+		scene.render();
 		window->update();
 	}
 	window->terminate();
