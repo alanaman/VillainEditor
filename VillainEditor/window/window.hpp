@@ -27,5 +27,6 @@ public:
   virtual void terminate() const = 0;
   void attachScene(Scene* scene) { m_scene = scene; };
   //virtual void setVSync(bool enabled);
+
 };
 }

@@ -6,3 +6,5 @@
 #define ERROR(x) std::cout<<x<<std::endl;\
 exit(1);
 #endif
+
+#define INFO(x) std::cout<<x<<std::endl;

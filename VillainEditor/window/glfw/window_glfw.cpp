@@ -37,6 +37,15 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
  m_context->initiate();
 
  glfwSetWindowUserPointer(m_window, &m_scene);
+
+ //TODO: glfwSetErrorCallback();
+ glfwSetWindowCloseCallback(m_window, closeCallback);
+ glfwSetWindowSizeCallback(m_window, sizeCallback);
+ glfwSetKeyCallback(m_window, keyCallback);
+ glfwSetCharCallback(m_window, charCallback);
+ glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
+ glfwSetCursorPosCallback(m_window, cursorPosCallback);
+ glfwSetScrollCallback(m_window, scrollCallback);
 }
 
 void WindowGLFW::update() const
@@ -54,6 +63,57 @@ void WindowGLFW::terminate() const
 {
  glfwTerminate();
 }
+
+void WindowGLFW::closeCallback(GLFWwindow* window)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+ INFO("window closing");
+}
+
+void WindowGLFW::sizeCallback(GLFWwindow* window, int width, int height)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+ INFO("window resize:- width: " << width << ", height:" << height);
+}
+
+void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ INFO(
+  "key input:- key: " << key
+  << ", scancode:" << scancode
+  << ", action:" << action
+  << ", mods:" << mods);
+
+ //TODO
+}
+
+void WindowGLFW::charCallback(GLFWwindow* window, unsigned int codepoint)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+}
+
+void WindowGLFW::mouseButtonCallback(GLFWwindow* window, int button, int action, int mod)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+}
+
+void WindowGLFW::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+}
+
+void WindowGLFW::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
+{
+ Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ //TODO
+}
+
 
 }
 
