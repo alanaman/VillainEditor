@@ -107,46 +107,55 @@ void ShaderOpengl::bind() const
 
 void ShaderOpengl::setUniformBool(const std::string& name, bool value) const
 {
+ glUseProgram(m_programId);
  glUniform1i(glGetUniformLocation(m_programId, name.c_str()), (int)value);
 }
 
 void ShaderOpengl::setUniformInt(const std::string& name, int value) const
 {
+ glUseProgram(m_programId);
  glUniform1i(glGetUniformLocation(m_programId, name.c_str()), value);
 }
 
 void ShaderOpengl::setUniformFloat(const std::string& name, float value) const
 {
+ glUseProgram(m_programId);
  glUniform1f(glGetUniformLocation(m_programId, name.c_str()), value);
 }
 
 void ShaderOpengl::setUniformVec2(const std::string& name, const glm::vec2& value) const
 {
+ glUseProgram(m_programId);
  glUniform2fv(glGetUniformLocation(m_programId, name.c_str()), 1, &value[0]);
 }
 
 void ShaderOpengl::setUniformVec3(const std::string& name, const glm::vec3& value) const
 {
+ glUseProgram(m_programId);
  glUniform3fv(glGetUniformLocation(m_programId, name.c_str()), 1, &value[0]);
 }
 
 void ShaderOpengl::setUniformVec4(const std::string& name, const glm::vec4& value) const
 {
+ glUseProgram(m_programId);
  glUniform4fv(glGetUniformLocation(m_programId, name.c_str()), 1, &value[0]);
 }
 
 void ShaderOpengl::setUniformMat2(const std::string& name, const glm::mat2& mat) const
 {
+ glUseProgram(m_programId);
  glUniformMatrix2fv(glGetUniformLocation(m_programId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
 void ShaderOpengl::setUniformMat3(const std::string& name, const glm::mat3& mat) const
 {
+ glUseProgram(m_programId);
  glUniformMatrix3fv(glGetUniformLocation(m_programId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
 void ShaderOpengl::setUniformMat4(const std::string& name, const glm::mat4& mat) const
 {
+ glUseProgram(m_programId);
  glUniformMatrix4fv(glGetUniformLocation(m_programId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
