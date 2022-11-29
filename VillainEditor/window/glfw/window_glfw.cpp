@@ -64,6 +64,11 @@ void WindowGLFW::terminate() const
  glfwTerminate();
 }
 
+int WindowGLFW::getKeyStatus(int key) const
+{
+ return glfwGetKey(m_window, key);
+}
+
 void WindowGLFW::closeCallback(GLFWwindow* window)
 {
  Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
@@ -87,7 +92,18 @@ void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int acti
   << ", action:" << action
   << ", mods:" << mods);
 
+ if (action == GLFW_PRESS)
+ {
+  KeyPressEvent e(key);
+  scene->dispatchEvent(e);
+ }
+ else if (action == GLFW_RELEASE)
+ {
+  KeyReleaseEvent e(key);
+  scene->dispatchEvent(e);
+ }
  //TODO
+
 }
 
 void WindowGLFW::charCallback(GLFWwindow* window, unsigned int codepoint)

@@ -6,6 +6,7 @@
 #include "graphics/shader.hpp"
 #include "graphics/model.hpp"
 #include "scene.hpp"
+#include "input.hpp"
 #include <memory>
 
 using namespace villain;
@@ -15,7 +16,7 @@ int main()
 	Window* window = Window::create(props);
 
 	Scene scene("Scene", 1080, 720);
-
+	window->attachScene(scene);
 	auto model = Model::create("cube", "resources/models/cube.fbx");
 	model->setShader(Shader::create(
 		"resources/shaders/basic_vertex2.glsl",
@@ -23,7 +24,6 @@ int main()
 	model->loadMeshes();
 
 	scene.addModel(model);
-
 	while (!window->shouldClose())
 	{
 		scene.render();

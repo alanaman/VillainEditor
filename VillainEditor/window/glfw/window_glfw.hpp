@@ -14,9 +14,11 @@ private:
 
 public:
   WindowGLFW(const WindowProperties& props);
-  bool shouldClose() const;
-  void update() const;
-  void terminate() const;
+  bool shouldClose() const override;
+  void update() const override;
+  void terminate() const override;
+  int getKeyStatus(int key) const override;
+
   
   static void closeCallback(GLFWwindow* window);
   static void sizeCallback(GLFWwindow* window, int width, int height);
