@@ -31,6 +31,9 @@ public:
  glm::vec3 getRightVector() const;
  //glm::vec3 getUpDirection() const;
 
+ void changePitch(float val);
+ void changeYaw(float val);
+
  virtual void updateOnFrame() = 0;
  virtual void eventHandler(Event& e) = 0;
 };
@@ -42,6 +45,8 @@ private:
  bool a = false;
  bool s = false;
  bool d = false;
+ bool lookaround_active = false;
+
 public:
  LookAroundCamera(int aspectX, int aspectY)
   :Camera(aspectX, aspectY) {};

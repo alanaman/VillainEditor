@@ -14,7 +14,7 @@ void Scene::render()
  glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  m_view_cam->updateOnFrame();
- for (auto model : m_models)
+ for (auto& model : m_models)
   model->draw(m_view_cam->getProjectionViewMatrix());
 }
 

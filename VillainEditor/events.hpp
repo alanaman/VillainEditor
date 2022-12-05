@@ -15,6 +15,7 @@ enum class EventType
 
 class Event
 {
+ int mods=0;
 public:
  virtual EventType getEventType() const = 0;
 };
@@ -41,11 +42,36 @@ public:
  };
 };
 
+class MouseButtonPressEvent :public Event
+{
+public:
+ int button;
+ MouseButtonPressEvent(int b) :button(b) {};
+ virtual EventType getEventType() const override
+ {
+  return EventType::MouseButtonPressed;
+ };
+};
+
+class MouseButtonReleaseEvent :public Event
+{
+public:
+ int button;
+ MouseButtonReleaseEvent(int b) :button(b) {};
+ virtual EventType getEventType() const override
+ {
+  return EventType::MouseButtonReleased;
+ };
+};
+
 struct CursorMoveEvent :public Event
 {
- double xpos;
- double ypos;
+ double delta_x;
+ double delta_y;
 
+ CursorMoveEvent(double del_x, double del_y) :
+  delta_x(del_x), delta_y(del_y)
+ {};
  virtual EventType getEventType() const override
  {
   return EventType::MouseMove;
@@ -53,9 +79,3 @@ struct CursorMoveEvent :public Event
 
 };
 
-struct MouseClickEvent
-{
- int button;
- int action;
- int mods;
-};

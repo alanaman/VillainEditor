@@ -1,3 +1,4 @@
+namespace villain {
 
 namespace ACTION {
 enum {
@@ -216,6 +217,7 @@ B_16            =15,
 B_LAST          =B_16
 };
 }
+
 namespace GAMEPAD {
 enum {
 BUTTON_A               =0,
@@ -247,5 +249,14 @@ AXIS_RIGHT_Y           =3,
 AXIS_LEFT_TRIGGER      =4,
 AXIS_RIGHT_TRIGGER     =5,
 AXIS_LAST              =AXIS_RIGHT_TRIGGER
+};
+}
+
+struct Cursor
+{
+ double prev_xpos;
+ double prev_ypos;
+ double delta_xpos=0.0;
+ double delta_ypos=0.0;
 };
 }

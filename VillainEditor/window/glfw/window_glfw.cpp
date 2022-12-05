@@ -36,7 +36,10 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
  m_context = new ContextOpengl();//TODO: fix this when adding other APIs
  m_context->initiate();
 
- glfwSetWindowUserPointer(m_window, &m_scene);
+ glfwSetWindowUserPointer(m_window, &m_data);
+
+ Cursor& cursor = m_data.cursor;
+ glfwGetCursorPos(m_window, &cursor.prev_xpos, &cursor.prev_ypos);
 
  //TODO: glfwSetErrorCallback();
  glfwSetWindowCloseCallback(m_window, closeCallback);
@@ -90,17 +93,18 @@ void WindowGLFW::sizeCallback(GLFWwindow* window, int width, int height)
 
 void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
 
  if (action == GLFW_PRESS)
  {
   KeyPressEvent e(key);
-  scene->dispatchEvent(e);
+  data->scene->dispatchEvent(e);
  }
  else if (action == GLFW_RELEASE)
  {
   KeyReleaseEvent e(key);
-  scene->dispatchEvent(e);
+  data->scene->dispatchEvent(e);
  }
  //TODO
 
@@ -108,25 +112,50 @@ void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 
 void WindowGLFW::charCallback(GLFWwindow* window, unsigned int codepoint)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
  //TODO
 }
 
 void WindowGLFW::mouseButtonCallback(GLFWwindow* window, int button, int action, int mod)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+ if (action == GLFW_PRESS)
+ {
+  MouseButtonPressEvent e(button);
+  data->scene->dispatchEvent(e);
+ }
+ else if (action == GLFW_RELEASE)
+ {
+  MouseButtonReleaseEvent e(button);
+  data->scene->dispatchEvent(e);
+ }
  //TODO
 }
 
 void WindowGLFW::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
  //TODO
 }
 
 void WindowGLFW::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
+ Cursor& cursor = data->cursor;
+
+ cursor.delta_xpos = xpos - cursor.prev_xpos;
+ cursor.delta_ypos = ypos - cursor.prev_ypos;
+
+ cursor.prev_xpos = xpos;
+ cursor.prev_ypos = ypos;
+
+ CursorMoveEvent e(cursor.delta_xpos, cursor.delta_ypos);
+
+
+ data->scene->dispatchEvent(e);
  //TODO
 }
 
