@@ -18,6 +18,7 @@ public:
   void update() const override;
   void terminate() const override;
   int getKeyStatus(int key) const override;
+  void* getWindowPointer() const override;
 
   
   static void closeCallback(GLFWwindow* window);

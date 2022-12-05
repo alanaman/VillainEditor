@@ -23,10 +23,12 @@ protected:
 public:
   static Window* create(const WindowProperties& props);
   virtual int getKeyStatus(int key) const = 0;
+  virtual void* getWindowPointer() const = 0;
   virtual bool shouldClose() const = 0;
   virtual void update() const = 0;
   virtual void terminate() const = 0;
   void attachScene(Scene &scene) { m_scene = &scene; };
+
   //virtual void setVSync(bool enabled);
 
 };

@@ -1,19 +1,13 @@
 ﻿// VillainEditor.cpp : Defines the entry point for the application.
-//
-
-#include "VillainEditor.hpp"
 #include "window/window.hpp"
-#include "graphics/shader.hpp"
-#include "graphics/model.hpp"
-#include "scene.hpp"
-#include "input.hpp"
-#include <memory>
+#include "gui/gui_layer.hpp"
 
 using namespace villain;
 int main()
 {
 	WindowProperties props("Editor", 1080, 720);
 	Window* window = Window::create(props);
+ GuiLayer gui(window->getWindowPointer());
 
 	Scene scene("Scene", 1080, 720);
 	window->attachScene(scene);
@@ -24,9 +18,11 @@ int main()
 	model->loadMeshes();
 
 	scene.addModel(model);
+
 	while (!window->shouldClose())
 	{
 		scene.render();
+  gui.render();
 		window->update();
 	}
 	window->terminate();

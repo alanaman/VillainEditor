@@ -69,6 +69,11 @@ int WindowGLFW::getKeyStatus(int key) const
  return glfwGetKey(m_window, key);
 }
 
+void* WindowGLFW::getWindowPointer() const
+{
+ return m_window;
+}
+
 void WindowGLFW::closeCallback(GLFWwindow* window)
 {
  Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
@@ -86,11 +91,6 @@ void WindowGLFW::sizeCallback(GLFWwindow* window, int width, int height)
 void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
  Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
- INFO(
-  "key input:- key: " << key
-  << ", scancode:" << scancode
-  << ", action:" << action
-  << ", mods:" << mods);
 
  if (action == GLFW_PRESS)
  {
