@@ -15,8 +15,12 @@ enum class EventType
 
 class Event
 {
- int mods=0;
 public:
+ int mods=0;
+
+ Event(){};
+ Event(int mods) :mods(mods) {};
+
  virtual EventType getEventType() const = 0;
 };
 
@@ -25,6 +29,7 @@ class KeyPressEvent :public Event
 public:
  int key;
  KeyPressEvent(int k) :key(k) {};
+ KeyPressEvent(int k, int mods) :key(k), Event(mods) {};
  virtual EventType getEventType() const override
  {
   return EventType::KeyPress;
@@ -47,6 +52,7 @@ class MouseButtonPressEvent :public Event
 public:
  int button;
  MouseButtonPressEvent(int b) :button(b) {};
+ MouseButtonPressEvent(int b, int mods) :button(b), Event(mods) {};
  virtual EventType getEventType() const override
  {
   return EventType::MouseButtonPressed;

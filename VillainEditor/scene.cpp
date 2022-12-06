@@ -5,7 +5,7 @@ namespace villain {
 Scene::Scene(std::string name, int aspectX, int aspectY):
  m_name(name)
 {
- m_view_cam = std::make_shared<LookAroundCamera>(aspectX, aspectY);
+ m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
 }
 
 void Scene::render()

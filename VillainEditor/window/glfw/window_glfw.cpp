@@ -98,7 +98,7 @@ void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 
  if (action == GLFW_PRESS)
  {
-  KeyPressEvent e(key);
+  KeyPressEvent e(key, mods);
   data->scene->dispatchEvent(e);
  }
  else if (action == GLFW_RELEASE)
@@ -117,12 +117,12 @@ void WindowGLFW::charCallback(GLFWwindow* window, unsigned int codepoint)
  //TODO
 }
 
-void WindowGLFW::mouseButtonCallback(GLFWwindow* window, int button, int action, int mod)
+void WindowGLFW::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
  WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
  if (action == GLFW_PRESS)
  {
-  MouseButtonPressEvent e(button);
+  MouseButtonPressEvent e(button, mods);
   data->scene->dispatchEvent(e);
  }
  else if (action == GLFW_RELEASE)

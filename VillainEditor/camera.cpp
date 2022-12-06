@@ -4,6 +4,24 @@
 //#include <gtc/type_ptr.hpp>
 
 namespace villain {
+
+CameraControllerType Camera::m_type = CameraControllerType::OrbitAroundPoint;
+
+bool LookAroundCameraController::w = false;
+bool LookAroundCameraController::a = false;
+bool LookAroundCameraController::s = false;
+bool LookAroundCameraController::d = false;
+bool LookAroundCameraController::lookaround_active = false;
+float LookAroundCameraController::lookaround_speed = 0.05f;
+float LookAroundCameraController::move_speed = 0.05f;
+
+bool OrbitAroundCameraController::orbit_active = false;
+bool OrbitAroundCameraController::pan_active = false;
+bool OrbitAroundCameraController::zoom_active = false;
+float OrbitAroundCameraController::orbit_speed = 0.2f;
+float OrbitAroundCameraController::pan_speed = 0.001f;
+float OrbitAroundCameraController::zoom_speed = 0.1f;
+
 Camera::Camera(int aspectX, int aspectY):
  mAspectX(aspectX), mAspectY(aspectY)
 {
@@ -45,7 +63,12 @@ glm::vec3 Camera::getRightVector() const
  return glm::normalize(glm::cross(getForwardVector(), mUp));
 }
 
-void Camera::changePitch(float val)
+glm::vec3 Camera::getUpVector() const
+{
+ return glm::cross(getRightVector(), getForwardVector());
+}
+
+void Camera::increasePitch(float val)
 {
  mPitch += val;
  if (mPitch >= 90.0f)
@@ -54,7 +77,7 @@ void Camera::changePitch(float val)
   mPitch = -89.9f;
 }
 
-void Camera::changeYaw(float val)
+void Camera::increaseYaw(float val)
 {
  mYaw += val;
  if (mYaw >= 360.0f)
@@ -63,24 +86,53 @@ void Camera::changeYaw(float val)
   mYaw += 360.0f;
 }
 
-
-
-void LookAroundCamera::updateOnFrame()
+void Camera::setControlType(CameraControllerType type)
 {
- if (w)
-  mPosition += getForwardVector()*0.05f;
- if (s)
-  mPosition -= getForwardVector()*0.05f;
- if (d)
-  mPosition += getRightVector()*0.05f;
- if (a)
-  mPosition -= getRightVector()*0.05f;
-
- //mPosition.x += 0.01f;
- //mPosition.y += 0.01f;
+ m_type = type;
+ if (type == CameraControllerType::LookAround)
+  LookAroundCameraController::init();
+ else if (type == CameraControllerType::OrbitAroundPoint)
+  OrbitAroundCameraController::init();
 }
 
-void LookAroundCamera::eventHandler(Event& e)
+void Camera::updateOnFrame()
+{
+ if (m_type == CameraControllerType::LookAround)
+  LookAroundCameraController::updateOnFrame(*this);
+ else if (m_type == CameraControllerType::OrbitAroundPoint)
+  OrbitAroundCameraController::updateOnFrame(*this);
+}
+
+void Camera::eventHandler(Event& e)
+{
+ if (m_type == CameraControllerType::LookAround)
+  LookAroundCameraController::eventHandler(e, *this);
+ else if (m_type == CameraControllerType::OrbitAroundPoint)
+  OrbitAroundCameraController::eventHandler(e, *this);
+}
+
+void LookAroundCameraController::init()
+{
+ w = false;
+ a = false;
+ s = false;
+ d = false;
+ lookaround_active = false;
+}
+
+void LookAroundCameraController::updateOnFrame(Camera& cam)
+{
+ if (w)
+  cam.mPosition += cam.getForwardVector()*move_speed;
+ if (s)
+  cam.mPosition -= cam.getForwardVector()*move_speed;
+ if (d)
+  cam.mPosition += cam.getRightVector()*move_speed;
+ if (a)
+  cam.mPosition -= cam.getRightVector()*move_speed;
+}
+
+void LookAroundCameraController::eventHandler(Event& e, Camera& cam)
 {
  switch (e.getEventType())
  {
@@ -89,8 +141,8 @@ void LookAroundCamera::eventHandler(Event& e)
   CursorMoveEvent* cme = (CursorMoveEvent*)&e;
   if (lookaround_active)
   {
-   changeYaw(cme->delta_x*0.05f);
-   changePitch(-cme->delta_y*0.05f);
+   cam.increaseYaw(cme->delta_x*lookaround_speed);
+   cam.increasePitch(-cme->delta_y*lookaround_speed);
   }
   break;
  }
@@ -140,4 +192,73 @@ void LookAroundCamera::eventHandler(Event& e)
   break;
  }
 }
+
+void OrbitAroundCameraController::init()
+{
+
+}
+
+void OrbitAroundCameraController::updateOnFrame(Camera& cam)
+{
+
+}
+
+void OrbitAroundCameraController::eventHandler(Event& e, Camera& cam)
+{
+ switch (e.getEventType())
+ {
+ case EventType::MouseMove:
+ {
+  CursorMoveEvent* cme = (CursorMoveEvent*)&e;
+  if (orbit_active)
+  {
+   glm::vec3 center_point = cam.mPosition + cam.distance_to_center * cam.getForwardVector();
+   cam.increaseYaw(cme->delta_x * 0.2f);
+   cam.increasePitch(-cme->delta_y * 0.2f);
+   cam.mPosition = center_point - cam.distance_to_center * cam.getForwardVector();
+  }
+  else if (zoom_active)
+  {
+   float zoom_dist = std::min(
+    -(float)cme->delta_y * zoom_speed,
+    cam.distance_to_center - cam.mNearPlane);
+   cam.mPosition += cam.getForwardVector() * zoom_dist;
+   cam.distance_to_center -= zoom_dist;
+
+  }
+  else if (pan_active)
+  {
+   cam.mPosition -= cam.getRightVector() * (float)cme->delta_x * pan_speed * cam.distance_to_center;
+   cam.mPosition += cam.getUpVector() * (float)cme->delta_y * pan_speed * cam.distance_to_center;
+  }
+  break;
+ }
+ case EventType::MouseButtonPressed:
+ {
+  MouseButtonPressEvent* mbp = (MouseButtonPressEvent*)&e;
+  if (mbp->button == MOUSE::BUTTON_3)
+  {
+   if (mbp->mods == 0)
+    orbit_active = true;
+   else if (mbp->mods & MOD::CONTROL)
+    zoom_active = true;
+   else if (mbp->mods & MOD::SHIFT)
+    pan_active = true;
+  }
+  break;
+ }
+ case EventType::MouseButtonReleased:
+ {
+  MouseButtonReleaseEvent* mbp = (MouseButtonReleaseEvent*)&e;
+  if (mbp->button == MOUSE::BUTTON_3)
+  {
+   orbit_active = false;
+   pan_active = false;
+   zoom_active = false;
+  }
+  break;
+ }
+ }
+}
+
 }

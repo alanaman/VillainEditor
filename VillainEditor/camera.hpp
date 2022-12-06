@@ -6,10 +6,18 @@
 #include "logging.hpp"
 
 namespace villain {
+
+enum class CameraControllerType
+{
+ LookAround,
+ OrbitAroundPoint,
+};
+
 class Camera
 {
+ friend class LookAroundCameraController;
+ friend class OrbitAroundCameraController;
 protected:
-
  float mPitch = 0.0f;
  float mYaw = 270.0f;
 
@@ -23,63 +31,58 @@ protected:
 
  float mVerticalFOV = 45.0f; //in degrees TODO:test
 
+ float distance_to_center = 10.0f;
+
+ static CameraControllerType m_type;
 public:
  Camera(int aspectX, int aspectY);
 
  glm::mat4 getProjectionViewMatrix() const;
  glm::vec3 getForwardVector() const;
  glm::vec3 getRightVector() const;
- //glm::vec3 getUpDirection() const;
+ glm::vec3 getUpVector() const;
 
- void changePitch(float val);
- void changeYaw(float val);
+ void increasePitch(float val);
+ void increaseYaw(float val);
 
- virtual void updateOnFrame() = 0;
- virtual void eventHandler(Event& e) = 0;
+ static void setControlType(CameraControllerType type);
+ void updateOnFrame();
+ void eventHandler(Event& e);
 };
 
-class LookAroundCamera : public Camera
+class CameraController{};
+class LookAroundCameraController : public CameraController
 {
 private:
- bool w = false;
- bool a = false;
- bool s = false;
- bool d = false;
- bool lookaround_active = false;
+ static bool w;
+ static bool a;
+ static bool s;
+ static bool d;
+ static bool lookaround_active;
 
+ static float lookaround_speed;
+ static float move_speed;
 public:
- LookAroundCamera(int aspectX, int aspectY)
-  :Camera(aspectX, aspectY) {};
-
- virtual void updateOnFrame() override;
- virtual void eventHandler(Event& e) override;
+ static void init();
+ static void updateOnFrame(Camera& cam);
+ static void eventHandler(Event& e, Camera& cam);
 };
 
-//class Camera
-//{
-//private:
-//
-// glm::vec3 mPosition = glm::vec3(10.0f, 10.0f, 10.0f);
-// glm::vec3 mCenter = glm::vec3(0.0f, 0.0f, 0.0f);
-// //glm::vec3 m_direction = glm::vec3(1 / sqrt(3), 1 / sqrt(3), 1 / sqrt(3));
-// glm::vec3 mUp = glm::vec3(0.0f, 1.0f, 0.0f);
-//
-// float mFarPlane = 100.0f, mNearPlane = 0.1f;
-//
-// float mYaw = 0.0f;
-// float mPitch = 0.0f;
-//
-// unsigned int mAspectX, mAspectY;
-// float mAspectRatio;
-//
-// float mVerticalFOV = 45.0f; //in degrees TODO:test
-//
-//public:
-// Camera(int aspectX, int aspectY);
-//
-// glm::mat4 getProjectionViewMatrix() const;
-// glm::vec3 getForwardVector() const;
-//
-// //void eventHandler(Event& e);
-//};
+class OrbitAroundCameraController : public CameraController
+{
+private:
+ static bool orbit_active;
+ static bool pan_active;
+ static bool zoom_active;
+
+ static float orbit_speed;
+ static float pan_speed;
+ static float zoom_speed;
+public:
+ static void init();
+
+ static void updateOnFrame(Camera& cam);
+ static void eventHandler(Event& e, Camera& cam);
+};
+
 }
