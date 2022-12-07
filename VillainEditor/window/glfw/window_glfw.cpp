@@ -88,7 +88,6 @@ void WindowGLFW::sizeCallback(GLFWwindow* window, int width, int height)
 {
  Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
  //TODO
- INFO("window resize:- width: " << width << ", height:" << height);
 }
 
 void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
