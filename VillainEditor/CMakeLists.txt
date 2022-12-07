@@ -7,17 +7,18 @@ cmake_minimum_required (VERSION 3.8)
 add_executable (${PROJECT_NAME}
 	"VillainEditor.cpp"
 	"window/glfw/window_glfw.cpp"
+	"window/nfd/nativefiledialog.cpp"
 	"scene.cpp"
 	"camera.cpp"
 	"gui/gui_layer.cpp"
  )
 
-add_subdirectory("graphics")
+add_subdirectory(
+	"graphics"
+)
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC "."
-	PUBLIC "external/glfw/include"
-	PUBLIC "shared")
-
-target_link_libraries(${PROJECT_NAME} glfw VillainGraphics ImGUI)
+)
+target_link_libraries(${PROJECT_NAME} glfw VillainGraphics ImGUI nfd)
 # TODO: Add tests and install targets if needed.

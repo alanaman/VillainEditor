@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <memory>
+#include "logging.hpp"
 #include "model.hpp"
 #include "camera.hpp"
 #include "events.hpp"
@@ -18,6 +16,7 @@ private:
 public:
  Scene(std::string name, int aspectX, int aspectY);
  void render();
+ void addModelFromFile();
  void addModel(std::shared_ptr<Model> model) { m_models.push_back(model); };
 
  void dispatchEvent(Event& e);

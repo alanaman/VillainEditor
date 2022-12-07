@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include "scene.hpp"
+#include "input.hpp"
+#include "window/filedialog.hpp"
 
 namespace villain {
 Scene::Scene(std::string name, int aspectX, int aspectY):
@@ -18,8 +20,38 @@ void Scene::render()
   model->draw(m_view_cam->getProjectionViewMatrix());
 }
 
+void Scene::addModelFromFile()
+{
+ std::string filename = FileBrowser::selectFile();
+ if (filename == "")
+  return;
+ auto model = Model::create("cube", filename);
+ model->setShader(Shader::create(
+  "resources/shaders/basic_vertex2.glsl",
+  "resources/shaders/basic_fragment2.glsl"));
+ model->loadMeshes();
+
+ addModel(model);
+}
+
 void Scene::dispatchEvent(Event& e)
 {
+ switch (e.getEventType())
+ {
+ case EventType::KeyPress:
+ {
+  KeyPressEvent* ke = (KeyPressEvent*)&e;
+  int key = ke->key;
+  if (key == KEY::A && (e.mods & MOD::SHIFT))
+  {
+   addModelFromFile();
+   return;
+  }
+  break;
+ }
+ default:
+  break;
+ }
  m_view_cam->eventHandler(e);
 }
 

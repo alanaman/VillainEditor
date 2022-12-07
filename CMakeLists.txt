@@ -9,6 +9,8 @@ project (VillainEditor)
 add_subdirectory("external/glfw")
 add_subdirectory("external/assimp")
 add_subdirectory("external/imgui")
+add_subdirectory("external/nativefiledialog-extended")
+
 #include_directories("out/build/x64-Debug/external/assimp/include")
 
 add_subdirectory ("VillainEditor")
@@ -16,6 +18,7 @@ add_subdirectory ("VillainEditor")
 target_include_directories(${PROJECT_NAME}
 	PUBLIC "."
 	PUBLIC "external/glfw/include"
+	PUBLIC "external/nativefiledialog-extended/src/include"
 	PUBLIC "external/assimp/include"
 	PUBLIC "external/glm/glm"
 	PUBLIC "external/imgui"
