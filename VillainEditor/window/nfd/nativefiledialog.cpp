@@ -12,8 +12,8 @@ std::string FileBrowser::selectFile()
  NFD_Init();
 
  nfdchar_t* outPath;
- nfdfilteritem_t filterItem[2] = { { "Source code", "c,cpp,cc" }, { "Headers", "h,hpp" } };
- nfdresult_t result = NFD_OpenDialog(&outPath, filterItem, 2, NULL);
+ //nfdfilteritem_t filterItem[1] = { { "All", "" } };
+ nfdresult_t result = NFD_OpenDialog(&outPath, NULL, 0, NULL);
  std::string s = "";
  if (result == NFD_OKAY)
  {
