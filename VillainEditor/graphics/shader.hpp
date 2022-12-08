@@ -10,8 +10,12 @@
 namespace villain {
 class Shader
 {
+protected:
+ std::string vertex_path;
+ std::string fragment_path;
 public:
-	static std::shared_ptr<Shader> create(const std::string& vertex_path, const std::string& fragment_path);
+	//TODO Add proper deconstructors that cleans up opengl side also
+ static std::shared_ptr<Shader> create(const std::string& vertex_path, const std::string& fragment_path);
 
 
 	virtual void bind() const = 0;
@@ -26,5 +30,7 @@ public:
 	virtual void setUniformMat4(const std::string& name, const glm::mat4& mat) const = 0;
 
 	virtual void queryUniforms() = 0;//TODO: maybe make this queryParameters
+
+ friend class Scene;
 };
 }

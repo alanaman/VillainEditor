@@ -6,5 +6,7 @@ class FileBrowser
 {
 public:
  static std::string selectFile();
+
+ static std::string saveFile();
 };
 }

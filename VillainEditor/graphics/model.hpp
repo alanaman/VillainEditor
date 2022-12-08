@@ -17,17 +17,26 @@ public:
 
 class Model
 {
+private:
+ glm::vec3 position = glm::vec3(0);
+ glm::vec3 scale = glm::vec3(1);
+ glm::vec3 rotation = glm::vec3(0);
 protected:
  std::string m_name;
  std::string m_path;
  std::shared_ptr<Mesh> m_mesh;
- std::shared_ptr<Shader> m_shader;
+ int m_shader_index;
 
 public:
+ //TODO Add proper deconstructors that cleans up opengl side also
+
  static std::shared_ptr<Model> create(const std::string& path);
  virtual void loadMesh() = 0;
  virtual void draw() = 0;
- void setShader(std::shared_ptr<Shader> shader) { m_shader = shader; }
+ //void setShader(std::shared_ptr<Shader> shader) { m_shader = shader; };
+ void setShader(int index) { m_shader_index = index; };
+ int getShader() { return m_shader_index; };
 
+ friend class Scene;
 };
 }

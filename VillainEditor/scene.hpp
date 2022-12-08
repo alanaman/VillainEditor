@@ -25,7 +25,7 @@ public:
  void dispatchEvent(Event& e);
 
  //TODO
- //void saveScene(std::string& filepath);
- //void loadScene(std::string& filepath);
+ void saveScene();
+ void loadScene();
 };
 }

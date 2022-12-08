@@ -12,6 +12,8 @@ std::shared_ptr<Shader> Shader::create(const std::string& vertex_path, const std
 
 ShaderOpengl::ShaderOpengl(const std::string& vertex_path, const std::string& fragment_path)
 {
+ this->vertex_path = vertex_path;
+ this->fragment_path = fragment_path;
  std::vector<GLuint> shaderList;
  shaderList.push_back(LoadShader(GL_VERTEX_SHADER, vertex_path));
  shaderList.push_back(LoadShader(GL_FRAGMENT_SHADER, fragment_path));

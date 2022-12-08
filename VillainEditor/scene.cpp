@@ -12,6 +12,9 @@ Scene::Scene(std::string name, int aspectX, int aspectY):
  m_shaders.push_back(Shader::create(
   "resources/shaders/basic_vertex2.glsl",
   "resources/shaders/basic_fragment2.glsl"));
+ m_shaders.push_back(Shader::create(
+  "resources/shaders/basic_vertex2.glsl",
+  "resources/shaders/basic_fragment2.glsl"));
 }
 void Scene::updateOnFrame()
 {
@@ -21,11 +24,11 @@ void Scene::updateOnFrame()
 
 void Scene::addModelFromFile()
 {
- std::string filename = FileBrowser::selectFile();
- if (filename == "")
+ std::string filepath = FileBrowser::selectFile();
+ if (filepath == "")
   return;
- auto model = Model::create(filename);
- model->setShader(m_shaders[0]);//default shader
+ auto model = Model::create(filepath);
+ model->setShader(0);//default shader
  model->loadMesh();
 
  addModel(model);
@@ -46,16 +49,100 @@ void Scene::dispatchEvent(Event& e)
   KeyPressEvent* ke = (KeyPressEvent*)&e;
   int key = ke->key;
   if (key == KEY::A && (e.mods & MOD::SHIFT))
-  {
    addModelFromFile();
-   return;
-  }
+  else if (key == KEY::S && (e.mods & MOD::CONTROL))
+   saveScene();
+  else if (key == KEY::L && (e.mods & MOD::CONTROL))
+   loadScene();
   break;
  }
  default:
   break;
  }
  m_view_cam->eventHandler(e);
+}
+
+void Scene::saveScene()
+{
+ auto filepath = FileBrowser::saveFile();
+ if (filepath == "")
+  return;
+ //TODO convert this to binary file
+ std::ofstream file;
+ file.open(filepath, std::ios::out);
+
+ if (!file)
+ {
+  ERROR("Error in creating file!!!");
+  return;
+ }
+
+ file << m_models.size() << std::endl;
+ for (auto model : m_models)
+ {
+  file
+   << model->m_path << " "
+   << model->m_shader_index << " "
+   << model->position.x << " " << model->position.y << " " << model->position.z << " "
+   << model->scale.x << " " << model->scale.y << " " << model->scale.z << " "
+   << model->rotation.x << " " << model->rotation.y << " " << model->rotation.z << " "
+   << std::endl;
+ }
+ file << m_shaders.size() << std::endl;
+ for (auto shader : m_shaders)
+ {
+  file
+   << shader->vertex_path << " "
+   << shader->fragment_path << " "
+   << std::endl;
+ }
+}
+
+void Scene::loadScene()
+{
+ auto filepath = FileBrowser::selectFile();
+ if (filepath == "")
+  return;
+ //TODO convert this to binary file
+ std::ifstream file;
+ file.open(filepath, std::ios::in);
+
+ if (!file)
+ {
+  ERROR("Error in creating file!!!");
+  return;
+ }
+
+ m_models.clear();
+ m_shaders.clear();
+ int num_models = 0, num_shaders=0;
+ file >> num_models;
+ for (int i =0;i<num_models;i++)
+ {
+  std::string filepath;
+  file >> filepath;
+  auto model = Model::create(filepath);
+  model->setShader(0);//default shader
+  model->loadMesh();
+
+  addModel(model);
+
+  file 
+   >> model->m_shader_index
+   >> model->position.x >> model->position.y >> model->position.z
+   >> model->scale.x >> model->scale.y >> model->scale.z
+   >> model->rotation.x >> model->rotation.y >> model->rotation.z;
+ }
+
+ file >> num_shaders;
+ for (int i = 0; i < num_shaders; i++)
+ {
+  std::string vertex_path, fragmentpath;
+  file
+   >> vertex_path
+   >> fragmentpath;
+  m_shaders.push_back(Shader::create(vertex_path, fragmentpath));
+ }
 }
 
 
