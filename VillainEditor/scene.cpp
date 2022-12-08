@@ -8,13 +8,15 @@ Scene::Scene(std::string name, int aspectX, int aspectY):
 {
  m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
  m_renderer.submitCamera(m_view_cam);
+
+ m_shaders.push_back(Shader::create(
+  "resources/shaders/basic_vertex2.glsl",
+  "resources/shaders/basic_fragment2.glsl"));
 }
 void Scene::updateOnFrame()
 {
-
  m_view_cam->updateOnFrame();
  m_renderer.renderFrame();
-
 }
 
 void Scene::addModelFromFile()
@@ -23,9 +25,7 @@ void Scene::addModelFromFile()
  if (filename == "")
   return;
  auto model = Model::create(filename);
- model->setShader(Shader::create(
-  "resources/shaders/basic_vertex2.glsl",
-  "resources/shaders/basic_fragment2.glsl"));
+ model->setShader(m_shaders[0]);//default shader
  model->loadMesh();
 
  addModel(model);

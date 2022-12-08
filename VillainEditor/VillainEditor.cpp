@@ -12,14 +12,6 @@ int main()
 	Scene scene("Scene", 1080, 720);
 	window->attachScene(scene);
 
-
-	auto model = Model::create("resources/models/platform.fbx");
-	model->setShader(Shader::create(
-		"resources/shaders/basic_vertex2.glsl",
-		"resources/shaders/basic_fragment2.glsl"));
-
-	scene.addModel(model);
-
 	while (!window->shouldClose())
 	{
 		scene.updateOnFrame();

@@ -22,7 +22,9 @@ void Renderer::renderFrame()
  glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+ m_shaders[0]->bind();
+ m_shaders[0]->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
  for (auto& model : m_models)
-  model->draw(m_view_cam->getProjectionViewMatrix());
+  model->draw();
 }
 }
