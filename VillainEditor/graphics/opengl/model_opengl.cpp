@@ -9,18 +9,17 @@
 
 namespace villain {
 
-std::shared_ptr<Model> Model::create(const std::string& name, const std::string& path)
+std::shared_ptr<Model> Model::create(const std::string& path)
 {
- return std::make_shared<ModelOpengl>(name, path);
+ return std::make_shared<ModelOpengl>(path);
 }
 
-ModelOpengl::ModelOpengl(const std::string& name, const std::string& path)
+ModelOpengl::ModelOpengl(const std::string& path)
 {
- m_name = name;
  m_path = path;
 }
 
-void ModelOpengl::loadMeshes()
+void ModelOpengl::loadMesh()
 {
  Assimp::Importer importer;
  const aiScene* scene = importer.ReadFile(
@@ -36,19 +35,23 @@ void ModelOpengl::loadMeshes()
  processNode(scene->mRootNode, scene);
 }
 
-void ModelOpengl::processNode(aiNode* node, const aiScene* scene)
+bool ModelOpengl::processNode(aiNode* node, const aiScene* scene)
 {
  // process all the node's meshes
  for (unsigned int i = 0; i < node->mNumMeshes; i++)
  {
+  m_name = node->mName.C_Str();
   aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-  m_meshes.push_back(processMesh(mesh, scene));
+  m_mesh = processMesh(mesh, scene);
+  return true;
  }
  // then do the same for each of its children
  for (unsigned int i = 0; i < node->mNumChildren; i++)
  {
-  processNode(node->mChildren[i], scene);
+  if(processNode(node->mChildren[i], scene))
+   return true;
  }
+ return false;
 }
 
 MeshOpengl ModelOpengl::processMesh(aiMesh* mesh, const aiScene* scene)
@@ -91,10 +94,7 @@ void ModelOpengl::draw(glm::mat4& cameraMatrix)
 {
  m_shader->bind();
  m_shader->setUniformMat4("uProjViewModelMat", cameraMatrix);
- for (const auto &mesh : m_meshes)
- {
-  glBindVertexArray(mesh.vao);
-  glDrawElements(GL_TRIANGLES, mesh.n_indices, GL_UNSIGNED_INT, 0);
- }
+ glBindVertexArray(m_mesh.vao);
+ glDrawElements(GL_TRIANGLES, m_mesh.n_indices, GL_UNSIGNED_INT, 0);
 }
 }
