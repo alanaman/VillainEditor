@@ -9,7 +9,7 @@ namespace villain {
 
 class Transform
 {
-private:
+protected:
  glm::vec3 position = glm::vec3(0);
  glm::vec3 scale = glm::vec3(1);
  glm::vec3 rotation = glm::vec3(0);
@@ -24,7 +24,7 @@ public:
  glm::vec3& getRotationRef();
  glm::vec3 getRotation() const;
 
- glm::mat4 getTranformMatrix();
+ glm::mat4 getTransformMatrix();
 
 
 };

@@ -26,6 +26,7 @@ void Renderer::renderFrame()
  {
   auto shader = m_shaders[model->getShader()];
   shader->bind();
+  shader->setUniformMat4("uTransform", model->getTransformMatrix());
   shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
   
   model->draw();

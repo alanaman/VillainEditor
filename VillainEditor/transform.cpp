@@ -46,7 +46,7 @@ namespace villain {
   return rotation;
  }
 
- glm::mat4 Transform::getTranformMatrix()
+ glm::mat4 Transform::getTransformMatrix()
  {
   auto transformation = glm::mat4(1.0f);
 

@@ -10,11 +10,8 @@ Scene::Scene(std::string name, int aspectX, int aspectY) :
  m_renderer.submitCamera(m_view_cam);
 
  m_shaders.push_back(Shader::create(
-  "resources/shaders/basic_vertex2.glsl",
-  "resources/shaders/basic_fragment2.glsl"));
- m_shaders.push_back(Shader::create(
-  "resources/shaders/basic_vertex2.glsl",
-  "resources/shaders/basic_fragment2.glsl"));
+  "resources/shaders/basic_vertex.glsl",
+  "resources/shaders/basic_fragment.glsl"));
 }
 void Scene::updateOnFrame()
 {
@@ -83,7 +80,7 @@ void Scene::saveScene()
   file
    << model->m_path << " "
    << model->m_shader_index << " "
-   << model->m_tranform << " "
+   << model->m_transform << " "
    << std::endl;
  }
  file << m_shaders.size() << std::endl;
@@ -127,7 +124,7 @@ void Scene::loadScene()
 
   file
    >> model->m_shader_index
-   >> model->m_tranform;
+   >> model->m_transform;
  }
 
  file >> num_shaders;
