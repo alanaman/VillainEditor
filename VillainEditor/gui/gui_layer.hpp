@@ -4,6 +4,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include "scene.hpp"
+
 namespace villain {
 
 class GuiLayer
@@ -11,10 +13,15 @@ class GuiLayer
 private:
  bool show_demo_window = true;
  bool show_another_window = false;
+ bool show_properties_window = true;
+
+ Scene* m_scene;
+
  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 public:
  GuiLayer(void* window);
  ~GuiLayer();
+ void attachScene(Scene *scene) { m_scene = scene; };
  void render();
 
 };

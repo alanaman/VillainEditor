@@ -5,8 +5,7 @@ add_library (VillainGraphics
 	"opengl/shader_opengl.cpp"
 	"opengl/context_opengl.cpp"
 	"opengl/model_opengl.cpp"
-	"renderer.cpp"
-	"model.cpp"
+	"renderer.cpp"	
 )
 
 add_subdirectory("opengl/libraries/GLAD")

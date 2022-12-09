@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include "shader.hpp"
+#include "entity.hpp"
 #include "transform.hpp"
 #include "properties.hpp"
 
@@ -17,12 +18,8 @@ public:
 };
 
 
-class Model
+class Model : public Entity
 {
-private:
- Transform m_tranform;
- Properties m_properties;
-
 protected:
  std::string m_name;
  std::string m_path;
@@ -32,7 +29,6 @@ protected:
 public:
  //TODO Add proper deconstructors that cleans up opengl side also
 
- Model();
  static std::shared_ptr<Model> create(const std::string& path);
  virtual void loadMesh() = 0;
  virtual void draw() = 0;

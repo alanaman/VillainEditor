@@ -3,7 +3,7 @@
 #include "window/filedialog.hpp"
 
 namespace villain {
-Scene::Scene(std::string name, int aspectX, int aspectY):
+Scene::Scene(std::string name, int aspectX, int aspectY) :
  m_name(name), m_renderer(m_models, m_shaders)
 {
  m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
@@ -113,9 +113,9 @@ void Scene::loadScene()
 
  m_models.clear();
  m_shaders.clear();
- int num_models = 0, num_shaders=0;
+ int num_models = 0, num_shaders = 0;
  file >> num_models;
- for (int i =0;i<num_models;i++)
+ for (int i = 0; i < num_models; i++)
  {
   std::string filepath;
   file >> filepath;
@@ -141,5 +141,12 @@ void Scene::loadScene()
  }
 }
 
+Model* Scene::getCurrentModel()
+{
+ if (m_models.size())
+  return m_models[m_models.size() - 1].get();
+ else
+  return NULL;
+}
 
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logging.hpp"
 #include "transform.hpp"
 #include "glm.hpp"
@@ -21,11 +23,10 @@ public:
 
 class Properties
 {
- std::vector<std::shared_ptr<Property>> m_properties;
 
+ std::vector<Property> m_properties;
 public:
  void addProperty(std::string& name, glm::vec3& val);
- void addProperty(Transform& trans);
 
 };
 

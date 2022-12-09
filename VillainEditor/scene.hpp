@@ -26,6 +26,7 @@ public:
 
  void dispatchEvent(Event& e);
 
+ Model* getCurrentModel();
  //TODO
  void saveScene();
  void loadScene();
