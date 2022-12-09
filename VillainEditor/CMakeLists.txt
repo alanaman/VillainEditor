@@ -11,14 +11,13 @@ add_executable (${PROJECT_NAME}
 	"scene.cpp"
 	"camera.cpp"
 	"gui/gui_layer.cpp"
- )
+	"properties.cpp"
+	"transform.cpp"
+)
 
 add_subdirectory(
 	"graphics"
 )
 
-target_include_directories(${PROJECT_NAME}
-	PUBLIC "."
-)
 target_link_libraries(${PROJECT_NAME} glfw VillainGraphics ImGUI nfd)
 # TODO: Add tests and install targets if needed.

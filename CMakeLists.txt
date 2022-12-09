@@ -20,7 +20,7 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC "external/glfw/include"
 	PUBLIC "external/nativefiledialog-extended/src/include"
 	PUBLIC "external/assimp/include"
-	PUBLIC "external/glm/glm"
+	PUBLIC "external/glm"
 	PUBLIC "external/imgui"
 	PUBLIC "shared"
 	)

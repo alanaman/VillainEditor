@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 #include "shader.hpp"
+#include "transform.hpp"
+#include "properties.hpp"
 
 namespace villain {
 
@@ -18,9 +20,9 @@ public:
 class Model
 {
 private:
- glm::vec3 position = glm::vec3(0);
- glm::vec3 scale = glm::vec3(1);
- glm::vec3 rotation = glm::vec3(0);
+ Transform m_tranform;
+ Properties m_properties;
+
 protected:
  std::string m_name;
  std::string m_path;
@@ -30,6 +32,7 @@ protected:
 public:
  //TODO Add proper deconstructors that cleans up opengl side also
 
+ Model();
  static std::shared_ptr<Model> create(const std::string& path);
  virtual void loadMesh() = 0;
  virtual void draw() = 0;

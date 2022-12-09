@@ -83,9 +83,7 @@ void Scene::saveScene()
   file
    << model->m_path << " "
    << model->m_shader_index << " "
-   << model->position.x << " " << model->position.y << " " << model->position.z << " "
-   << model->scale.x << " " << model->scale.y << " " << model->scale.z << " "
-   << model->rotation.x << " " << model->rotation.y << " " << model->rotation.z << " "
+   << model->m_tranform << " "
    << std::endl;
  }
  file << m_shaders.size() << std::endl;
@@ -127,11 +125,9 @@ void Scene::loadScene()
 
   addModel(model);
 
-  file 
+  file
    >> model->m_shader_index
-   >> model->position.x >> model->position.y >> model->position.z
-   >> model->scale.x >> model->scale.y >> model->scale.z
-   >> model->rotation.x >> model->rotation.y >> model->rotation.z;
+   >> model->m_tranform;
  }
 
  file >> num_shaders;
