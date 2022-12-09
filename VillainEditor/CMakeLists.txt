@@ -8,15 +8,20 @@ add_executable (${PROJECT_NAME}
 	"VillainEditor.cpp"
 	"window/glfw/window_glfw.cpp"
 	"window/nfd/nativefiledialog.cpp"
-	"scene.cpp"
-	"camera.cpp"
+	"scene/scene.cpp"
+	"scene/camera.cpp"
 	"gui/gui_layer.cpp"
-	"properties.cpp"
-	"transform.cpp"
+	"scene/properties.cpp"
+	"scene/transform.cpp"
 )
 
 add_subdirectory(
 	"graphics"
+)
+
+target_include_directories(
+	${PROJECT_NAME}
+	PUBLIC "./scene"
 )
 
 target_link_libraries(${PROJECT_NAME} glfw VillainGraphics ImGUI nfd)

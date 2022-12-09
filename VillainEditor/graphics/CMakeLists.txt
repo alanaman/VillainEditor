@@ -17,6 +17,7 @@ target_include_directories(VillainGraphics PUBLIC
 	"../../external/assimp/include"
 	"../../shared"
 	"../."
+	"../scene"
 	)
 
 target_link_libraries(VillainGraphics glad assimp)
