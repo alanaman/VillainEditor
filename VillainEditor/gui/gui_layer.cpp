@@ -3,6 +3,7 @@
 namespace villain {
 
 GuiLayer::GuiLayer(void* window)
+ :m_outliner(m_scene)
 {
  // Setup Dear ImGui context
  //IMGUI_CHECKVERSION();
@@ -31,6 +32,7 @@ GuiLayer::GuiLayer(void* window)
  ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window, true);
  ImGui_ImplOpenGL3_Init("#version 130");
 
+ 
  // Load Fonts
 // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
 // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
@@ -56,7 +58,6 @@ GuiLayer::~GuiLayer()
 void GuiLayer::attachScene(Scene* scene)
 {
  m_scene = scene;
- m_outliner.attachRootCollection(scene->m_collection);
 }
 
 void GuiLayer::render()

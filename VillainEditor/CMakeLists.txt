@@ -14,7 +14,9 @@ add_executable (${PROJECT_NAME}
 	"gui/outliner.cpp"
 	"scene/properties.cpp"
 	"scene/transform.cpp"
- "scene/entity.cpp")
+	"scene/entity.cpp"
+	"scene/collection.cpp"
+)
 
 add_subdirectory(
 	"graphics"

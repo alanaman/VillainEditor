@@ -6,7 +6,7 @@ namespace villain {
 
 class Outliner
 {
- std::shared_ptr<Collection> m_collection;
+ Scene*& m_scene;
 
  ImGuiTreeNodeFlags m_base_flags;
  bool test_drag_and_drop = true;
@@ -19,10 +19,10 @@ class Outliner
  void renderEntity(std::shared_ptr<Entity> entity);
 
 public:
- Outliner();
+ Outliner(Scene*& scene);
  
  void render();
- void attachRootCollection(std::shared_ptr<Collection> collection);
+ //void attachRootCollection(std::shared_ptr<Collection>& collection);
  std::shared_ptr<Entity> getSelectedEntity();
  void deselect(std::shared_ptr<Collection> collection);
  void addCollection();

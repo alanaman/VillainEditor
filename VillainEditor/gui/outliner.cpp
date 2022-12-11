@@ -16,7 +16,8 @@ static void HelpMarker(const char* desc)
  }
 }
 
-villain::Outliner::Outliner()
+villain::Outliner::Outliner(Scene*& scene)
+ :m_scene(scene)
 {
  m_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
 
@@ -43,7 +44,7 @@ void Outliner::render()
  if (align_label_with_current_x_position)
   ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
- renderCollection(m_collection);
+ renderCollection(m_scene->root_collection);
  if (align_label_with_current_x_position)
   ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 
@@ -59,7 +60,7 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
  bool node_open = ImGui::TreeNodeEx(collection->name.data(), node_flags);
  if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
  {
-  deselect(m_collection);
+  deselect(m_scene->root_collection);
   collection->is_selected = true;
   m_selected_entity = NULL;
   m_selected_collection = collection;
@@ -76,12 +77,12 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
   {
    IM_ASSERT(payload->DataSize == sizeof(int));
    int id = *(const int*)payload->Data;
-   auto coll_to_be_dropped = getCollectionFromId(id, m_collection);
+   auto coll_to_be_dropped = getCollectionFromId(id, m_scene->root_collection);
 
    if (!coll_to_be_dropped->isParentOf(collection))
    {
     //remove from current parent
-    assert(removeCollection(coll_to_be_dropped, m_collection));
+    assert(removeCollection(coll_to_be_dropped, m_scene->root_collection));
     //add to collection->child_collections
     collection->addCollection(coll_to_be_dropped);
    }
@@ -91,9 +92,9 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
   {
    IM_ASSERT(payload->DataSize == sizeof(int));
    int id = *(const int*)payload->Data;
-   auto entt_to_be_dropped = getEntityFromId(id, m_collection);
+   auto entt_to_be_dropped = getEntityFromId(id, m_scene->root_collection);
 
-   assert(removeEntity(entt_to_be_dropped, m_collection));
+   assert(removeEntity(entt_to_be_dropped, m_scene->root_collection));
    collection->addEntity(entt_to_be_dropped);
   }
 
@@ -120,7 +121,7 @@ void Outliner::renderEntity(std::shared_ptr<Entity> entity)
  ImGui::TreeNodeEx(entity->name.data(), node_flags);
  if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
  {
-  deselect(m_collection);
+  deselect(m_scene->root_collection);
   entity->is_selected = true;
   m_selected_collection = NULL;
   m_selected_entity = entity;
@@ -132,12 +133,6 @@ void Outliner::renderEntity(std::shared_ptr<Entity> entity)
   ImGui::EndDragDropSource();
  }
 }
-
-void Outliner::attachRootCollection(std::shared_ptr<Collection> collection)
-{
- m_collection = collection;
-}
-
 std::shared_ptr<Entity> villain::Outliner::getSelectedEntity()
 {
  return m_selected_entity;
@@ -226,7 +221,7 @@ bool Outliner::removeEntity(std::shared_ptr<Entity>& entt, std::shared_ptr<Colle
    return true;
   }
  }
- for (auto child : root->child_collections)
+ for (auto &child : root->child_collections)
  {
   if (removeEntity(entt, child))
    return true;
@@ -236,7 +231,7 @@ bool Outliner::removeEntity(std::shared_ptr<Entity>& entt, std::shared_ptr<Colle
 
 void Outliner::addCollection()
 {
- m_collection->addCollection(std::make_shared<Collection>());
+ m_scene->root_collection->addCollection(std::make_shared<Collection>());
 }
 
 }
