@@ -1,10 +1,11 @@
 #include "gui_layer.hpp"
 
+namespace villain {
 
-villain::GuiLayer::GuiLayer(void* window)
+GuiLayer::GuiLayer(void* window)
 {
  // Setup Dear ImGui context
- IMGUI_CHECKVERSION();
+ //IMGUI_CHECKVERSION();
  ImGui::CreateContext();
  ImGuiIO& io = ImGui::GetIO();
  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
@@ -47,12 +48,18 @@ villain::GuiLayer::GuiLayer(void* window)
 //IM_ASSERT(font != NULL);
 }
 
-villain::GuiLayer::~GuiLayer()
+GuiLayer::~GuiLayer()
 {
  ImGui::DestroyContext();
 }
 
-void villain::GuiLayer::render()
+void GuiLayer::attachScene(Scene* scene)
+{
+ m_scene = scene;
+ m_outliner.attachRootCollection(scene->m_collection);
+}
+
+void GuiLayer::render()
 {
  // Start the Dear ImGui frame
  ImGui_ImplOpenGL3_NewFrame();
@@ -61,7 +68,7 @@ void villain::GuiLayer::render()
 
  //for docking to main window
  ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
- 
+
  // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
  if (show_demo_window)
   ImGui::ShowDemoWindow(&show_demo_window);
@@ -70,11 +77,11 @@ void villain::GuiLayer::render()
  {
   static float f = 0.0f;
   static int counter = 0;
-  
+
   ImGui::Begin("Properties", &show_properties_window);                          // Create a window called "Hello, world!" and append into it.
 
-  Entity* entity = m_scene->getCurrentModel();
-  if(entity)
+  auto entity = m_outliner.getSelectedEntity();
+  if (entity)
   {
    Transform& trans = entity->getTransformRef();
    ImGui::Text("Transform");               // Display some text (you can use a format strings too)
@@ -93,6 +100,8 @@ void villain::GuiLayer::render()
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::End();
  }
+
+ m_outliner.render();
 
  // 3. Show another simple window.
  if (show_another_window)
@@ -119,4 +128,5 @@ void villain::GuiLayer::render()
   ImGui::RenderPlatformWindowsDefault();
   glfwMakeContextCurrent(backup_current_context);
  }
+}
 }

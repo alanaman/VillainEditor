@@ -40,7 +40,7 @@ bool ModelOpengl::processNode(aiNode* node, const aiScene* scene)
  // process all the node's meshes
  for (unsigned int i = 0; i < node->mNumMeshes; i++)
  {
-  m_name = node->mName.C_Str();
+  name = node->mName.C_Str();
   aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
   m_mesh = std::make_shared<MeshOpengl>(processMesh(mesh, scene));
   return true;

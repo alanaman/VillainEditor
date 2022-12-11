@@ -3,9 +3,14 @@
 #include "window/filedialog.hpp"
 
 namespace villain {
+
+int Collection::next_id = 0;
+
+
 Scene::Scene(std::string name, int aspectX, int aspectY) :
- m_name(name), m_renderer(m_models, m_shaders)
+ m_name(name), m_renderer(m_models, m_shaders), m_collection(std::make_shared<Collection>("Scene Collection"))
 {
+
  m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
  m_renderer.submitCamera(m_view_cam);
 
@@ -35,6 +40,7 @@ void Scene::addModel(std::shared_ptr<Model> model)
 {
  m_models.push_back(model);
  m_renderer.submitModel(*model);
+ m_collection->addEntity(model);
 }
 
 void Scene::dispatchEvent(Event& e)
@@ -75,7 +81,7 @@ void Scene::saveScene()
  }
 
  file << m_models.size() << std::endl;
- for (auto model : m_models)
+ for (auto& model : m_models)
  {
   file
    << model->m_path << " "
@@ -84,7 +90,7 @@ void Scene::saveScene()
    << std::endl;
  }
  file << m_shaders.size() << std::endl;
- for (auto shader : m_shaders)
+ for (auto& shader : m_shaders)
  {
   file
    << shader->vertex_path << " "
@@ -138,12 +144,39 @@ void Scene::loadScene()
  }
 }
 
-Model* Scene::getCurrentModel()
-{
- if (m_models.size())
-  return m_models[m_models.size() - 1].get();
- else
-  return NULL;
-}
+//std::shared_ptr<Entity> villain::Scene::getLastSelectedEntity()
+//{
+// return m_last_selected_entity;
+//}
 
+Collection::Collection()
+ :id(next_id)
+{
+ name = "Collection " + std::to_string(id);
+ next_id++;
+}
+Collection::Collection(std::string name)
+ :name(name), id(next_id)
+{
+ next_id++;
+}
+void villain::Collection::addCollection(std::shared_ptr<Collection> coll)
+{
+ child_collections.push_back(coll);
+}
+void villain::Collection::addEntity(std::shared_ptr<Entity> entt)
+{
+ child_entities.push_back(entt);
+}
+bool Collection::isParentOf(std::shared_ptr<Collection> coll)
+{
+ for (auto child : child_collections)
+ {
+  if (child == coll)
+   return true;
+  if (child->isParentOf(coll))
+   return true;
+ }
+ return false;
+}
 }

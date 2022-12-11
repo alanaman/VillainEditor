@@ -11,9 +11,10 @@ add_executable (${PROJECT_NAME}
 	"scene/scene.cpp"
 	"scene/camera.cpp"
 	"gui/gui_layer.cpp"
+	"gui/outliner.cpp"
 	"scene/properties.cpp"
 	"scene/transform.cpp"
-)
+ "scene/entity.cpp")
 
 add_subdirectory(
 	"graphics"

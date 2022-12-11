@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 
 #include "scene.hpp"
+#include "outliner.hpp"
 
 namespace villain {
 
@@ -15,13 +16,15 @@ private:
  bool show_another_window = false;
  bool show_properties_window = true;
 
- Scene* m_scene;
+ Scene* m_scene = NULL;
+
+ Outliner m_outliner;
 
  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 public:
  GuiLayer(void* window);
  ~GuiLayer();
- void attachScene(Scene *scene) { m_scene = scene; };
+ void attachScene(Scene *scene);
  void render();
 
 };

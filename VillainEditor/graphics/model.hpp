@@ -21,7 +21,6 @@ public:
 class Model : public Entity
 {
 protected:
- std::string m_name;
  std::string m_path;
  std::shared_ptr<Mesh> m_mesh;
  int m_shader_index;

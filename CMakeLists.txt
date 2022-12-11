@@ -22,6 +22,7 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC "external/assimp/include"
 	PUBLIC "external/glm"
 	PUBLIC "external/imgui"
+	PUBLIC "external"
 	PUBLIC "shared"
 	)
 

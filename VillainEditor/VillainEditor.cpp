@@ -12,7 +12,7 @@ int main()
 	Scene scene("Scene", 1080, 720);
 	window->attachScene(scene);
 	gui.attachScene(&scene);
- scene.loadScene();
+ //scene.loadScene();
 
 	while (!window->shouldClose())
 	{
