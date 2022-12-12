@@ -25,6 +25,14 @@ add_subdirectory(
 target_include_directories(
 	${PROJECT_NAME}
 	PUBLIC "./scene"
+	#PUBLIC "."
+	PUBLIC "../external/glfw/include"
+	PUBLIC "../external/nativefiledialog-extended/src/include"
+	PUBLIC "../external/assimp/include"
+	PUBLIC "../external/glm"
+	PUBLIC "../external/imgui"
+	PUBLIC "../external"
+	PUBLIC "../shared"
 )
 
 target_link_libraries(${PROJECT_NAME} glfw VillainGraphics ImGUI nfd)

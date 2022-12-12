@@ -15,16 +15,6 @@ add_subdirectory("external/nativefiledialog-extended")
 
 add_subdirectory ("VillainEditor")
 
-target_include_directories(${PROJECT_NAME}
-	PUBLIC "."
-	PUBLIC "external/glfw/include"
-	PUBLIC "external/nativefiledialog-extended/src/include"
-	PUBLIC "external/assimp/include"
-	PUBLIC "external/glm"
-	PUBLIC "external/imgui"
-	PUBLIC "external"
-	PUBLIC "shared"
-	)
 
 add_custom_target(copy_resources ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
