@@ -16,6 +16,8 @@ add_executable (${PROJECT_NAME}
 	"scene/transform.cpp"
 	"scene/entity.cpp"
 	"scene/collection.cpp"
+	"scene/actor.cpp"
+	"game/gunner.cpp"
 )
 
 add_subdirectory(
@@ -25,6 +27,7 @@ add_subdirectory(
 target_include_directories(
 	${PROJECT_NAME}
 	PUBLIC "./scene"
+	PUBLIC "./game"
 	#PUBLIC "."
 	PUBLIC "../external/glfw/include"
 	PUBLIC "../external/nativefiledialog-extended/src/include"

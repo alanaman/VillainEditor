@@ -2,10 +2,11 @@
 #include "renderer.hpp"
 namespace villain {
 Renderer::Renderer(
- std::vector<std::shared_ptr<Model>>& m_models, 
- std::vector<std::shared_ptr<Shader>>& m_shaders
+ std::vector<std::shared_ptr<Model>>& models, 
+ std::vector<std::shared_ptr<Actor>>& actors, 
+ std::vector<std::shared_ptr<Shader>>& shaders
 ):
- m_models(m_models), m_shaders(m_shaders)
+ m_models(models), m_actors(actors), m_shaders(shaders)
 {
 }
 void Renderer::submitModel(Model& model)
@@ -27,6 +28,16 @@ void Renderer::renderFrame()
   auto shader = m_shaders[model->getShader()];
   shader->bind();
   shader->setUniformMat4("uTransform", model->getTransformMatrix());
+  shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
+  
+  model->draw();
+ }
+ for (auto& actor : m_actors)
+ {
+  auto model = actor->getModel();
+  auto shader = m_shaders[model->getShader()];
+  shader->bind();
+  shader->setUniformMat4("uTransform", actor->getTransformMatrix());
   shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
   
   model->draw();

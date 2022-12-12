@@ -16,6 +16,7 @@ std::shared_ptr<Model> Model::create(const std::string& path)
 
 ModelOpengl::ModelOpengl(const std::string& path)
 {
+ m_shader_index = 0;
  m_path = path;
 }
 

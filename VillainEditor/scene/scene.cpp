@@ -7,7 +7,7 @@ int Collection::next_id = 0;
 
 
 Scene::Scene(std::string name, int aspectX, int aspectY) :
- m_name(name), m_renderer(m_models, m_shaders), root_collection(std::make_shared<Collection>("Scene Collection"))
+ m_name(name), m_renderer(m_models, m_actors, m_shaders), root_collection(std::make_shared<Collection>("Scene Collection"))
 {
 
  m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
@@ -16,10 +16,17 @@ Scene::Scene(std::string name, int aspectX, int aspectY) :
  m_shaders.push_back(Shader::create(
   "resources/shaders/basic_vertex.glsl",
   "resources/shaders/basic_fragment.glsl"));
+
+ m_actors.push_back(
+  std::make_shared<Gunner>("gun1", Model::create("resources/models/gunner.fbx")));
+ m_actors[0]->getModel()->loadMesh();
 }
 void Scene::updateOnFrame()
 {
  m_view_cam->updateOnFrame();
+ if(is_playing)
+  for (auto& actor : m_actors)
+   actor->updateOnFrame();
  m_renderer.renderFrame();
 }
 
@@ -42,6 +49,18 @@ void Scene::addModel(std::shared_ptr<Model> model)
  root_collection->addEntity(model);
 }
 
+void Scene::startPlay()
+{
+ is_playing = true;
+ for (auto actor : m_actors)
+  actor->beginPlay();
+}
+
+void Scene::stopPlay()
+{
+ is_playing = false;
+}
+
 void Scene::dispatchEvent(Event& e)
 {
  switch (e.getEventType())
@@ -56,6 +75,13 @@ void Scene::dispatchEvent(Event& e)
    saveScene();
   else if (key == KEY::L && (e.mods & MOD::CONTROL))
    loadScene();
+  else if (key == KEY::P && (e.mods & MOD::CONTROL))
+  {
+   if (is_playing)
+    stopPlay();
+   else
+    startPlay();
+  }
   break;
  }
  default:
