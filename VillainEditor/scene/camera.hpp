@@ -26,8 +26,8 @@ protected:
 
  float mFarPlane = 100.0f, mNearPlane = 0.1f;
 
- unsigned int mAspectX, mAspectY;
- float mAspectRatio;
+ static int aspectX, aspectY;
+ static float aspectRatio;
 
  float mVerticalFOV = 45.0f; //in degrees TODO:test
 
@@ -35,7 +35,7 @@ protected:
 
  static CameraControllerType m_type;
 public:
- Camera(int aspectX, int aspectY);
+ Camera();
 
  glm::mat4 getProjectionViewMatrix() const;
  glm::vec3 getForwardVector() const;
@@ -46,6 +46,7 @@ public:
  void increaseYaw(float val);
 
  static void setControlType(CameraControllerType type);
+ static void setAspect(int width, int height);
  void updateOnFrame();
  void eventHandler(Event& e);
 };

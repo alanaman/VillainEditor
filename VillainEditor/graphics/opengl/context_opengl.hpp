@@ -10,5 +10,6 @@ public:
  ~ContextOpengl() = default;
 
  void initiate() const override;
+ void resizeViewport(int width, int height) override;
 };
 }

@@ -1,3 +1,4 @@
+#include "context_opengl.hpp"
 #include "glad/glad.h"
 
 #include "context_opengl.hpp"
@@ -13,5 +14,9 @@ void ContextOpengl::initiate() const
   ERROR("Could not initialize GLAD");
   exit(1);
  }
+}
+void villain::ContextOpengl::resizeViewport(int width, int height)
+{
+ glViewport(0, 0, width, height);
 }
 }

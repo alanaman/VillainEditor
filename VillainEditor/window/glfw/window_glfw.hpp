@@ -22,7 +22,7 @@ public:
 
   
   static void closeCallback(GLFWwindow* window);
-  static void sizeCallback(GLFWwindow* window, int width, int height);
+  static void resizeCallback(GLFWwindow* window, int width, int height);
   static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
   static void charCallback(GLFWwindow* window, unsigned int codepoint);
   static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mod);

@@ -43,6 +43,7 @@ public:
  void stopPlay();
 
  void dispatchEvent(Event& e);
+ void onResizeEvent(int width, int height);
 
  //std::shared_ptr<Entity> getLastSelectedEntity();
  //TODO

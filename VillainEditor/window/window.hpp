@@ -2,6 +2,7 @@
 #include <string>
 #include "scene.hpp"
 #include "input.hpp"
+#include "context.hpp"
 
 namespace villain {
 
@@ -25,7 +26,8 @@ protected:
  struct WindowData
  {
   Cursor cursor;
-  Scene* scene;
+  Scene* scene = NULL;
+  GraphicsContext* context = NULL;
  };
 
  WindowData m_data;

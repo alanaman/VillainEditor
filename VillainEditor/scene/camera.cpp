@@ -5,6 +5,11 @@
 
 namespace villain {
 
+
+int Camera::aspectX = 0;
+int Camera::aspectY = 0;
+float Camera::aspectRatio = 0;
+
 CameraControllerType Camera::m_type = CameraControllerType::OrbitAroundPoint;
 
 bool LookAroundCameraController::w = false;
@@ -22,10 +27,8 @@ float OrbitAroundCameraController::orbit_speed = 0.2f;
 float OrbitAroundCameraController::pan_speed = 0.001f;
 float OrbitAroundCameraController::zoom_speed = 0.1f;
 
-Camera::Camera(int aspectX, int aspectY):
- mAspectX(aspectX), mAspectY(aspectY)
+Camera::Camera()
 {
- mAspectRatio = (float)mAspectX / (float)mAspectY;
 }
 
 glm::mat4 Camera::getProjectionViewMatrix() const
@@ -39,7 +42,7 @@ glm::mat4 Camera::getProjectionViewMatrix() const
 
  glm::mat4 project = glm::perspective(
   glm::radians(mVerticalFOV),
-  mAspectRatio,
+  aspectRatio,
   mNearPlane,
   mFarPlane);
 
@@ -93,6 +96,13 @@ void Camera::setControlType(CameraControllerType type)
   LookAroundCameraController::init();
  else if (type == CameraControllerType::OrbitAroundPoint)
   OrbitAroundCameraController::init();
+}
+
+void Camera::setAspect(int width, int height)
+{
+ aspectX = width;
+ aspectY = height;
+ aspectRatio = (float)width / (float)height;
 }
 
 void Camera::updateOnFrame()

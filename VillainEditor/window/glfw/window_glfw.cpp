@@ -33,8 +33,8 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
 
  glfwMakeContextCurrent(m_window);
   
- m_context = new ContextOpengl();//TODO: fix this when adding other APIs
- m_context->initiate();
+ m_data.context = new ContextOpengl();//TODO: fix this when adding other APIs
+ m_data.context->initiate();
 
  glfwSetWindowUserPointer(m_window, &m_data);
 
@@ -43,7 +43,7 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
 
  //TODO: glfwSetErrorCallback();
  glfwSetWindowCloseCallback(m_window, closeCallback);
- glfwSetWindowSizeCallback(m_window, sizeCallback);
+ glfwSetWindowSizeCallback(m_window, resizeCallback);
  glfwSetKeyCallback(m_window, keyCallback);
  glfwSetCharCallback(m_window, charCallback);
  glfwSetMouseButtonCallback(m_window, mouseButtonCallback);
@@ -84,9 +84,11 @@ void WindowGLFW::closeCallback(GLFWwindow* window)
  INFO("window closing");
 }
 
-void WindowGLFW::sizeCallback(GLFWwindow* window, int width, int height)
+void WindowGLFW::resizeCallback(GLFWwindow* window, int width, int height)
 {
- Scene* scene = *(Scene**)glfwGetWindowUserPointer(window);
+ WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+ data->context->resizeViewport(width, height);
+ data->scene->onResizeEvent(width, height);
  //TODO
 }
 

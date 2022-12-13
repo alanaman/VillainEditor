@@ -9,8 +9,10 @@ int Collection::next_id = 0;
 Scene::Scene(std::string name, int aspectX, int aspectY) :
  m_name(name), root_collection(std::make_shared<Collection>("Scene Collection"))
 {
+ Camera::setAspect(aspectX, aspectY);
+ m_view_cam = std::make_shared<Camera>();
 
- m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
+
  mRenderer.submitCamera(m_view_cam);
 
 
@@ -93,6 +95,12 @@ void Scene::dispatchEvent(Event& e)
   break;
  }
  m_view_cam->eventHandler(e);
+}
+
+void Scene::onResizeEvent(int width, int height)
+{
+ Camera::setAspect(width, height);
+
 }
 
 //void Scene::saveScene()
