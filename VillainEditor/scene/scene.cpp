@@ -7,52 +7,57 @@ int Collection::next_id = 0;
 
 
 Scene::Scene(std::string name, int aspectX, int aspectY) :
- m_name(name), m_renderer(m_models, m_actors, m_shaders), root_collection(std::make_shared<Collection>("Scene Collection"))
+ m_name(name), root_collection(std::make_shared<Collection>("Scene Collection"))
 {
 
  m_view_cam = std::make_shared<Camera>(aspectX, aspectY);
- m_renderer.submitCamera(m_view_cam);
+ mRenderer.submitCamera(m_view_cam);
 
- m_shaders.push_back(Shader::create(
-  "resources/shaders/basic_vertex.glsl",
-  "resources/shaders/basic_fragment.glsl"));
 
- m_actors.push_back(
-  std::make_shared<Gunner>("gun1", Model::create("resources/models/gunner.fbx")));
- m_actors[0]->getModel()->loadMesh();
+
+ addActor(std::make_shared<Gunner>(
+  "gun1", 
+  Mesh::create("resources/models/gunner.fbx"))
+ );
 }
 void Scene::updateOnFrame()
 {
  m_view_cam->updateOnFrame();
  if(is_playing)
-  for (auto& actor : m_actors)
+  for (auto& actor : mActors)
    actor->updateOnFrame();
- m_renderer.renderFrame();
+ mRenderer.renderFrame();
 }
 
-void Scene::addModelFromFile()
+void Scene::addMeshFromFile()
 {
  std::string filepath = FileBrowser::selectFile();
  if (filepath == "")
   return;
- auto model = Model::create(filepath);
- model->setShader(0);//default shader
- model->loadMesh();
+ auto mesh = Mesh::create(filepath);
+ mesh->setShader(0);//default shader
 
- addModel(model);
+ addMesh(mesh);
 }
 
-void Scene::addModel(std::shared_ptr<Model> model)
+void Scene::addMesh(std::shared_ptr<Mesh> mesh)
 {
- m_models.push_back(model);
- m_renderer.submitModel(*model);
- root_collection->addEntity(model);
+ auto static_mesh = std::make_shared<StaticMesh>(mesh);
+ mMeshes.push_back(static_mesh);
+ mRenderer.submitMesh(mesh, &(static_mesh->getTransformRef()));
+ root_collection->addEntity(static_mesh);
+}
+
+void Scene::addActor(std::shared_ptr<Actor> actor)
+{
+ mActors.push_back(actor);
+ mRenderer.submitMesh(actor->getMesh(), &(actor->getTransformRef()));
 }
 
 void Scene::startPlay()
 {
  is_playing = true;
- for (auto actor : m_actors)
+ for (auto& actor : mActors)
   actor->beginPlay();
 }
 
@@ -70,7 +75,7 @@ void Scene::dispatchEvent(Event& e)
   KeyPressEvent* ke = (KeyPressEvent*)&e;
   int key = ke->key;
   if (key == KEY::A && (e.mods & MOD::SHIFT))
-   addModelFromFile();
+   addMeshFromFile();
   else if (key == KEY::S && (e.mods & MOD::CONTROL))
    saveScene();
   else if (key == KEY::L && (e.mods & MOD::CONTROL))
@@ -151,7 +156,7 @@ void Scene::dispatchEvent(Event& e)
 //  model->setShader(0);//default shader
 //  model->loadMesh();
 //
-//  addModel(model);
+//  addMesh(model);
 //
 //  file
 //   >> model->m_shader_index

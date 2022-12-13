@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 add_library (VillainGraphics
 	"opengl/shader_opengl.cpp"
 	"opengl/context_opengl.cpp"
-	"opengl/model_opengl.cpp"
+	"opengl/mesh_opengl.cpp"
 	"renderer.cpp"	
 )
 

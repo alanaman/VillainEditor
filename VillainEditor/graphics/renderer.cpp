@@ -1,21 +1,22 @@
 #include <glad/glad.h>
 #include "renderer.hpp"
 namespace villain {
-Renderer::Renderer(
- std::vector<std::shared_ptr<Model>>& models, 
- std::vector<std::shared_ptr<Actor>>& actors, 
- std::vector<std::shared_ptr<Shader>>& shaders
-):
- m_models(models), m_actors(actors), m_shaders(shaders)
+Renderer::Renderer()
 {
+ mShaders.push_back(Shader::create(
+  "resources/shaders/basic_vertex.glsl",
+  "resources/shaders/basic_fragment.glsl"));
 }
-void Renderer::submitModel(Model& model)
+void Renderer::submitMesh(std::shared_ptr<Mesh>& mesh, Transform* transform)
 {
- model.loadMesh();
+ mMeshes.push_back(mesh);
+ mTransforms.push_back(transform);
+ if(!mesh->isLoaded())
+  mesh->loadMesh();
 }
 void Renderer::submitCamera(std::shared_ptr<Camera> cam)
 {
- m_view_cam = cam;
+ mView_cam = cam;
 }
 void Renderer::renderFrame()
 {
@@ -23,24 +24,24 @@ void Renderer::renderFrame()
  glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
- for (auto& model : m_models)
+ for (int i=0;i<mMeshes.size();i++)
  {
-  auto shader = m_shaders[model->getShader()];
+  auto& shader = mShaders[mMeshes[i]->getShader()];
   shader->bind();
-  shader->setUniformMat4("uTransform", model->getTransformMatrix());
-  shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
+  shader->setUniformMat4("uTransform", mTransforms[i]->getTransformMatrix());
+  shader->setUniformMat4("uProjViewModelMat", mView_cam->getProjectionViewMatrix());
   
-  model->draw();
+  mMeshes[i]->draw();
  }
- for (auto& actor : m_actors)
- {
-  auto model = actor->getModel();
-  auto shader = m_shaders[model->getShader()];
-  shader->bind();
-  shader->setUniformMat4("uTransform", actor->getTransformMatrix());
-  shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
-  
-  model->draw();
- }
+ //for (auto& actor : mActors)
+ //{
+ // auto model = actor->getModel();
+ // auto shader = mShaders[model->getShader()];
+ // shader->bind();
+ // shader->setUniformMat4("uTransform", actor->getTransformMatrix());
+ // shader->setUniformMat4("uProjViewModelMat", m_view_cam->getProjectionViewMatrix());
+ // 
+ // model->draw();
+ //}
 }
 }

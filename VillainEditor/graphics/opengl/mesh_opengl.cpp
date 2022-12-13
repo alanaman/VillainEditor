@@ -5,22 +5,22 @@
 #include <assimp/postprocess.h>
 
 #include "logging.hpp"
-#include "model_opengl.hpp"
+#include "mesh_opengl.hpp"
 
 namespace villain {
 
-std::shared_ptr<Model> Model::create(const std::string& path)
+std::shared_ptr<Mesh> Mesh::create(const std::string& path)
 {
- return std::make_shared<ModelOpengl>(path);
+ return std::make_shared<MeshOpengl>(path);
 }
 
-ModelOpengl::ModelOpengl(const std::string& path)
+MeshOpengl::MeshOpengl(const std::string& path)
 {
  m_shader_index = 0;
  m_path = path;
 }
 
-void ModelOpengl::loadMesh()
+void MeshOpengl::loadMesh()
 {
  Assimp::Importer importer;
  const aiScene* scene = importer.ReadFile(
@@ -36,7 +36,25 @@ void ModelOpengl::loadMesh()
  processNode(scene->mRootNode, scene);
 }
 
-bool ModelOpengl::processNode(aiNode* node, const aiScene* scene)
+bool MeshOpengl::isLoaded()
+{
+ if (vao == -1)
+  return false;
+ return true;
+}
+
+void MeshOpengl::unLoadMesh()
+{
+ glDeleteBuffers(1, &vbo);
+ glDeleteBuffers(1, &ibo);
+ glDeleteVertexArrays(1, &vao);
+
+ vao = -1;
+ vbo = -1;
+ ibo = -1;
+}
+
+bool MeshOpengl::processNode(aiNode* node, const aiScene* scene)
 {
  // process all the node's meshes
  for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -55,7 +73,7 @@ bool ModelOpengl::processNode(aiNode* node, const aiScene* scene)
  return false;
 }
 
-MeshOpengl ModelOpengl::processMesh(aiMesh* ai_mesh, const aiScene* scene)
+MeshOpengl MeshOpengl::processMesh(aiMesh* ai_mesh, const aiScene* scene)
 {
  MeshOpengl mesh(ai_mesh->mName.C_Str());
 
@@ -93,7 +111,7 @@ MeshOpengl ModelOpengl::processMesh(aiMesh* ai_mesh, const aiScene* scene)
  return mesh;
 }
 
-void ModelOpengl::draw()
+void MeshOpengl::draw()
 {
  auto mesh = (MeshOpengl*)m_mesh.get();
  glBindVertexArray(mesh->vao);

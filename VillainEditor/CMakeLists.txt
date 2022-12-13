@@ -18,7 +18,7 @@ add_executable (${PROJECT_NAME}
 	"scene/collection.cpp"
 	"scene/actor.cpp"
 	"game/gunner.cpp"
-)
+ "scene/static_mesh.cpp")
 
 add_subdirectory(
 	"graphics"

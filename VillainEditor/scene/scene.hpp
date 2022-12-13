@@ -1,12 +1,13 @@
 #pragma once
 
 #include "logging.hpp"
-#include "model.hpp"
+#include "mesh.hpp"
 #include "camera.hpp"
 #include "renderer.hpp"
 #include "collection.hpp"
 #include "events.hpp"
 #include "input.hpp"
+#include "static_mesh.hpp"
 #include "gunner.hpp"
 #include "window/filedialog.hpp"
 
@@ -19,14 +20,13 @@ class Scene
 {
 private:
  std::string m_name;
- std::vector<std::shared_ptr<Model>> m_models;
- std::vector<std::shared_ptr<Actor>> m_actors;
- std::vector<std::shared_ptr<Shader>> m_shaders;
+ std::vector<std::shared_ptr<StaticMesh>> mMeshes;
+ std::vector<std::shared_ptr<Actor>> mActors;
 
  //std::shared_ptr<Entity> m_last_selected_entity = NULL;
  bool is_playing=false;
  
- Renderer m_renderer;
+ Renderer mRenderer;
  std::shared_ptr<Camera> m_view_cam;
 
  std::string m_filename;
@@ -35,8 +35,9 @@ public:
 
  Scene(std::string name, int aspectX, int aspectY);
  void updateOnFrame();
- void addModelFromFile();
- void addModel(std::shared_ptr<Model> model);
+ void addMeshFromFile();
+ void addMesh(std::shared_ptr<Mesh> mesh);
+ void addActor(std::shared_ptr<Actor> actor);
 
  void startPlay();
  void stopPlay();
