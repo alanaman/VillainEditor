@@ -8,8 +8,13 @@ class Editor
 {
  WindowProperties window_properties;
  Window* window;
- GuiLayer gui;
+ GuiLayer* gui;
+ Scene scene;
+public:
+ Editor();
+ ~Editor();
 
+ void run();
 };
 
 

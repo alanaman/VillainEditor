@@ -21,7 +21,7 @@ add_executable (${PROJECT_NAME}
 	"scene/static_mesh.cpp" 
 	"gui/assetlib.cpp" 
 	"asset_library/meshlibrary.cpp"
-)
+ "main.cpp")
 
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
