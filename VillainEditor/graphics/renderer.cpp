@@ -7,7 +7,7 @@ Renderer::Renderer()
   "resources/shaders/basic_vertex.glsl",
   "resources/shaders/basic_fragment.glsl"));
 }
-void Renderer::submitMesh(std::shared_ptr<Mesh>& mesh, Transform* transform)
+void Renderer::submitMesh(std::shared_ptr<Mesh> mesh, Transform* transform)
 {
  mMeshes.push_back(mesh);
  mTransforms.push_back(transform);

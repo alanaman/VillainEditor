@@ -1,120 +1,116 @@
-#include "glad/glad.h"
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
-#include "logging.hpp"
 #include "mesh_opengl.hpp"
 
 namespace villain {
 
-std::shared_ptr<Mesh> Mesh::create(const std::string& path)
+std::shared_ptr<Mesh> Mesh::create(const std::string& name)
 {
- return std::make_shared<MeshOpengl>(path);
+ return std::make_shared<MeshOpengl>(name);
 }
 
-MeshOpengl::MeshOpengl(const std::string& path)
+MeshOpengl::MeshOpengl(const std::string& name)
+ :Mesh(name), mesh_ref(NULL)
 {
- m_shader_index = 0;
- m_path = path;
+ m_shader_id = 0;
 }
 
 void MeshOpengl::loadMesh()
 {
- Assimp::Importer importer;
- const aiScene* scene = importer.ReadFile(
-  m_path,
-  aiProcess_Triangulate | aiProcess_FlipUVs);
- if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+ if (isLoaded())
+  return;
+ if (MeshLibrary::hasUsers(name))
  {
-  ERROR("ASSIMP::" << import.GetErrorString());
+  mesh_ref = std::static_pointer_cast<MeshMemoryRef>(MeshLibrary::getLoadPoint(name));
+
+  MeshLibrary::incrementUsers(name);
   return;
  }
- //directory = m_path.substr(0, m_path.find_last_of('/'));
 
- processNode(scene->mRootNode, scene);
+ auto mesh_data = MeshLibrary::getMeshData(name);
+ mesh_ref = std::make_shared<MeshMemoryRef>();
+ MeshLibrary::incrementUsers(name);
+ MeshLibrary::setLoadPoint(name, mesh_ref);
+
+ glGenVertexArrays(1, &mesh_ref->vao);
+ glBindVertexArray(mesh_ref->vao);
+
+ glGenBuffers(5, &mesh_ref->buffer_object_ids[0]);
+ 
+ //index buffer object
+ glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_ref->buffer_object_ids[0]);
+ glBufferData(
+  GL_ELEMENT_ARRAY_BUFFER,
+  mesh_data->indices.size() * sizeof(unsigned int),
+  &mesh_data->indices[0],
+  GL_STATIC_DRAW);
+ mesh_ref->n_indices = mesh_data->indices.size();
+ 
+ //vertex positions
+ glBindBuffer(GL_ARRAY_BUFFER, mesh_ref->buffer_object_ids[1]);
+ glBufferData(
+  GL_ARRAY_BUFFER,
+  (unsigned long long)mesh_data->positions.size() * 3 * sizeof(float),
+  &mesh_data->positions[0],
+  GL_STATIC_DRAW);
+ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+ glEnableVertexAttribArray(0);
+ 
+ //vertex normals
+ glBindBuffer(GL_ARRAY_BUFFER, mesh_ref->buffer_object_ids[2]);
+ glBufferData(
+  GL_ARRAY_BUFFER,
+  (unsigned long long)mesh_data->normals.size() * 3 * sizeof(float),
+  &mesh_data->normals[0],
+  GL_STATIC_DRAW);
+ glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+ glEnableVertexAttribArray(1);
+ 
+ //vertex colors
+ glBindBuffer(GL_ARRAY_BUFFER, mesh_ref->buffer_object_ids[3]);
+ glBufferData(
+  GL_ARRAY_BUFFER,
+  (unsigned long long)mesh_data->colors.size() * 4 * sizeof(float),
+  &mesh_data->colors[0],
+  GL_STATIC_DRAW);
+ glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+ glEnableVertexAttribArray(2);
+ 
+ //vertex texture coords
+ glBindBuffer(GL_ARRAY_BUFFER, mesh_ref->buffer_object_ids[4]);
+ glBufferData(
+  GL_ARRAY_BUFFER,
+  (unsigned long long)mesh_data->tex_coords.size() * 2 * sizeof(float),
+  &mesh_data->tex_coords[0],
+  GL_STATIC_DRAW);
+ glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+ glEnableVertexAttribArray(3);
+
 }
 
 bool MeshOpengl::isLoaded()
 {
- if (vao == -1)
+ if(mesh_ref==NULL)
   return false;
  return true;
 }
 
 void MeshOpengl::unLoadMesh()
 {
- glDeleteBuffers(1, &vbo);
- glDeleteBuffers(1, &ibo);
- glDeleteVertexArrays(1, &vao);
-
- vao = -1;
- vbo = -1;
- ibo = -1;
-}
-
-bool MeshOpengl::processNode(aiNode* node, const aiScene* scene)
-{
- // process all the node's meshes
- for (unsigned int i = 0; i < node->mNumMeshes; i++)
- {
-  name = node->mName.C_Str();
-  aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-  m_mesh = std::make_shared<MeshOpengl>(processMesh(mesh, scene));
-  return true;
- }
- // then do the same for each of its children
- for (unsigned int i = 0; i < node->mNumChildren; i++)
- {
-  if(processNode(node->mChildren[i], scene))
-   return true;
- }
- return false;
-}
-
-MeshOpengl MeshOpengl::processMesh(aiMesh* ai_mesh, const aiScene* scene)
-{
- MeshOpengl mesh(ai_mesh->mName.C_Str());
-
- glGenVertexArrays(1, &mesh.vao);
- glBindVertexArray(mesh.vao);
-
- glGenBuffers(1, &mesh.vbo);
- glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
- glBufferData(
-  GL_ARRAY_BUFFER,
-  (unsigned long long)ai_mesh->mNumVertices*3*sizeof(float),
-  &ai_mesh->mVertices[0],
-  GL_STATIC_DRAW);
-
- glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
- glEnableVertexAttribArray(0);
-
- std::vector<unsigned int> indices;
- for (unsigned int i = 0; i < ai_mesh->mNumFaces; i++)
- {
-  aiFace face = ai_mesh->mFaces[i];
-  for (unsigned int j = 0; j < face.mNumIndices; j++)
-   indices.push_back(face.mIndices[j]);
- }
- glGenBuffers(1, &mesh.ibo);
- glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ibo);
- glBufferData(
-  GL_ELEMENT_ARRAY_BUFFER,
-  indices.size()*sizeof(unsigned int),
-  &indices[0],
-  GL_STATIC_DRAW);
-
- mesh.n_indices = indices.size();
- 
- return mesh;
+ if (!isLoaded())
+  return;
+ MeshLibrary::decrementUsers(name);
+ if (MeshLibrary::hasUsers(name))
+  return;
+ glDeleteBuffers(5, &mesh_ref->buffer_object_ids[0]);
+ glDeleteVertexArrays(1, &mesh_ref->vao);
+ mesh_ref = NULL;
+ MeshLibrary::setLoadPoint(name, NULL);
 }
 
 void MeshOpengl::draw()
 {
- auto mesh = (MeshOpengl*)m_mesh.get();
- glBindVertexArray(mesh->vao);
- glDrawElements(GL_TRIANGLES, mesh->n_indices, GL_UNSIGNED_INT, 0);
+ if (!isLoaded())
+  ERROR();
+ glBindVertexArray(mesh_ref->vao);
+ glDrawElements(GL_TRIANGLES, mesh_ref->n_indices, GL_UNSIGNED_INT, 0);
 }
 }

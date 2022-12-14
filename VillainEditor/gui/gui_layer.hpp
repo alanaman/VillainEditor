@@ -6,6 +6,7 @@
 
 #include "scene.hpp"
 #include "outliner.hpp"
+#include "assetlib.hpp"
 
 namespace villain {
 
@@ -19,8 +20,10 @@ private:
  Scene* m_scene = NULL;
 
  Outliner m_outliner;
+ AssetLibrary m_assetlib;
 
  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 public:
  GuiLayer(void* window);
  ~GuiLayer();

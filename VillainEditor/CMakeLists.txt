@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for VillainEditor, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.10)
 
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME}
@@ -18,7 +18,14 @@ add_executable (${PROJECT_NAME}
 	"scene/collection.cpp"
 	"scene/actor.cpp"
 	"game/gunner.cpp"
- "scene/static_mesh.cpp")
+	"scene/static_mesh.cpp" 
+	"gui/assetlib.cpp" 
+	"asset_library/meshlibrary.cpp"
+)
+
+ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
+
 
 add_subdirectory(
 	"graphics"
@@ -28,6 +35,7 @@ target_include_directories(
 	${PROJECT_NAME}
 	PUBLIC "./scene"
 	PUBLIC "./game"
+	PUBLIC "./asset_library"
 	#PUBLIC "."
 	PUBLIC "../external/glfw/include"
 	PUBLIC "../external/nativefiledialog-extended/src/include"

@@ -11,3 +11,5 @@ exit(1);
 #endif
 
 #define INFO(x) std::cout<<x<<std::endl;
+
+#define ASSERT(x) if(!x) ERROR(X)

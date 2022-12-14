@@ -103,10 +103,10 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
  if (node_open)
  {
   //ImGui::TreePush(collection->name.data());
-  for (auto& child : collection->child_collections)
-   renderCollection(child);
-  for (auto& child : collection->child_entities)
-   renderEntity(child);
+  for (int i = 0; i < collection->child_collections.size(); i++)
+   renderCollection(collection->child_collections[i]);
+  for (int i = 0; i < collection->child_entities.size(); i++)
+   renderEntity(collection->child_entities[i]);
   //if (collection->child_collections.size() || collection->child_entities.size())
   ImGui::TreePop();
  }

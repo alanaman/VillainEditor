@@ -5,9 +5,14 @@
 using namespace villain;
 int main()
 {
+ MeshLibrary::init();
+ //MeshLibrary::createMeshFromFile();
+ //auto x =MeshLibrary::getMeshData("gunner");
+
 	WindowProperties props("Editor", 1080, 720);
 	Window* window = Window::create(props);
  GuiLayer gui(window->getWindowPointer());
+
 
 	Scene scene("Scene", 1080, 720);
 	window->attachScene(scene);

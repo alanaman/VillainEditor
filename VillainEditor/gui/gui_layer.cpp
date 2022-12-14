@@ -103,6 +103,7 @@ void GuiLayer::render()
  }
 
  m_outliner.render();
+ m_assetlib.render();
 
  // 3. Show another simple window.
  if (show_another_window)

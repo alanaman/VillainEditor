@@ -14,9 +14,7 @@ class Mesh
 protected:
  std::string name;
 
- std::string m_path;
- std::shared_ptr<Mesh> m_mesh;
- int m_shader_index = 0;
+ int m_shader_id = 0;
 
 public:
  //TODO Add proper deconstructors that cleans up opengl side also
@@ -29,8 +27,8 @@ public:
  virtual void unLoadMesh() = 0;
  virtual void draw() = 0;
  //void setShader(std::shared_ptr<Shader> shader) { m_shader = shader; };
- void setShader(int index) { m_shader_index = index; };
- int getShader() { return m_shader_index; };
+ void setShader(int id) { m_shader_id = id; };
+ int getShader() { return m_shader_id; };
 
  friend class Scene;
 };

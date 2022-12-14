@@ -11,7 +11,6 @@
 #include "gunner.hpp"
 #include "window/filedialog.hpp"
 
-#include <cereal/archives/json.hpp>
 
 
 namespace villain {
@@ -35,8 +34,7 @@ public:
 
  Scene(std::string name, int aspectX, int aspectY);
  void updateOnFrame();
- void addMeshFromFile();
- void addMesh(std::shared_ptr<Mesh> mesh);
+ void addStaticMesh(std::shared_ptr<Mesh> mesh);
  void addActor(std::shared_ptr<Actor> actor);
 
  void startPlay();

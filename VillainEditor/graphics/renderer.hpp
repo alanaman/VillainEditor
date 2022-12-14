@@ -18,7 +18,7 @@ class Renderer
 public:
  Renderer();
 
- void submitMesh(std::shared_ptr<Mesh>& mesh, Transform* transform);
+ void submitMesh(std::shared_ptr<Mesh> mesh, Transform* transform);
  void submitCamera(std::shared_ptr<Camera> cam);
  //void addShaderFromFile(const std::string& vertexpath, const std::string& fragmentpath);
 

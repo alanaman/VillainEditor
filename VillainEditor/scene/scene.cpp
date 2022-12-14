@@ -17,10 +17,10 @@ Scene::Scene(std::string name, int aspectX, int aspectY) :
 
 
 
- addActor(std::make_shared<Gunner>(
-  "gun1", 
-  Mesh::create("resources/models/gunner.fbx"))
- );
+ //addActor(std::make_shared<Gunner>(
+ // "gun1", 
+ // Mesh::create("resources/models/gunner.fbx"))
+ //);
 }
 void Scene::updateOnFrame()
 {
@@ -31,18 +31,7 @@ void Scene::updateOnFrame()
  mRenderer.renderFrame();
 }
 
-void Scene::addMeshFromFile()
-{
- std::string filepath = FileBrowser::selectFile();
- if (filepath == "")
-  return;
- auto mesh = Mesh::create(filepath);
- mesh->setShader(0);//default shader
-
- addMesh(mesh);
-}
-
-void Scene::addMesh(std::shared_ptr<Mesh> mesh)
+void Scene::addStaticMesh(std::shared_ptr<Mesh> mesh)
 {
  auto static_mesh = std::make_shared<StaticMesh>(mesh);
  mMeshes.push_back(static_mesh);
@@ -76,9 +65,9 @@ void Scene::dispatchEvent(Event& e)
  {
   KeyPressEvent* ke = (KeyPressEvent*)&e;
   int key = ke->key;
-  if (key == KEY::A && (e.mods & MOD::SHIFT))
-   addMeshFromFile();
-  else if (key == KEY::S && (e.mods & MOD::CONTROL))
+  //if (key == KEY::A && (e.mods & MOD::SHIFT))
+
+  if (key == KEY::S && (e.mods & MOD::CONTROL))
    saveScene();
   else if (key == KEY::L && (e.mods & MOD::CONTROL))
    loadScene();
@@ -194,33 +183,33 @@ void Scene::saveScene()
 {
 
 
- if(m_filename=="")
-  m_filename = FileBrowser::saveFile();
- if (m_filename == "")
-  return;
- //TODO convert this to binary file
- std::ofstream file;
- file.open(m_filename, std::ios::out);
- cereal::JSONOutputArchive archive(file);
- 
- archive(root_collection);
+ //if(m_filename=="")
+ // m_filename = FileBrowser::saveFile();
+ //if (m_filename == "")
+ // return;
+ ////TODO convert this to binary file
+ //std::ofstream file;
+ //file.open(m_filename, std::ios::out);
+ //cereal::BinaryOutputArchive archive(file);
+ //
+ //archive();
 
 }
 
 void Scene::loadScene()
 {
- if (m_filename == "")
-  m_filename = FileBrowser::selectFile();
- if (m_filename == "")
-  return;
- //TODO convert this to binary file
- std::ifstream file;
- file.open(m_filename, std::ios::in);
+ //if (m_filename == "")
+ // m_filename = FileBrowser::selectFile();
+ //if (m_filename == "")
+ // return;
+ ////TODO convert this to binary file
+ //std::ifstream file;
+ //file.open(m_filename, std::ios::in);
 
- cereal::JSONInputArchive archive(file);
+ //cereal::JSONInputArchive archive(file);
 
- Collection::resetIdCount();
- archive(root_collection);
+ //Collection::resetIdCount();
+ //archive(root_collection);
 
 }
 }
