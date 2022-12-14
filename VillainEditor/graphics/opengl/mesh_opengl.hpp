@@ -22,6 +22,7 @@ private:
   GLuint vao = -1;
   std::vector<GLuint> buffer_object_ids;
   unsigned long long n_indices = 0;
+  MeshMemoryRef();
  };
 
  std::shared_ptr<MeshMemoryRef> mesh_ref;

@@ -27,17 +27,17 @@ void Outliner::render()
 {
  ImGui::Begin("Outliner");
  
- HelpMarker(
-  "This is a more typical looking tree with selectable nodes.\n"
-  "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.");
+ //HelpMarker(
+ // "This is a more typical looking tree with selectable nodes.\n"
+ // "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.");
  static bool align_label_with_current_x_position = true;
- ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &m_base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
- ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &m_base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
- ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &m_base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); ImGui::SameLine(); HelpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
- ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &m_base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
- ImGui::Checkbox("Align label with current X position", &align_label_with_current_x_position);
- ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
- ImGui::Text("Hello!");
+ //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnArrow", &m_base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
+ //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &m_base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
+ //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth", &m_base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); ImGui::SameLine(); HelpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
+ //ImGui::CheckboxFlags("ImGuiTreeNodeFlags_SpanFullWidth", &m_base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
+ //ImGui::Checkbox("Align label with current X position", &align_label_with_current_x_position);
+ //ImGui::Checkbox("Test tree node as drag source", &test_drag_and_drop);
+ //ImGui::Text("Hello!");
  if (ImGui::Button("+"))
   addCollection();
  
@@ -86,7 +86,6 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
     //add to collection->child_collections
     collection->addCollection(coll_to_be_dropped);
    }
-
   }
   if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("OUTLINER_ENTITY"))
   {
@@ -97,7 +96,14 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
    assert(removeEntity(entt_to_be_dropped, m_scene->root_collection));
    collection->addEntity(entt_to_be_dropped);
   }
+  if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_LIB_MESH"))
+  {
+   IM_ASSERT(payload->DataSize == sizeof(int));
+   int index = *(const int*)payload->Data;
 
+   auto entity = m_scene->addStaticMesh(MeshLibrary::getMeshListRef()[index]);
+   collection->addEntity(entity);
+  }
   ImGui::EndDragDropTarget();
  }
  if (node_open)
@@ -129,7 +135,7 @@ void Outliner::renderEntity(std::shared_ptr<Entity> entity)
  if (test_drag_and_drop && ImGui::BeginDragDropSource())
  {
   ImGui::SetDragDropPayload("OUTLINER_ENTITY", &entity->id, sizeof(int));
-  ImGui::Text("This is a drag and drop source");
+  ImGui::Text(entity->name.data());
   ImGui::EndDragDropSource();
  }
 }

@@ -10,11 +10,17 @@ class Editor
  Window* window;
  GuiLayer* gui;
  Scene scene;
+
+ static Editor* m_instance;
 public:
  Editor();
  ~Editor();
 
+ static Editor* getEditorInstance();
  void run();
+
+ void dispatchEvent(Event& e);
+ void onResizeEvent(int width, int height);
 };
 
 

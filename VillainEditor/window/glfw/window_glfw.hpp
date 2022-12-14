@@ -1,6 +1,10 @@
 #pragma once
+#include <GLFW/glfw3.h>
+#include "logging.hpp"
+
 #include "window/window.hpp"
-#include "context.hpp"
+#include "opengl/context_opengl.hpp"
+#include "VillainEditor.hpp"
 
 namespace villain {
 class WindowGLFW : public Window

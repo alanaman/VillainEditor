@@ -31,12 +31,13 @@ void Scene::updateOnFrame()
  mRenderer.renderFrame();
 }
 
-void Scene::addStaticMesh(std::shared_ptr<Mesh> mesh)
+std::shared_ptr<StaticMesh> Scene::addStaticMesh(const std::string& name)
 {
- auto static_mesh = std::make_shared<StaticMesh>(mesh);
+ auto mesh = Mesh::create(name);
+ auto static_mesh = std::make_shared<StaticMesh>(name, mesh);
  mMeshes.push_back(static_mesh);
  mRenderer.submitMesh(mesh, &(static_mesh->getTransformRef()));
- root_collection->addEntity(static_mesh);
+ return static_mesh;
 }
 
 void Scene::addActor(std::shared_ptr<Actor> actor)
@@ -57,7 +58,7 @@ void Scene::stopPlay()
  is_playing = false;
 }
 
-void Scene::dispatchEvent(Event& e)
+void Scene::eventHandler(Event& e)
 {
  switch (e.getEventType())
  {

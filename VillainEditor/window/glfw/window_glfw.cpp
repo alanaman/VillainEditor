@@ -1,8 +1,4 @@
-#pragma once
-#include <GLFW/glfw3.h>
 #include "window_glfw.hpp"
-#include "logging.hpp"
-#include "opengl/context_opengl.hpp"
 
 
 namespace villain {
@@ -88,7 +84,7 @@ void WindowGLFW::resizeCallback(GLFWwindow* window, int width, int height)
 {
  WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
  data->context->resizeViewport(width, height);
- data->scene->onResizeEvent(width, height);
+ Editor::getEditorInstance()->onResizeEvent(width, height);
  //TODO
 }
 
@@ -100,12 +96,14 @@ void WindowGLFW::keyCallback(GLFWwindow* window, int key, int scancode, int acti
  if (action == GLFW_PRESS)
  {
   KeyPressEvent e(key, mods);
-  data->scene->dispatchEvent(e);
+  Editor::getEditorInstance()->dispatchEvent(e);
+
  }
  else if (action == GLFW_RELEASE)
  {
   KeyReleaseEvent e(key);
-  data->scene->dispatchEvent(e);
+  Editor::getEditorInstance()->dispatchEvent(e);
+
  }
  //TODO
 
@@ -124,12 +122,14 @@ void WindowGLFW::mouseButtonCallback(GLFWwindow* window, int button, int action,
  if (action == GLFW_PRESS)
  {
   MouseButtonPressEvent e(button, mods);
-  data->scene->dispatchEvent(e);
+  Editor::getEditorInstance()->dispatchEvent(e);
+
  }
  else if (action == GLFW_RELEASE)
  {
   MouseButtonReleaseEvent e(button);
-  data->scene->dispatchEvent(e);
+  Editor::getEditorInstance()->dispatchEvent(e);
+
  }
  //TODO
 }
@@ -155,8 +155,8 @@ void WindowGLFW::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 
  CursorMoveEvent e(cursor.delta_xpos, cursor.delta_ypos);
 
-
- data->scene->dispatchEvent(e);
+ 
+ Editor::getEditorInstance()->dispatchEvent(e);
  //TODO
 }
 

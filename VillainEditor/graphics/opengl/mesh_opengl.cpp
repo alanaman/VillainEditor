@@ -113,4 +113,8 @@ void MeshOpengl::draw()
  glBindVertexArray(mesh_ref->vao);
  glDrawElements(GL_TRIANGLES, mesh_ref->n_indices, GL_UNSIGNED_INT, 0);
 }
+MeshOpengl::MeshMemoryRef::MeshMemoryRef()
+ :buffer_object_ids(std::vector<GLuint>(5, -1))
+{
+}
 }

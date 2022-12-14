@@ -17,6 +17,7 @@ class Event
 {
 public:
  int mods=0;
+ bool is_handled=false;
 
  Event(){};
  Event(int mods) :mods(mods) {};

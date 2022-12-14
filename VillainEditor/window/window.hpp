@@ -26,7 +26,6 @@ protected:
  struct WindowData
  {
   Cursor cursor;
-  Scene* scene = NULL;
   GraphicsContext* context = NULL;
  };
 
@@ -39,7 +38,7 @@ public:
   virtual bool shouldClose() const = 0;
   virtual void update() const = 0;
   virtual void terminate() const = 0;
-  void attachScene(Scene &scene) { m_data.scene = &scene; };
+  void attachScene(Scene &scene) {};
 
   //virtual void setVSync(bool enabled);
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logging.hpp"
 #include "window/filedialog.hpp"
 #include <filesystem>

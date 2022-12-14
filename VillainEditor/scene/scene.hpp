@@ -34,13 +34,13 @@ public:
 
  Scene(std::string name, int aspectX, int aspectY);
  void updateOnFrame();
- void addStaticMesh(std::shared_ptr<Mesh> mesh);
+ std::shared_ptr<StaticMesh> addStaticMesh(const std::string& name);
  void addActor(std::shared_ptr<Actor> actor);
 
  void startPlay();
  void stopPlay();
 
- void dispatchEvent(Event& e);
+ void eventHandler(Event& e);
  void onResizeEvent(int width, int height);
 
  //std::shared_ptr<Entity> getLastSelectedEntity();

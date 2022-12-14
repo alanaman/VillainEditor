@@ -1,6 +1,7 @@
 #include <imgui.h>
 
 #include "scene.hpp"
+#include "assetlib.hpp"
 
 namespace villain {
 

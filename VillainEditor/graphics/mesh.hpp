@@ -21,7 +21,7 @@ public:
  Mesh(){};
  Mesh(std::string name) :name(name) {};
 
- static std::shared_ptr<Mesh> create(const std::string& path);
+ static std::shared_ptr<Mesh> create(const std::string& name);
  virtual void loadMesh() = 0;
  virtual bool isLoaded() = 0;
  virtual void unLoadMesh() = 0;

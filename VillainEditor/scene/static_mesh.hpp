@@ -10,6 +10,7 @@ class StaticMesh : public Entity
 
 public:
  StaticMesh(std::shared_ptr<Mesh>& mesh);
+ StaticMesh(std::string name, std::shared_ptr<Mesh>& mesh);
  std::shared_ptr<Mesh> getModel();
 };
 
