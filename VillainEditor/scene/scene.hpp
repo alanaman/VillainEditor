@@ -38,6 +38,7 @@ public:
  void addActor(std::shared_ptr<Actor> actor);
 
  void startPlay();
+ bool isPlaying();
  void stopPlay();
 
  void eventHandler(Event& e);

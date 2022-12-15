@@ -21,6 +21,8 @@ public:
 
  void dispatchEvent(Event& e);
  void onResizeEvent(int width, int height);
+ void startPlay();
+ void stopPlay();
 };
 
 

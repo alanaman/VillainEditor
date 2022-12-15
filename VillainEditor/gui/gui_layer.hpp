@@ -7,6 +7,7 @@
 #include "scene.hpp"
 #include "outliner.hpp"
 #include "assetlib.hpp"
+#include "control_bar.hpp"
 
 namespace villain {
 
@@ -21,6 +22,7 @@ private:
 
  Outliner m_outliner;
  AssetLibrary m_assetlib;
+ ControlBar m_controlbar;
 
  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 

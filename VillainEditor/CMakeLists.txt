@@ -5,23 +5,32 @@ cmake_minimum_required (VERSION 3.10)
 
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME}
+	"main.cpp"
+	
 	"VillainEditor.cpp"
+	
 	"window/glfw/window_glfw.cpp"
 	"window/nfd/nativefiledialog.cpp"
+	
 	"scene/scene.cpp"
 	"scene/camera.cpp"
+	"scene/static_mesh.cpp" 
+	
 	"gui/gui_layer.cpp"
 	"gui/outliner.cpp"
+	"gui/assetlib.cpp" 
+	"gui/control_bar.cpp" 
+	
 	"scene/properties.cpp"
 	"scene/transform.cpp"
 	"scene/entity.cpp"
 	"scene/collection.cpp"
 	"scene/actor.cpp"
+	
 	"game/gunner.cpp"
-	"scene/static_mesh.cpp" 
-	"gui/assetlib.cpp" 
+	
 	"asset_library/meshlibrary.cpp"
- "main.cpp")
+)
 
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)

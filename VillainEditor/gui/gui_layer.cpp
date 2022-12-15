@@ -3,7 +3,7 @@
 namespace villain {
 
 GuiLayer::GuiLayer(void* window)
- :m_outliner(m_scene)
+ :m_outliner(m_scene), m_controlbar(m_scene)
 {
  // Setup Dear ImGui context
  //IMGUI_CHECKVERSION();
@@ -107,6 +107,7 @@ void GuiLayer::render()
 
  m_outliner.render();
  m_assetlib.render();
+ m_controlbar.render();
 
  // 3. Show another simple window.
  if (show_another_window)

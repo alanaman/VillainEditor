@@ -53,6 +53,11 @@ void Scene::startPlay()
   actor->beginPlay();
 }
 
+bool Scene::isPlaying()
+{
+ return is_playing;
+}
+
 void Scene::stopPlay()
 {
  is_playing = false;
