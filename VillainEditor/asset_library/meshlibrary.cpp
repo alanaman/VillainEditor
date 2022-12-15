@@ -36,8 +36,8 @@ void MeshLibrary::createMeshFromFile()
   return;
  std::cout << filepath << std::endl;
 
- int name_start = filepath.find_last_of("\\");
- int name_end = filepath.find_last_of(".");
+ auto name_start = filepath.find_last_of("\\");
+ auto name_end = filepath.find_last_of(".");
  auto name = filepath.substr(name_start + 1, name_end - name_start - 1);
  if (getIndex(name) != -1)
  {
@@ -82,7 +82,7 @@ void MeshLibrary::decrementUsers(std::string& name)
 {
  int index = getIndex(name);
  if (n_users[index] == 0)
-  ERROR();
+  ERROR("number of user cant be negative: only active users can call decrementUsers");
  n_users[index]--;
 }
 
@@ -170,7 +170,7 @@ bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const
    for (unsigned int j = 0; j < 3; j++)
     indices[3 * i + j] = face.mIndices[j];
   }
-  for (int i = 0; i < ai_mesh->mNumVertices; i++)
+  for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
   {
    positions[i].x = ai_mesh->mVertices[i].x;
    positions[i].y = ai_mesh->mVertices[i].y;
@@ -180,19 +180,19 @@ bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const
    normals[i].z = ai_mesh->mNormals[i].z;
   }
   if (ai_mesh->mTextureCoords[0] != NULL)
-   for (int i = 0; i < ai_mesh->mNumVertices; i++)
+   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
    {
     tex_coords[i].x = ai_mesh->mTextureCoords[0][i].x;
     tex_coords[i].y = ai_mesh->mTextureCoords[0][i].y;
    }
   else
-   for (int i = 0; i < ai_mesh->mNumVertices; i++)
+   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
    {
     tex_coords[i].x = 0;
     tex_coords[i].y = 0;
    }
   if (ai_mesh->mColors[0] != NULL)
-   for (int i = 0; i < ai_mesh->mNumVertices; i++)
+   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
    {
     colors[i].r = ai_mesh->mColors[0][i].r;
     colors[i].g = ai_mesh->mColors[0][i].g;
@@ -200,7 +200,7 @@ bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const
     colors[i].a = ai_mesh->mColors[0][i].a;
    }
   else
-   for (int i = 0; i < ai_mesh->mNumVertices; i++)
+   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
    {
     colors[i].r = 1;
     colors[i].g = 1;

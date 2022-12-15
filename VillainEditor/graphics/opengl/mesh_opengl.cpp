@@ -109,7 +109,7 @@ void MeshOpengl::unLoadMesh()
 void MeshOpengl::draw()
 {
  if (!isLoaded())
-  ERROR();
+  ERROR("load mesh before draw call");
  glBindVertexArray(mesh_ref->vao);
  glDrawElements(GL_TRIANGLES, mesh_ref->n_indices, GL_UNSIGNED_INT, 0);
 }

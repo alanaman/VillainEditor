@@ -41,14 +41,15 @@ void Outliner::render()
  if (ImGui::Button("+"))
   addCollection();
  
+ ImGui::Separator();
  if (align_label_with_current_x_position)
   ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
  renderCollection(m_scene->root_collection);
+ 
  if (align_label_with_current_x_position)
   ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 
- ImGui::Text("Hello2!");
  ImGui::End();
 }
 
