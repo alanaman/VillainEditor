@@ -5,6 +5,14 @@
 #include "events.hpp"
 #include "logging.hpp"
 
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/memory.hpp>
+
+
 namespace villain {
 
 enum class CameraControllerType
@@ -26,12 +34,12 @@ protected:
 
  float mFarPlane = 100.0f, mNearPlane = 0.1f;
 
- static int aspectX, aspectY;
- static float aspectRatio;
 
  float mVerticalFOV = 45.0f; //in degrees TODO:test
-
  float distance_to_center = 10.0f;
+
+ static int aspectX, aspectY;
+ static float aspectRatio;
 
  static CameraControllerType m_type;
 public:
@@ -49,6 +57,45 @@ public:
  static void setAspect(int width, int height);
  void updateOnFrame();
  void eventHandler(Event& e);
+
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(
+   CEREAL_NVP(mPitch),
+   CEREAL_NVP(mYaw),
+   CEREAL_NVP(mPosition.x),
+   CEREAL_NVP(mPosition.y),
+   CEREAL_NVP(mPosition.z),
+   CEREAL_NVP(mUp.x),
+   CEREAL_NVP(mUp.y),
+   CEREAL_NVP(mUp.z),
+   CEREAL_NVP(mFarPlane),
+   CEREAL_NVP(mNearPlane),
+   CEREAL_NVP(mVerticalFOV),
+   CEREAL_NVP(distance_to_center)
+  );
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(
+   mPitch,
+   mYaw,
+   mPosition.x,
+   mPosition.y,
+   mPosition.z,
+   mUp.x,
+   mUp.y,
+   mUp.z,
+   mFarPlane,
+   mNearPlane,
+   mVerticalFOV,
+   distance_to_center
+  );
+ };
+ friend class cereal::access;
 };
 
 class CameraController{};

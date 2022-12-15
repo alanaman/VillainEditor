@@ -12,7 +12,6 @@ class Actor
 protected:
  std::string name;
  Transform m_transform;
- Properties m_properties;
 public:
  Actor();
  Actor(std::string name);

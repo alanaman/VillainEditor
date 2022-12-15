@@ -1,11 +1,7 @@
 #include "logging.hpp"
 #include "entity.hpp"
 
-#include <cereal/types/polymorphic.hpp>
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/types/memory.hpp>
+
 
 namespace villain {
 
@@ -32,12 +28,24 @@ public:
  template<class Archive>
  void save(Archive& archive) const
  {
-  archive(id, name, is_selected, child_collections);
+  archive(
+   CEREAL_NVP(id),
+   CEREAL_NVP(name),
+   CEREAL_NVP(is_selected),
+   CEREAL_NVP(child_collections),
+   CEREAL_NVP(child_entities)
+  );
  };
  template<class Archive>
  void load(Archive& archive)
  {
-  archive(id, name, is_selected, child_collections);
+  archive(
+   id,
+   name,
+   is_selected,
+   child_collections,
+   child_entities
+  );
  };
  friend class cereal::access;
 };

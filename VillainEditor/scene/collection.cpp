@@ -2,6 +2,8 @@
 
 namespace villain {
 
+int Collection::next_id = 0;
+
 Collection::Collection()
  :id(next_id)
 {

@@ -3,7 +3,6 @@
 
 namespace villain {
 
-int Collection::next_id = 0;
 
 
 Scene::Scene(std::string name, int aspectX, int aspectY) :
@@ -35,7 +34,7 @@ std::shared_ptr<StaticMesh> Scene::addStaticMesh(const std::string& name)
 {
  auto mesh = Mesh::create(name);
  auto static_mesh = std::make_shared<StaticMesh>(name, mesh);
- mMeshes.push_back(static_mesh);
+ mStaticMeshes.push_back(static_mesh);
  mRenderer.submitMesh(mesh, &(static_mesh->getTransformRef()));
  return static_mesh;
 }
@@ -95,127 +94,55 @@ void Scene::eventHandler(Event& e)
 void Scene::onResizeEvent(int width, int height)
 {
  Camera::setAspect(width, height);
-
 }
-
-//void Scene::saveScene()
-//{
-// auto filepath = FileBrowser::saveFile();
-// if (filepath == "")
-//  return;
-// //TODO convert this to binary file
-// std::ofstream file;
-// file.open(filepath, std::ios::out);
-//
-// if (!file)
-// {
-//  ERROR("Error in creating file!!!");
-//  return;
-// }
-//
-// file << m_models.size() << std::endl;
-// for (auto& model : m_models)
-// {
-//  file
-//   << model->m_path << " "
-//   << model->m_shader_index << " "
-//   << model->m_transform << " "
-//   << std::endl;
-// }
-// file << m_shaders.size() << std::endl;
-// for (auto& shader : m_shaders)
-// {
-//  file
-//   << shader->vertex_path << " "
-//   << shader->fragment_path << " "
-//   << std::endl;
-// }
-//}
-//
-//void Scene::loadScene()
-//{
-// auto filepath = FileBrowser::selectFile();
-// if (filepath == "")
-//  return;
-// //TODO convert this to binary file
-// std::ifstream file;
-// file.open(filepath, std::ios::in);
-//
-// if (!file)
-// {
-//  ERROR("Error in creating file!!!");
-//  return;
-// }
-//
-// m_models.clear();
-// m_shaders.clear();
-// int num_models = 0, num_shaders = 0;
-// file >> num_models;
-// for (int i = 0; i < num_models; i++)
-// {
-//  std::string filepath;
-//  file >> filepath;
-//  auto model = Model::create(filepath);
-//  model->setShader(0);//default shader
-//  model->loadMesh();
-//
-//  addMesh(model);
-//
-//  file
-//   >> model->m_shader_index
-//   >> model->m_transform;
-// }
-//
-// file >> num_shaders;
-// for (int i = 0; i < num_shaders; i++)
-// {
-//  std::string vertex_path, fragmentpath;
-//  file
-//   >> vertex_path
-//   >> fragmentpath;
-//  m_shaders.push_back(Shader::create(vertex_path, fragmentpath));
-// }
-//}
-
-//std::shared_ptr<Entity> villain::Scene::getLastSelectedEntity()
-//{
-// return m_last_selected_entity;
-//}
-
-
-
 
 void Scene::saveScene()
 {
 
 
- //if(m_filename=="")
- // m_filename = FileBrowser::saveFile();
- //if (m_filename == "")
- // return;
- ////TODO convert this to binary file
- //std::ofstream file;
- //file.open(m_filename, std::ios::out);
- //cereal::BinaryOutputArchive archive(file);
- //
- //archive();
+ if(m_filename=="")
+  m_filename = FileBrowser::saveFile();
+ if (m_filename == "")
+  return;
+ //TODO convert this to binary file
+ std::ofstream file;
+ file.open(m_filename, std::ios::out);
+ cereal::JSONOutputArchive archive(file);
+ 
+ archive(
+  CEREAL_NVP(m_name),
+  CEREAL_NVP(mStaticMeshes),
+  CEREAL_NVP(root_collection),
+  CEREAL_NVP(m_view_cam)
+ );
 
 }
 
 void Scene::loadScene()
 {
- //if (m_filename == "")
- // m_filename = FileBrowser::selectFile();
- //if (m_filename == "")
- // return;
- ////TODO convert this to binary file
- //std::ifstream file;
- //file.open(m_filename, std::ios::in);
+ if (m_filename == "")
+  m_filename = FileBrowser::selectFile();
+ if (m_filename == "")
+  return;
+ //TODO convert this to binary file
+ std::ifstream file;
+ file.open(m_filename, std::ios::in);
 
- //cereal::JSONInputArchive archive(file);
+ cereal::JSONInputArchive archive(file);
 
- //Collection::resetIdCount();
- //archive(root_collection);
+ Collection::resetIdCount();
+ archive(
+  m_name,
+  mStaticMeshes,
+  root_collection,
+  m_view_cam
+ );
+ mRenderer.clearAll();
+ mRenderer.submitCamera(m_view_cam);
+ for (auto static_mesh : mStaticMeshes)
+ {
+  mRenderer.submitMesh(static_mesh->getMesh(), &(static_mesh->getTransformRef()));
 
+ }
 }
 }

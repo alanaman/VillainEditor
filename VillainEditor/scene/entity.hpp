@@ -2,7 +2,7 @@
 
 #include "logging.hpp"
 #include "transform.hpp"
-#include "properties.hpp"
+
 
 namespace villain {
 
@@ -13,7 +13,6 @@ private:
 
 protected:
  Transform m_transform;
- Properties m_properties;
 
 public:
  int id;
@@ -22,10 +21,26 @@ public:
 
  Entity();
  Entity(std::string name);
- Properties& getPropertiesRef() { return m_properties; };
+ virtual ~Entity() = default;
  Transform& getTransformRef() { return m_transform; };
  glm::mat4 getTransformMatrix() { return m_transform.getTransformMatrix(); };
 
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(
+   CEREAL_NVP(id),
+   CEREAL_NVP(name),
+   CEREAL_NVP(is_selected),
+   CEREAL_NVP(m_transform)
+  );
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(id, name, is_selected, m_transform);
+ };
+ friend class cereal::access;
 };
 
 }

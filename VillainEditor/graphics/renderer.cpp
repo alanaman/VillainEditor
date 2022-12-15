@@ -1,3 +1,5 @@
+#include "renderer.hpp"
+#include "renderer.hpp"
 #include <glad/glad.h>
 #include "renderer.hpp"
 namespace villain {
@@ -18,6 +20,23 @@ void Renderer::submitCamera(std::shared_ptr<Camera> cam)
 {
  mView_cam = cam;
 }
+
+void Renderer::clearAll()
+{
+ for (auto mesh : mMeshes)
+  mesh->unLoadMesh();
+ for (int i = 1; i < mShaders.size(); i++)
+ {
+  //TODO: remove shader from memory
+ }
+ auto default_shader = mShaders[0];
+ mShaders = std::vector<std::shared_ptr<Shader>>();
+ mShaders.push_back(default_shader);
+
+ mMeshes.clear();
+ mTransforms.clear();
+}
+
 void Renderer::renderFrame()
 {
  //TODO clean this up

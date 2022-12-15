@@ -8,7 +8,6 @@
 #include "events.hpp"
 #include "input.hpp"
 #include "static_mesh.hpp"
-#include "gunner.hpp"
 #include "window/filedialog.hpp"
 
 
@@ -19,7 +18,7 @@ class Scene
 {
 private:
  std::string m_name;
- std::vector<std::shared_ptr<StaticMesh>> mMeshes;
+ std::vector<std::shared_ptr<StaticMesh>> mStaticMeshes;
  std::vector<std::shared_ptr<Actor>> mActors;
 
  //std::shared_ptr<Entity> m_last_selected_entity = NULL;

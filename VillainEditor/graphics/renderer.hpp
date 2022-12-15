@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logging.hpp"
 #include "mesh.hpp"
 #include "actor.hpp"
@@ -20,6 +22,7 @@ public:
 
  void submitMesh(std::shared_ptr<Mesh> mesh, Transform* transform);
  void submitCamera(std::shared_ptr<Camera> cam);
+ void clearAll();
  //void addShaderFromFile(const std::string& vertexpath, const std::string& fragmentpath);
 
 

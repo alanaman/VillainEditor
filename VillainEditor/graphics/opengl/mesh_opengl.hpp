@@ -26,6 +26,9 @@ private:
  };
 
  std::shared_ptr<MeshMemoryRef> mesh_ref;
+
+ //for cereal
+ MeshOpengl() {};
 public:
 
 
@@ -34,5 +37,23 @@ public:
  virtual bool isLoaded() override;
  virtual void unLoadMesh() override;
  void draw() override;
+
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(
+   cereal::base_class<Mesh>(this)
+  );
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(
+   cereal::base_class<Mesh>(this)
+  );
+ };
+ friend class cereal::access;
 };
 }
+CEREAL_REGISTER_TYPE(villain::MeshOpengl);
