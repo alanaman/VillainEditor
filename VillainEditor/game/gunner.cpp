@@ -1,6 +1,14 @@
 #include "gunner.hpp"
 
 namespace villain {
+
+REGISTER_ACTOR(Gunner);
+
+std::unique_ptr<Actor> Gunner::create()
+{
+ return std::make_unique<Gunner>(std::string("gunner_inst"), (std::shared_ptr<Mesh>)NULL);
+}
+
 Gunner::Gunner(std::string name, std::shared_ptr<Mesh> mesh)
  :Actor(name), mesh(mesh)
 {
