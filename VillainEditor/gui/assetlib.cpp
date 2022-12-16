@@ -29,6 +29,7 @@ void AssetLibrary::render()
 
     if (ImGui::BeginPopupContextItem())
     {
+     //TODO
      if (ImGui::Selectable("Delete"))
       INFO("pressed delete on " << mesh_list[i]);
      ImGui::EndPopup();
@@ -47,7 +48,7 @@ void AssetLibrary::render()
     if (ImGui::BeginDragDropSource())
     {
      ImGui::SetDragDropPayload("ASSET_LIB_ACTOR", &i, sizeof(int));
-     ImGui::Text(("Add static mesh: " + actor->first).c_str());
+     ImGui::Text(("Add actor : " + actor->first).c_str());
      ImGui::EndDragDropSource();
     }
 

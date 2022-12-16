@@ -49,6 +49,7 @@ void Scene::addActor(std::shared_ptr<Actor> actor)
 
 void Scene::startPlay()
 {
+ saveScene();
  is_playing = true;
  for (auto& actor : mActors)
   actor->beginPlay();
@@ -62,6 +63,7 @@ bool Scene::isPlaying()
 void Scene::stopPlay()
 {
  is_playing = false;
+ loadScene();
 }
 
 void Scene::eventHandler(Event& e)
@@ -100,8 +102,10 @@ void Scene::onResizeEvent(int width, int height)
 
 void Scene::saveScene()
 {
-
-
+ if (isPlaying())
+ {
+  return;
+ }
  if(m_filename=="")
   m_filename = FileBrowser::saveFile();
  if (m_filename == "")
@@ -114,6 +118,7 @@ void Scene::saveScene()
  archive(
   CEREAL_NVP(m_name),
   CEREAL_NVP(mStaticMeshes),
+  CEREAL_NVP(mActors),
   CEREAL_NVP(root_collection),
   CEREAL_NVP(m_view_cam)
  );
@@ -122,6 +127,10 @@ void Scene::saveScene()
 
 void Scene::loadScene()
 {
+ if (isPlaying())
+ {
+  return;
+ }
  if (m_filename == "")
   m_filename = FileBrowser::selectFile();
  if (m_filename == "")
@@ -136,6 +145,7 @@ void Scene::loadScene()
  archive(
   m_name,
   mStaticMeshes,
+  mActors,
   root_collection,
   m_view_cam
  );
@@ -144,6 +154,12 @@ void Scene::loadScene()
  for (auto static_mesh : mStaticMeshes)
  {
   mRenderer.submitMesh(static_mesh->getMesh());
+ }
+ for (auto actor : mActors)
+ {
+  std::vector<std::shared_ptr<Mesh>> meshes;
+  actor->getMesh(meshes);
+  mRenderer.submitMeshes(meshes);
  }
 }
 }

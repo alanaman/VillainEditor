@@ -11,7 +11,7 @@ class StaticMesh : public Entity
  
  StaticMesh()=default;
 public:
- //do not call constructors directly!! use create
+ //do not call these constructors directly!! use create
  // TODO: fix access : https://stackoverflow.com/questions/8147027/how-do-i-call-stdmake-shared-on-a-class-with-only-protected-or-private-const
  StaticMesh(std::shared_ptr<Mesh>& mesh);
  StaticMesh(std::string& name, std::shared_ptr<Mesh>& mesh);
