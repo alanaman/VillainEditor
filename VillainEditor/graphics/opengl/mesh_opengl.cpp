@@ -5,6 +5,8 @@ namespace villain {
 
 std::shared_ptr<Mesh> Mesh::create(const std::string& name)
 {
+ if (MeshLibrary::getIndex(name) == -1)
+  ERROR("mesh does not exist in library:check mesh name");
  return std::make_shared<MeshOpengl>(name);
 }
 

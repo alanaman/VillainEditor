@@ -12,7 +12,6 @@ class Renderer
 {
 
  std::vector<std::shared_ptr<Mesh>> mMeshes;
- std::vector<Transform*> mTransforms;
  std::vector<std::shared_ptr<Shader>> mShaders;
 
  std::shared_ptr<Camera> mView_cam;
@@ -20,7 +19,8 @@ class Renderer
 public:
  Renderer();
 
- void submitMesh(std::shared_ptr<Mesh> mesh, Transform* transform);
+ void submitMesh(std::shared_ptr<Mesh> mesh);
+ void submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes);
  void submitCamera(std::shared_ptr<Camera> cam);
  void clearAll();
  //void addShaderFromFile(const std::string& vertexpath, const std::string& fragmentpath);

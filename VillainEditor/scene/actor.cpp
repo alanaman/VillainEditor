@@ -6,7 +6,7 @@ Actor::Actor()
 }
 
 Actor::Actor(std::string name)
- :name(name)
+ :Entity(name)
 {
 }
 }

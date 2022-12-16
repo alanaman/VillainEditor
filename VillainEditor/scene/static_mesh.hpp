@@ -7,12 +7,21 @@ namespace villain {
 
 class StaticMesh : public Entity
 {
- std::shared_ptr<Mesh> mesh=NULL;
+ std::shared_ptr<Mesh> m_mesh=NULL;
  
  StaticMesh()=default;
 public:
+ //do not call constructors directly!! use create
+ // TODO: fix access : https://stackoverflow.com/questions/8147027/how-do-i-call-stdmake-shared-on-a-class-with-only-protected-or-private-const
  StaticMesh(std::shared_ptr<Mesh>& mesh);
- StaticMesh(std::string name, std::shared_ptr<Mesh>& mesh);
+ StaticMesh(std::string& name, std::shared_ptr<Mesh>& mesh);
+
+ StaticMesh(const StaticMesh&) = delete;
+ const StaticMesh& operator=(const StaticMesh&) = delete;
+ 
+ static std::shared_ptr<StaticMesh> create(std::shared_ptr<Mesh>& mesh);
+ static std::shared_ptr<StaticMesh> create(std::string name, std::shared_ptr<Mesh>& mesh);
+
  std::shared_ptr<Mesh> getMesh();
 
 
@@ -21,7 +30,7 @@ public:
  {
   archive(
    cereal::base_class<Entity>(this),
-   CEREAL_NVP(mesh)
+   CEREAL_NVP(m_mesh)
    );
  };
  template<class Archive>
@@ -29,7 +38,7 @@ public:
  {
   archive(
    cereal::base_class<Entity>(this),
-   mesh
+   m_mesh
   );
  };
  friend class cereal::access;

@@ -97,6 +97,7 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
    assert(removeEntity(entt_to_be_dropped, m_scene->root_collection));
    collection->addEntity(entt_to_be_dropped);
   }
+
   if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_LIB_MESH"))
   {
    IM_ASSERT(payload->DataSize == sizeof(int));
@@ -104,6 +105,14 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
 
    auto entity = m_scene->addStaticMesh(MeshLibrary::getMeshListRef()[index]);
    collection->addEntity(entity);
+  }
+  if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_LIB_ACTOR"))
+  {
+   IM_ASSERT(payload->DataSize == sizeof(int));
+   int index = *(const int*)payload->Data;
+   auto actor = ActorLibrary::instantiate(index);
+   m_scene->addActor(actor);
+   collection->addEntity(actor);
   }
   ImGui::EndDragDropTarget();
  }

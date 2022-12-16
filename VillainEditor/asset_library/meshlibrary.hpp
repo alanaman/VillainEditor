@@ -43,8 +43,8 @@ class MeshLibrary
  static void addEntry(std::string name);
  static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
  static bool processMesh(const aiMesh* ai_mesh, const aiScene* scene, const std::string& directory);
- static int getIndex(std::string& name);
 public:
+ static int getIndex(const std::string& name);
  static void init();
  static void createMeshFromFile();
  //static void deleteMesh();

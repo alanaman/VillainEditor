@@ -9,13 +9,24 @@ Renderer::Renderer()
   "resources/shaders/basic_vertex.glsl",
   "resources/shaders/basic_fragment.glsl"));
 }
-void Renderer::submitMesh(std::shared_ptr<Mesh> mesh, Transform* transform)
+
+void Renderer::submitMesh(std::shared_ptr<Mesh> mesh)
 {
  mMeshes.push_back(mesh);
- mTransforms.push_back(transform);
  if(!mesh->isLoaded())
   mesh->loadMesh();
 }
+
+void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
+{
+ for (auto& mesh : meshes)
+ {
+  mMeshes.push_back(mesh);
+  if(!mesh->isLoaded())
+   mesh->loadMesh();
+ }
+}
+
 void Renderer::submitCamera(std::shared_ptr<Camera> cam)
 {
  mView_cam = cam;
@@ -34,7 +45,6 @@ void Renderer::clearAll()
  mShaders.push_back(default_shader);
 
  mMeshes.clear();
- mTransforms.clear();
 }
 
 void Renderer::renderFrame()
@@ -47,7 +57,7 @@ void Renderer::renderFrame()
  {
   auto& shader = mShaders[mMeshes[i]->getShader()];
   shader->bind();
-  shader->setUniformMat4("uTransform", mTransforms[i]->getTransformMatrix());
+  shader->setUniformMat4("uTransform", mMeshes[i]->getTransformMatrix());
   shader->setUniformMat4("uProjViewModelMat", mView_cam->getProjectionViewMatrix());
   
   mMeshes[i]->draw();

@@ -12,7 +12,7 @@ namespace villain {
 class ActorLibrary
 {
 public:
- using create_funtion = std::unique_ptr<Actor>();
+ using create_funtion = std::shared_ptr<Actor>();
 
 private:
  static void registerMethod(std::string const& name, create_funtion* fp)
@@ -20,10 +20,18 @@ private:
   actor_list().insert({name, fp});
  }
 public:
- static std::unique_ptr<Actor> instantiate(std::string const& name)
+ static std::shared_ptr<Actor> instantiate(std::string const& name)
  {
   auto it = actor_list().find(name);
   return it == actor_list().end() ? nullptr : (it->second)();
+ }
+ static std::shared_ptr<Actor> instantiate(int index)
+ {
+  if (index >= actor_list().size())
+   return NULL;
+  auto actor = actor_list().begin();
+  std::advance(actor, index);
+  return actor->second();
  }
 
  template <typename DerivedActor>

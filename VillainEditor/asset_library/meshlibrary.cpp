@@ -219,7 +219,7 @@ bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const
  return true;
 }
 
-int MeshLibrary::getIndex(std::string& name)
+int MeshLibrary::getIndex(const std::string& name)
 {
  for (int i = 0; i < names.size(); i++)
  {

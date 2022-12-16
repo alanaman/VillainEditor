@@ -4,14 +4,25 @@ namespace villain {
 
 REGISTER_ACTOR(Gunner);
 
-std::unique_ptr<Actor> Gunner::create()
+
+//std::shared_ptr<Mesh> Gunner::gunner_mesh = NULL;
+
+
+std::shared_ptr<Actor> Gunner::create()
 {
- return std::make_unique<Gunner>(std::string("gunner_inst"), (std::shared_ptr<Mesh>)NULL);
+ auto ptr = std::make_shared<Gunner>(std::string("gunner_inst"));
+ std::vector<std::shared_ptr<Mesh>> meshes;
+ ptr->getMesh(meshes);
+ for (auto& mesh : meshes)
+  mesh->setParent(ptr);
+ return ptr;
 }
 
-Gunner::Gunner(std::string name, std::shared_ptr<Mesh> mesh)
- :Actor(name), mesh(mesh)
+Gunner::Gunner(std::string name)
+ :Actor(name)
 {
+ auto x = std::string("gunner");
+ gunner_mesh = Mesh::create(x);
 }
 void Gunner::beginPlay()
 {
@@ -22,8 +33,10 @@ void Gunner::updateOnFrame()
 {
  m_transform.setRotation(m_transform.getRotation() + glm::vec3(.1, 0, 0));
 }
-std::shared_ptr<Mesh> Gunner::getMesh()
+void Gunner::getMesh(std::vector<std::shared_ptr<Mesh>>& meshes)
 {
- return mesh;
+ this->Actor::getMesh(meshes);
+ meshes.push_back(gunner_mesh);
+ return;
 }
 }

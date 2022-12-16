@@ -7,20 +7,15 @@
 
 namespace villain {
 
-class Actor
+class Actor : public Entity
 {
-protected:
- std::string name;
- Transform m_transform;
 public:
  Actor();
  Actor(std::string name);
  virtual void beginPlay(){};
  virtual void actorBeginOverlap(Actor& otherActor){};
  virtual void updateOnFrame(){};
- virtual std::shared_ptr<Mesh> getMesh() { return NULL; };
- glm::mat4 getTransformMatrix() { return m_transform.getTransformMatrix(); };
- Transform& getTransformRef() { return m_transform; };
+ virtual void getMesh(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
 };
 
 }

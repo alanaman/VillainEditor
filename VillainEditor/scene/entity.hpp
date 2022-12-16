@@ -12,6 +12,7 @@ private:
  static int next_id;
 
 protected:
+ std::weak_ptr<Entity> m_parent;
  Transform m_transform;
 
 public:
@@ -22,8 +23,11 @@ public:
  Entity();
  Entity(std::string name);
  virtual ~Entity() = default;
- Transform& getTransformRef() { return m_transform; };
- glm::mat4 getTransformMatrix() { return m_transform.getTransformMatrix(); };
+ Transform& getLocalTransformRef();
+ glm::mat4 getTransformMatrix();
+
+ void setParent(std::weak_ptr<Entity> parent);
+
 
  template<class Archive>
  void save(Archive& archive) const

@@ -87,7 +87,7 @@ void GuiLayer::render()
   auto entity = m_outliner.getSelectedEntity();
   if (entity)
   {
-   Transform& trans = entity->getTransformRef();
+   Transform& trans = entity->getLocalTransformRef();
    ImGui::Text("Transform");               // Display some text (you can use a format strings too)
 
    ImGui::DragFloat3("Position", &trans.getPositionRef()[0]);

@@ -33,16 +33,18 @@ void Scene::updateOnFrame()
 std::shared_ptr<StaticMesh> Scene::addStaticMesh(const std::string& name)
 {
  auto mesh = Mesh::create(name);
- auto static_mesh = std::make_shared<StaticMesh>(name, mesh);
+ auto static_mesh = StaticMesh::create(name, mesh);
  mStaticMeshes.push_back(static_mesh);
- mRenderer.submitMesh(mesh, &(static_mesh->getTransformRef()));
+ mRenderer.submitMesh(mesh);
  return static_mesh;
 }
 
 void Scene::addActor(std::shared_ptr<Actor> actor)
 {
  mActors.push_back(actor);
- mRenderer.submitMesh(actor->getMesh(), &(actor->getTransformRef()));
+ std::vector<std::shared_ptr<Mesh>> meshes;
+ actor->getMesh(meshes);
+ mRenderer.submitMeshes(meshes);
 }
 
 void Scene::startPlay()
@@ -141,8 +143,7 @@ void Scene::loadScene()
  mRenderer.submitCamera(m_view_cam);
  for (auto static_mesh : mStaticMeshes)
  {
-  mRenderer.submitMesh(static_mesh->getMesh(), &(static_mesh->getTransformRef()));
-
+  mRenderer.submitMesh(static_mesh->getMesh());
  }
 }
 }
