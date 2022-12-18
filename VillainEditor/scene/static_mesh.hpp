@@ -1,3 +1,4 @@
+#pragma once
 
 #include "entity.hpp"
 #include "mesh.hpp"

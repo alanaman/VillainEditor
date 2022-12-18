@@ -3,6 +3,7 @@
 #include "logging.hpp"
 #include "properties.hpp"
 #include "transform.hpp"
+#include "entity.hpp"
 #include "mesh.hpp"
 
 namespace villain {
@@ -15,7 +16,10 @@ public:
  virtual void beginPlay(){};
  virtual void actorBeginOverlap(Actor& otherActor){};
  virtual void updateOnFrame(){};
- virtual void getMesh(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
+ virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
+
+ virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) override;
+
 
  template<class Archive>
  void save(Archive& archive) const

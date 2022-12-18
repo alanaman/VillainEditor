@@ -2,6 +2,7 @@
 
 #include "logging.hpp"
 #include "transform.hpp"
+#include "properties.hpp"
 
 
 namespace villain {
@@ -28,6 +29,7 @@ public:
 
  void setParent(std::weak_ptr<Entity> parent);
 
+ virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) { return; };
 
  template<class Archive>
  void save(Archive& archive) const

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logging.hpp"
 #include "entity.hpp"
 #include "actor.hpp"

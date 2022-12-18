@@ -3,17 +3,25 @@
 #include "properties.hpp"
 
 namespace villain{
-Property::Property(std::string& name)
- :name(name)
+
+PropertyType Property::getType() const
+{
+ return type;
+}
+
+Property::Property(std::string name, glm::vec3& value)
+ :name(name), value_ptr(&value), type(PropertyType::VEC3)
 {
 }
-PropertyVec3::PropertyVec3(std::string& name, glm::vec3 value)
- :Property(name), value(value)
+
+Property::Property(std::string name, int& value)
+ :name(name), value_ptr(&value), type(PropertyType::INT)
 {
 }
-void Properties::addProperty(std::string& name, glm::vec3& val)
+
+Property::Property(std::string name, float& value)
+ :name(name), value_ptr(&value), type(PropertyType::FLOAT)
 {
- m_properties.push_back(PropertyVec3(name, val));
 }
 
 }

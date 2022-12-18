@@ -1,3 +1,5 @@
+#pragma once
+
 #include <imgui.h>
 
 #include "scene.hpp"
@@ -32,6 +34,8 @@ public:
  std::shared_ptr<Collection> getParentOfEntity(int id, std::shared_ptr<Collection>& root);
  bool removeCollection(std::shared_ptr<Collection>& coll, std::shared_ptr<Collection>& root);
  bool removeEntity(std::shared_ptr<Entity>& entt, std::shared_ptr<Collection>& root);
+
+ void onSceneReload();
 };
 
 }

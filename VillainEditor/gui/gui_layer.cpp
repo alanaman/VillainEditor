@@ -79,7 +79,6 @@ void GuiLayer::render()
  // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
  {
   static float f = 0.0f;
-  static int counter = 0;
 
   ImGui::Begin("Properties", &show_properties_window);                          // Create a window called "Hello, world!" and append into it.
 
@@ -93,15 +92,35 @@ void GuiLayer::render()
    ImGui::DragFloat3("Position", &trans.getPositionRef()[0]);
    ImGui::DragFloat3("Scale", &trans.getScaleRef()[0]);
    ImGui::DragFloat3("Rotation", &trans.getRotationRef()[0]);
+  //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+   std::vector<std::shared_ptr<Property>> properties;
+   entity->collectProperties(properties);
+
+   for (auto property : properties)
+   {
+    switch (property->getType())
+    {
+    case PropertyType::FLOAT:
+    {
+     ImGui::DragFloat(property->name.c_str(), (float*)property->value_ptr);
+     break;
+    }
+    case PropertyType::INT:
+    {
+     ImGui::DragInt(property->name.c_str(), (int*)property->value_ptr);
+     break;
+    }
+    case PropertyType::VEC3:
+    {
+     ImGui::DragFloat3(property->name.c_str(), (float*)property->value_ptr);
+     break;
+    }
+    default:
+     break;
+    }
+   }
   }
-  ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-  if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-   counter++;
-  ImGui::SameLine();
-  ImGui::Text("counter = %d", counter);
-
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
   ImGui::End();
  }
 
@@ -134,5 +153,9 @@ void GuiLayer::render()
   ImGui::RenderPlatformWindowsDefault();
   glfwMakeContextCurrent(backup_current_context);
  }
+}
+void GuiLayer::onSceneReload()
+{
+ m_outliner.onSceneReload();
 }
 }

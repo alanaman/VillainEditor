@@ -64,6 +64,11 @@ void Editor::onResizeEvent(int width, int height)
  scene.onResizeEvent(width, height);
 }
 
+void Editor::onSceneReload()
+{
+ gui->onSceneReload();
+}
+
 Editor::~Editor()
 {
 	window->terminate();

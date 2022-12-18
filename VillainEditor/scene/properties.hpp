@@ -6,34 +6,23 @@
 
 namespace villain {
 
-class Property
+enum class PropertyType
 {
- std::string name;
-public:
- Property(std::string& name);
-};
-
-class PropertyVec3 :public Property
-{
- glm::vec3& value;
-public:
- PropertyVec3(std::string& name, glm::vec3 value);
-
-};
-
-class Properties
-{
-
- std::vector<Property> m_properties;
-public:
- void addProperty(std::string& name, glm::vec3& val);
-
+ NONE,
+ INT, FLOAT, VEC2, VEC3
 };
 
 
+struct Property
+{
+ const std::string name;
+ void* value_ptr;
+ const PropertyType type;
 
-
-
-
+ Property(std::string name, int& value);
+ Property(std::string name, float& value);
+ Property(std::string name, glm::vec3& value);
+ PropertyType getType() const;
+};
 
 }

@@ -1,4 +1,7 @@
+#pragma once
+
 #include "logging.hpp"
+#include "scene.hpp"
 #include "window/window.hpp"
 #include "gui/gui_layer.hpp"
 
@@ -21,8 +24,10 @@ public:
 
  void dispatchEvent(Event& e);
  void onResizeEvent(int width, int height);
- void startPlay();
- void stopPlay();
+ void onSceneReload();
+
+ //void startPlay();
+ //void stopPlay();
 };
 
 

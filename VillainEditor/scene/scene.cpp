@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "VillainEditor.hpp"
 
 
 namespace villain {
@@ -43,7 +44,7 @@ void Scene::addActor(std::shared_ptr<Actor> actor)
 {
  mActors.push_back(actor);
  std::vector<std::shared_ptr<Mesh>> meshes;
- actor->getMesh(meshes);
+ actor->collectMeshes(meshes);
  mRenderer.submitMeshes(meshes);
 }
 
@@ -158,8 +159,10 @@ void Scene::loadScene()
  for (auto actor : mActors)
  {
   std::vector<std::shared_ptr<Mesh>> meshes;
-  actor->getMesh(meshes);
+  actor->collectMeshes(meshes);
   mRenderer.submitMeshes(meshes);
  }
+
+ Editor::getEditorInstance()->onSceneReload();
 }
 }
