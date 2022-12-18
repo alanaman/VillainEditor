@@ -105,12 +105,12 @@ void Camera::setAspect(int width, int height)
  aspectRatio = (float)width / (float)height;
 }
 
-void Camera::updateOnFrame()
+void Camera::updateOnFrame(const float& deltatime)
 {
  if (m_type == CameraControllerType::LookAround)
-  LookAroundCameraController::updateOnFrame(*this);
+  LookAroundCameraController::updateOnFrame(*this, deltatime);
  else if (m_type == CameraControllerType::OrbitAroundPoint)
-  OrbitAroundCameraController::updateOnFrame(*this);
+  OrbitAroundCameraController::updateOnFrame(*this, deltatime);
 }
 
 void Camera::eventHandler(Event& e)
@@ -130,7 +130,7 @@ void LookAroundCameraController::init()
  lookaround_active = false;
 }
 
-void LookAroundCameraController::updateOnFrame(Camera& cam)
+void LookAroundCameraController::updateOnFrame(Camera& cam, const float& deltatime)
 {
  if (w)
   cam.mPosition += cam.getForwardVector()*move_speed;
@@ -208,7 +208,7 @@ void OrbitAroundCameraController::init()
 
 }
 
-void OrbitAroundCameraController::updateOnFrame(Camera& cam)
+void OrbitAroundCameraController::updateOnFrame(Camera& cam, const float& deltatime)
 {
 
 }

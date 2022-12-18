@@ -26,6 +26,7 @@ public:
  void onResizeEvent(int width, int height);
  void onSceneReload();
 
+ Scene* getScene() { return &scene; };
  //void startPlay();
  //void stopPlay();
 };

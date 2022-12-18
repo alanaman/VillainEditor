@@ -21,9 +21,14 @@ std::shared_ptr<Property> Properties::getPropertyfromName(const std::string& nam
  return NULL;
 }
 
-float Properties::getFloatfromName(const std::string& name)
+float Properties::getFloatFromName(const std::string& name)
 {
  return std::dynamic_pointer_cast<PropertyFloat>(getPropertyfromName(name))->val;
+}
+
+glm::vec3 Properties::getVec3FromName(const std::string& name)
+{
+ return std::dynamic_pointer_cast<PropertyVec3>(getPropertyfromName(name))->val;
 }
 
 void Properties::addPropertyFromDefault(PropDef* default_prop)
@@ -38,10 +43,18 @@ void Properties::addPropertyFromDefault(PropDef* default_prop)
   );
   break;
  }
- default:
+ case PropertyType::VEC3:
+ {
+  properties.push_back(std::make_shared<PropertyVec3>(
+   default_prop->name,
+   ((PropDefVec3*)default_prop)->def_val)
+  );
   break;
  }
-}
+ default:
+  ERROR("unknown type");
+ }
+};
 
 void Properties::resolveProperties(const std::vector<std::shared_ptr<PropDef>>& default_properties)
 {

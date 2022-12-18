@@ -14,9 +14,9 @@ private:
 
 protected:
  std::weak_ptr<Entity> m_parent;
- Transform m_transform;
 
 public:
+ Transform m_transform;
  int id;
  std::string name;
  bool is_selected = false;

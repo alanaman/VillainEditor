@@ -1,11 +1,16 @@
 #include "gunner.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/euler_angles.hpp"
+
+#include "VillainEditor.hpp"
 
 namespace villain {
 
 REGISTER_ACTOR(Gunner);
 
 const std::vector<std::shared_ptr<PropDef>> Gunner::default_properties = {
- std::make_shared<PropDefFloat>(std::string("spin_speed"), 0.0f),
+ std::make_shared<PropDefFloat>(std::string("spin_speed"), 1.0f),
+ std::make_shared<PropDefFloat>(std::string("fire_interval"), 1.0f)
  //std::make_shared<PropDefFloat>(std::string("scale"), 1.5f)
 };
 
@@ -37,12 +42,19 @@ Gunner::Gunner(std::string name)
 }
 void Gunner::beginPlay()
 {
- //m_transform.setScale(glm::vec3(2, 2, 2));
 }
 
-void Gunner::updateOnFrame()
+
+void Gunner::updateOnFrame(const float& deltatime)
 {
- m_transform.setRotation(m_transform.getRotation() + glm::vec3(props.getFloatfromName("spin_speed"), 0, 0));
+ m_transform.setRotation(m_transform.getRotation() + glm::vec3(0, deltatime*props.getFloatFromName("spin_speed"), 0));
+ bullet_timer += deltatime;
+ float fire_interval = props.getFloatFromName("fire_interval");
+ if (bullet_timer >= fire_interval)
+ {
+  bullet_timer -= fire_interval;
+  spawnBullet();
+ }
 }
 void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
 {
@@ -59,5 +71,31 @@ void Gunner::collectProperties(std::vector<std::shared_ptr<Property>>& propertie
   properties.push_back(prop);
  }
  return;
+}
+void Gunner::spawnBullet()
+{
+ std::string bullet_name = "Bullet";
+ auto bullet = ActorLibrary::instantiate(bullet_name);
+
+ glm::vec3 dir = glm::vec3(m_transform.getTransformMatrix() * glm::vec4(0, 0, 1, 0));
+ bullet->setProperty("direction", dir);
+
+ glm::mat4 transform = glm::mat4(1);
+ transform = glm::rotate(
+  transform,
+  glm::radians(90.0f),
+  glm::vec3(1, 0, 0)
+ );
+ auto rot = glm::radians(m_transform.getRotation());
+ transform = glm::eulerAngleXYZ(rot.x, rot.y, rot.z) * transform;
+ glm::vec3 eulerXYZ;
+ glm::extractEulerAngleXYZ(transform, eulerXYZ.x, eulerXYZ.y, eulerXYZ.z);
+ bullet->m_transform.setRotation(glm::degrees(eulerXYZ));
+
+ glm::vec3 origin = glm::vec3(m_transform.getTransformMatrix() * glm::vec4(0, 1, 0.5, 1));
+ bullet->m_transform.setPosition(origin);
+
+
+ Editor::getEditorInstance()->getScene()->addActor(bullet);
 }
 }

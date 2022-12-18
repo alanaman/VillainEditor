@@ -15,10 +15,11 @@ public:
  Actor(std::string name);
  virtual void beginPlay(){};
  virtual void actorBeginOverlap(Actor& otherActor){};
- virtual void updateOnFrame(){};
+ virtual void updateOnFrame(const float& deltatime){};
  virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
 
  virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) override;
+ virtual void setProperty(std::string name, glm::vec3 val) {};
 
 
  template<class Archive>

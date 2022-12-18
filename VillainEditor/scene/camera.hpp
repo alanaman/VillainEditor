@@ -55,7 +55,7 @@ public:
 
  static void setControlType(CameraControllerType type);
  static void setAspect(int width, int height);
- void updateOnFrame();
+ void updateOnFrame(const float& deltatime);
  void eventHandler(Event& e);
 
 
@@ -112,7 +112,7 @@ private:
  static float move_speed;
 public:
  static void init();
- static void updateOnFrame(Camera& cam);
+ static void updateOnFrame(Camera& cam, const float& deltatime);
  static void eventHandler(Event& e, Camera& cam);
 };
 
@@ -129,7 +129,7 @@ private:
 public:
  static void init();
 
- static void updateOnFrame(Camera& cam);
+ static void updateOnFrame(Camera& cam, const float& deltatime);
  static void eventHandler(Event& e, Camera& cam);
 };
 

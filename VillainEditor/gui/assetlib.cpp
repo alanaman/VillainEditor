@@ -16,6 +16,8 @@ void AssetLibrary::render()
  {
   if (ImGui::BeginTabItem("Meshes"))
   {
+   if (ImGui::Button("+##AddMeshToLib"))
+    MeshLibrary::createMeshFromFile();
    for (int i = 0; i < mesh_list.size(); i++)
    {
     ImGui::Selectable(mesh_list[i].c_str());

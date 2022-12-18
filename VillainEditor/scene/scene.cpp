@@ -22,12 +22,12 @@ Scene::Scene(std::string name, int aspectX, int aspectY) :
  // Mesh::create("resources/models/gunner.fbx"))
  //);
 }
-void Scene::updateOnFrame()
+void Scene::updateOnFrame(const float& deltatime)
 {
- m_view_cam->updateOnFrame();
+ m_view_cam->updateOnFrame(deltatime);
  if(is_playing)
-  for (auto& actor : mActors)
-   actor->updateOnFrame();
+  for (int i =0;i< mActors.size();i++)
+   mActors[i]->updateOnFrame(deltatime);
  mRenderer.renderFrame();
 }
 

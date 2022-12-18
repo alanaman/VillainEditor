@@ -33,6 +33,7 @@ public:
  void attachScene(Scene *scene);
  void render();
  void onSceneReload();
+ float getDeltaTime();
 
 };
 }

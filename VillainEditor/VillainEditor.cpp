@@ -28,7 +28,7 @@ void Editor::run()
 {
 	while (!window->shouldClose())
 	{
-		scene.updateOnFrame();
+		scene.updateOnFrame(gui->getDeltaTime());
   gui->render();
 		window->update();
 	}

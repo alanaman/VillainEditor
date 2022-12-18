@@ -113,17 +113,21 @@ void GuiLayer::render()
     // ImGui::DragInt(property->name.c_str(), (int*)property->value_ptr);
     // break;
     //}
-    //case PropertyType::VEC3:
-    //{
-    // ImGui::DragFloat3(property->name.c_str(), (float*)property->value_ptr);
-    // break;
-    //}
+    case PropertyType::VEC3:
+    {
+     ImGui::DragFloat3(
+      property->name.c_str(),
+      (float*)&(std::dynamic_pointer_cast<PropertyVec3>(property)->val)
+     );
+     break;
+    }
     default:
      break;
     }
    }
   }
-  //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  //ImGui::Text("%.5f   %.5f", ImGui::GetIO().DeltaTime, ImGui::GetIO().Framerate);
   ImGui::End();
  }
 
@@ -160,5 +164,9 @@ void GuiLayer::render()
 void GuiLayer::onSceneReload()
 {
  m_outliner.onSceneReload();
+}
+float GuiLayer::getDeltaTime()
+{
+ return ImGui::GetIO().DeltaTime;
 }
 }

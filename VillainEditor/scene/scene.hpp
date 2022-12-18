@@ -32,7 +32,7 @@ public:
  std::shared_ptr<Collection> root_collection;
 
  Scene(std::string name, int aspectX, int aspectY);
- void updateOnFrame();
+ void updateOnFrame(const float& deltatime);
  std::shared_ptr<StaticMesh> addStaticMesh(const std::string& name);
  void addActor(std::shared_ptr<Actor> actor);
 

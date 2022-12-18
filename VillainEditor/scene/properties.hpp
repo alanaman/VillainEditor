@@ -26,7 +26,14 @@ public:
  float def_val;
  PropDefFloat(std::string name, float default_val) : PropDef(name), def_val(default_val) {};
  virtual PropertyType getType() const override { return PropertyType::FLOAT; };
+};
 
+struct PropDefVec3 :public PropDef
+{
+public:
+ glm::vec3 def_val;
+ PropDefVec3(std::string name, glm::vec3 default_val) : PropDef(name), def_val(default_val) {};
+ virtual PropertyType getType() const override { return PropertyType::VEC3; };
 };
 
 struct Property
@@ -82,6 +89,37 @@ public:
  friend class cereal::access;
 };
 
+struct PropertyVec3 :public Property
+{
+ PropertyVec3() {};//cereal
+public:
+ glm::vec3 val;
+ PropertyVec3(std::string name, glm::vec3 val) : Property(name), val(val) {};
+ virtual PropertyType getType() const override { return PropertyType::VEC3; };
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(
+   cereal::virtual_base_class<Property>(this),
+   CEREAL_NVP(val.x),
+   CEREAL_NVP(val.y),
+   CEREAL_NVP(val.z)
+  );
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(
+   cereal::virtual_base_class<Property>(this),
+   val.x,
+   val.y,
+   val.z
+  );
+ };
+ friend class cereal::access;
+};
+
 class PropertyInt :public Property
 {
 public:
@@ -115,7 +153,10 @@ public:
  std::vector<std::shared_ptr<Property>> properties;
  void addProperty(std::shared_ptr<Property> property);
  std::shared_ptr<Property> getPropertyfromName(const std::string& name);
- float getFloatfromName(const std::string& name);
+ 
+ float getFloatFromName(const std::string& name);
+ glm::vec3 getVec3FromName(const std::string& name);
+ 
  void addPropertyFromDefault(PropDef* default_prop);
  void resolveProperties(const std::vector<std::shared_ptr<PropDef>>& default_properties);
 
@@ -140,3 +181,4 @@ public:
 
 CEREAL_REGISTER_TYPE(villain::PropertyFloat);
 CEREAL_REGISTER_TYPE(villain::PropertyInt);
+CEREAL_REGISTER_TYPE(villain::PropertyVec3);
