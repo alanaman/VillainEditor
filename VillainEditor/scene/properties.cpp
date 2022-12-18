@@ -2,26 +2,60 @@
 
 #include "properties.hpp"
 
+
+
 namespace villain{
 
-PropertyType Property::getType() const
+void Properties::addProperty(std::shared_ptr<Property> property)
 {
- return type;
+ properties.push_back(property);
 }
 
-Property::Property(std::string name, glm::vec3& value)
- :name(name), value_ptr(&value), type(PropertyType::VEC3)
+std::shared_ptr<Property> Properties::getPropertyfromName(const std::string& name)
 {
+ for (auto& prop : properties)
+ {
+  if (prop->name == name)
+   return prop;
+ }
+ return NULL;
 }
 
-Property::Property(std::string name, int& value)
- :name(name), value_ptr(&value), type(PropertyType::INT)
+float Properties::getFloatfromName(const std::string& name)
 {
+ return std::dynamic_pointer_cast<PropertyFloat>(getPropertyfromName(name))->val;
 }
 
-Property::Property(std::string name, float& value)
- :name(name), value_ptr(&value), type(PropertyType::FLOAT)
+void Properties::addPropertyFromDefault(PropDef* default_prop)
 {
+ switch (default_prop->getType())
+ {
+ case PropertyType::FLOAT:
+ {
+  properties.push_back(std::make_shared<PropertyFloat>(
+   default_prop->name,
+   ((PropDefFloat*)default_prop)->def_val)
+  );
+  break;
+ }
+ default:
+  break;
+ }
 }
+
+void Properties::resolveProperties(const std::vector<std::shared_ptr<PropDef>>& default_properties)
+{
+ Properties new_props;
+
+ for (auto& default_prop : default_properties)
+ {
+  if (auto prop = getPropertyfromName(default_prop->name))
+   new_props.addProperty(prop);
+  else
+   new_props.addPropertyFromDefault(default_prop.get());
+ }
+ properties = new_props.properties;
+}
+
 
 }

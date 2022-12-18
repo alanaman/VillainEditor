@@ -13,7 +13,9 @@ class Gunner : public Actor
 {
 private:
  std::shared_ptr<Mesh> gunner_mesh;
- float spin_speed=0.1;
+ Properties props;
+
+ static const std::vector<std::shared_ptr<PropDef>> default_properties;
 
  Gunner() {}; //for cereal
 public:
@@ -35,7 +37,7 @@ public:
   archive(
    cereal::base_class<Actor>(this),
    CEREAL_NVP(gunner_mesh),
-   CEREAL_NVP(spin_speed)
+   CEREAL_NVP(props)
    );
  };
  template<class Archive>
@@ -44,8 +46,9 @@ public:
   archive(
    cereal::base_class<Actor>(this),
    gunner_mesh,
-   spin_speed
-   );
+   props
+  );
+  props.resolveProperties(default_properties);
  };
  friend class cereal::access;
 };

@@ -30,7 +30,8 @@ add_executable (${PROJECT_NAME}
 	"game/gunner.cpp"
 	
 	"asset_library/meshlibrary.cpp"
- "asset_library/actor_library.cpp")
+	"asset_library/actor_library.cpp"
+)
 
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)

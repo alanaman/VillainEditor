@@ -13,4 +13,5 @@ void Actor::collectProperties(std::vector<std::shared_ptr<Property>>& properties
 {
  return;
 }
+
 }

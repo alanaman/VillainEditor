@@ -102,19 +102,22 @@ void GuiLayer::render()
     {
     case PropertyType::FLOAT:
     {
-     ImGui::DragFloat(property->name.c_str(), (float*)property->value_ptr);
+     ImGui::DragFloat(
+      property->name.c_str(),
+      &(std::dynamic_pointer_cast<PropertyFloat>(property)->val)
+     );
      break;
     }
-    case PropertyType::INT:
-    {
-     ImGui::DragInt(property->name.c_str(), (int*)property->value_ptr);
-     break;
-    }
-    case PropertyType::VEC3:
-    {
-     ImGui::DragFloat3(property->name.c_str(), (float*)property->value_ptr);
-     break;
-    }
+    //case PropertyType::INT:
+    //{
+    // ImGui::DragInt(property->name.c_str(), (int*)property->value_ptr);
+    // break;
+    //}
+    //case PropertyType::VEC3:
+    //{
+    // ImGui::DragFloat3(property->name.c_str(), (float*)property->value_ptr);
+    // break;
+    //}
     default:
      break;
     }

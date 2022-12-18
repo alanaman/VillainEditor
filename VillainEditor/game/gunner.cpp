@@ -4,6 +4,11 @@ namespace villain {
 
 REGISTER_ACTOR(Gunner);
 
+const std::vector<std::shared_ptr<PropDef>> Gunner::default_properties = {
+ std::make_shared<PropDefFloat>(std::string("spin_speed"), 0.0f),
+ //std::make_shared<PropDefFloat>(std::string("scale"), 1.5f)
+};
+
 
 //std::shared_ptr<Mesh> Gunner::gunner_mesh = NULL;
 
@@ -23,6 +28,12 @@ Gunner::Gunner(std::string name)
 {
  auto x = std::string("gunner");
  gunner_mesh = Mesh::create(x);
+
+ for (const auto& prop : default_properties)
+ {
+  props.addPropertyFromDefault(prop.get());
+ }
+
 }
 void Gunner::beginPlay()
 {
@@ -31,7 +42,7 @@ void Gunner::beginPlay()
 
 void Gunner::updateOnFrame()
 {
- m_transform.setRotation(m_transform.getRotation() + glm::vec3(spin_speed, 0, 0));
+ m_transform.setRotation(m_transform.getRotation() + glm::vec3(props.getFloatfromName("spin_speed"), 0, 0));
 }
 void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
 {
@@ -43,7 +54,10 @@ void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
 void Gunner::collectProperties(std::vector<std::shared_ptr<Property>>& properties)
 {
  this->Actor::collectProperties(properties);
- properties.push_back(std::make_shared<Property>("spin_speed", spin_speed));
+ for (auto& prop : props.properties)
+ {
+  properties.push_back(prop);
+ }
  return;
 }
 }
