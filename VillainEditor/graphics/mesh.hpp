@@ -3,9 +3,9 @@
 #include <string>
 #include <memory>
 #include "shader.hpp"
-#include "entity.hpp"
-#include "transform.hpp"
-#include "properties.hpp"
+#include "scene/entity.hpp"
+#include "scene/transform.hpp"
+#include "scene/properties.hpp"
 
 namespace villain {
 
@@ -37,6 +37,7 @@ public:
    return temp_ptr->getTransformMatrix();
   else
    ERROR("Mesh needs to have an existing owner");
+  return glm::mat4(1);
  };
 
  void setShader(int id) { m_shader_id = id; };

@@ -2,7 +2,7 @@
 
 #include "logging.hpp"
 #include "transform.hpp"
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 namespace villain {
 
@@ -36,7 +36,7 @@ public:
  virtual PropertyType getType() const override { return PropertyType::VEC3; };
 };
 
-struct Property
+class Property
 {
 protected:
  Property() {};//cereal
@@ -62,7 +62,7 @@ public:
  friend class cereal::access;
 };
 
-struct PropertyFloat :public Property
+class PropertyFloat :public Property
 {
  PropertyFloat() {};//cereal
 public:
@@ -89,7 +89,7 @@ public:
  friend class cereal::access;
 };
 
-struct PropertyVec3 :public Property
+class PropertyVec3 :public Property
 {
  PropertyVec3() {};//cereal
 public:
@@ -122,8 +122,8 @@ public:
 
 class PropertyInt :public Property
 {
-public:
  PropertyInt() {};//cereal
+public:
  int val;
  PropertyInt(std::string name, int val) : Property(name), val(val) {};
  virtual PropertyType getType() const override { return PropertyType::INT; };
@@ -146,6 +146,14 @@ public:
  };
  friend class cereal::access;
 };
+
+//class PropertyMesh : public Property
+//{
+// PropertyMesh() {};//cereal
+//public:
+// std::shared_ptr<Mesh> mesh;
+//
+//};
 
 class Properties
 {

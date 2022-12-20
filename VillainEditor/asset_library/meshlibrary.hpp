@@ -8,7 +8,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <../external/glm/glm/glm.hpp>
+#include <glm/glm.hpp>
 
 
 #include <cereal/archives/binary.hpp>

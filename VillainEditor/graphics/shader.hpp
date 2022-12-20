@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 #include <logging.hpp>
 

@@ -3,7 +3,10 @@
 #include "logging.hpp"
 
 #include "window/window.hpp"
-#include "opengl/context_opengl.hpp"
+
+//TODO remove this
+#include "graphics/opengl/context_opengl.hpp"
+
 #include "VillainEditor.hpp"
 
 namespace villain {

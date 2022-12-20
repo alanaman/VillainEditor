@@ -1,7 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <glm.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "input.hpp"
 #include "events.hpp"
 #include "logging.hpp"
 

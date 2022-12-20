@@ -2,8 +2,8 @@
 
 #include "logging.hpp"
 #include "mesh.hpp"
-#include "actor.hpp"
-#include "camera.hpp"
+#include "scene/actor.hpp"
+#include "scene/camera.hpp"
 #include "shader.hpp"
 
 namespace villain{

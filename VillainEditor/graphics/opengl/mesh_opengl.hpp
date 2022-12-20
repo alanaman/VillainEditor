@@ -5,9 +5,8 @@
 
 #include "logging.hpp"
 
-#include <glad/glad.h>
 #include <string>
-#include "mesh.hpp"
+#include "graphics/mesh.hpp"
 #include "asset_library/meshlibrary.hpp"
 
 

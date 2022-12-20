@@ -1,7 +1,7 @@
 #pragma once
 
 #include "logging.hpp"
-#include "scene.hpp"
+#include "scene/scene.hpp"
 #include "window/window.hpp"
 #include "gui/gui_layer.hpp"
 

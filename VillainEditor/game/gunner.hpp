@@ -1,10 +1,10 @@
 #pragma once
 
-#include "actor_library.hpp"
-#include "meshlibrary.hpp"
+#include "asset_library/actor_library.hpp"
+#include "asset_library/meshlibrary.hpp"
 #include "logging.hpp"
-#include "actor.hpp"
-#include "mesh.hpp"
+#include "scene/actor.hpp"
+#include "graphics/mesh.hpp"
 
 namespace villain {
 

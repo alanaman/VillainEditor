@@ -2,7 +2,7 @@
 
 
 #include "logging.hpp"
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>

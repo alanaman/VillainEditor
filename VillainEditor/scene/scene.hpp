@@ -1,9 +1,9 @@
 #pragma once
 
 #include "logging.hpp"
-#include "mesh.hpp"
+#include "graphics/mesh.hpp"
 #include "camera.hpp"
-#include "renderer.hpp"
+#include "graphics/renderer.hpp"
 #include "collection.hpp"
 #include "events.hpp"
 #include "input.hpp"

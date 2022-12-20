@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "actor.hpp"
+#include "scene/actor.hpp"
 
 namespace villain {
 

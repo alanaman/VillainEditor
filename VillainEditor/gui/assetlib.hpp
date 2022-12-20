@@ -1,8 +1,8 @@
 #pragma once
 
-#include <imgui.h>
-#include "meshlibrary.hpp"
-#include "actor_library.hpp"
+#include <imgui/imgui.h>
+#include "asset_library/meshlibrary.hpp"
+#include "asset_library/actor_library.hpp"
 
 
 namespace villain {

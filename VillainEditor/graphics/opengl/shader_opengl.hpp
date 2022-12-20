@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-#include "shader.hpp"
+#include "graphics/shader.hpp"
 
 
 namespace villain {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "entity.hpp"
-#include "mesh.hpp"
+#include "graphics/mesh.hpp"
 
 
 namespace villain {

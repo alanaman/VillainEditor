@@ -4,7 +4,7 @@
 #include "properties.hpp"
 #include "transform.hpp"
 #include "entity.hpp"
-#include "mesh.hpp"
+#include "graphics/mesh.hpp"
 
 namespace villain {
 

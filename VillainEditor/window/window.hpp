@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include "scene.hpp"
+#include "scene/scene.hpp"
 #include "input.hpp"
-#include "context.hpp"
+#include "graphics/context.hpp"
 
 namespace villain {
 
