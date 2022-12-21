@@ -33,7 +33,7 @@ void AssetLibrary::render()
     {
      //TODO
      if (ImGui::Selectable("Delete"))
-      INFO("pressed delete on " << mesh_list[i]);
+      MeshLibrary::deleteMesh(i);
      ImGui::EndPopup();
     }
    }

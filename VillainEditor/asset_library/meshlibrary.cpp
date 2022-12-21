@@ -42,7 +42,7 @@ void MeshLibrary::createMeshFromFile()
  auto name = filepath.substr(name_start + 1, name_end - name_start - 1);
  if (getIndex(name) != -1)
  {
-  auto new_name = name;
+  std::string new_name = name;
   int i = 1;
   while (getIndex(new_name) != -1)
   {
@@ -66,12 +66,25 @@ void MeshLibrary::createMeshFromFile()
   ERROR("ASSIMP::" << import.GetErrorString());
   return;
  }
- if (processNode(scene->mRootNode, scene, mesh_dir))
+ if (processMeshes(scene, mesh_dir))
   addEntry(name);
 
 
  //TODO read and create folders+datafiles;
 
+}
+
+void MeshLibrary::deleteMesh(int index)
+{
+ if (n_users[index] != 0)
+  INFO("mesh has " << n_users[index] << " users: cant delete")
+ else
+ {
+  std::filesystem::remove_all(MESH_LIB_FOLDER + std::string("/") + names[index]);
+  names.erase(std::next(names.begin(), index));
+  n_users.erase(std::next(n_users.begin(), index));
+  load_point.erase(std::next(load_point.begin(), index));
+ }
 }
 
 void MeshLibrary::incrementUsers(std::string& name)
@@ -104,27 +117,20 @@ std::shared_ptr<void> MeshLibrary::getLoadPoint(std::string& name)
  return load_point[getIndex(name)];
 }
 
-const std::vector<std::string>& MeshLibrary::getMeshListRef()
+std::vector<std::string>& MeshLibrary::getMeshListRef()
 {
  return names;
 }
 
-std::shared_ptr<MeshData> MeshLibrary::getMeshData(std::string name)
+void MeshLibrary::getMeshData(std::string name, std::vector<MeshData>& data)
 {
- auto mesh_data = std::make_shared<MeshData>();
  auto filename = std::string(MESH_LIB_FOLDER) + "/" + name + "/" + MESH_FILE_NAME;
  std::ifstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryInputArchive archive(file);
  archive(
-  mesh_data->indices,
-  mesh_data->positions,
-  mesh_data->normals,
-  mesh_data->colors,
-  mesh_data->tex_coords
+  data
  );
-
- return mesh_data;
 }
 
 void MeshLibrary::addEntry(std::string name)
@@ -136,15 +142,6 @@ void MeshLibrary::addEntry(std::string name)
 
 bool MeshLibrary::processNode(const aiNode* node, const aiScene* scene, const std::string& directory)
 {
- //find a mesh and process it
- for (unsigned int i = 0; i < node->mNumMeshes; i++)
- {
-  
-  aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-  processMesh(mesh, scene, directory);
-  return true;
- }
-
  for (unsigned int i = 0; i < node->mNumChildren; i++)
  {
   if (processNode(node->mChildren[i], scene, directory))
@@ -153,61 +150,67 @@ bool MeshLibrary::processNode(const aiNode* node, const aiScene* scene, const st
  return false;
 }
 
-bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const std::string& directory)
+bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& directory)
 {
+ std::vector<MeshData> meshdata(scene->mNumMeshes);
 
- std::vector<unsigned int> indices(ai_mesh->mNumFaces * 3);
- std::vector<glm::vec3> positions(ai_mesh->mNumVertices);
- std::vector<glm::vec3> normals(ai_mesh->mNumVertices);
- std::vector<glm::vec4> colors(ai_mesh->mNumVertices);
- std::vector<glm::vec2> tex_coords(ai_mesh->mNumVertices);
- 
- //loading into these vectors
+ for (int m = 0; m < scene->mNumMeshes; m++)
  {
-  for (unsigned int i = 0; i < ai_mesh->mNumFaces; i++)
+  aiMesh* mesh = scene->mMeshes[m];
+
+  meshdata[m].indices.resize(mesh->mNumFaces * 3);
+  meshdata[m].positions.resize(mesh->mNumVertices);
+  meshdata[m].normals.resize(mesh->mNumVertices);
+  meshdata[m].colors.resize(mesh->mNumVertices);
+  meshdata[m].tex_coords.resize(mesh->mNumVertices);
+
+  //loading into these vectors
   {
-   aiFace& face = ai_mesh->mFaces[i];
-   ASSERT(face.mNumIndices == 3);
-   for (unsigned int j = 0; j < 3; j++)
-    indices[3 * i + j] = face.mIndices[j];
+   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+   {
+    aiFace& face = mesh->mFaces[i];
+    ASSERT(face.mNumIndices == 3);
+    for (unsigned int j = 0; j < 3; j++)
+     meshdata[m].indices[3 * i + j] = face.mIndices[j];
+   }
+   for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+   {
+    meshdata[m].positions[i].x = mesh->mVertices[i].x;
+    meshdata[m].positions[i].y = mesh->mVertices[i].y;
+    meshdata[m].positions[i].z = mesh->mVertices[i].z;
+    meshdata[m].normals[i].x = mesh->mNormals[i].x;
+    meshdata[m].normals[i].y = mesh->mNormals[i].y;
+    meshdata[m].normals[i].z = mesh->mNormals[i].z;
+   }
+   if (mesh->mTextureCoords[0] != NULL)
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+     meshdata[m].tex_coords[i].x = mesh->mTextureCoords[0][i].x;
+     meshdata[m].tex_coords[i].y = mesh->mTextureCoords[0][i].y;
+    }
+   else
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+     meshdata[m].tex_coords[i].x = 0;
+     meshdata[m].tex_coords[i].y = 0;
+    }
+   if (mesh->mColors[0] != NULL)
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+     meshdata[m].colors[i].r = mesh->mColors[0][i].r;
+     meshdata[m].colors[i].g = mesh->mColors[0][i].g;
+     meshdata[m].colors[i].b = mesh->mColors[0][i].b;
+     meshdata[m].colors[i].a = mesh->mColors[0][i].a;
+    }
+   else
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+    {
+     meshdata[m].colors[i].r = 1;
+     meshdata[m].colors[i].g = 1;
+     meshdata[m].colors[i].b = 1;
+     meshdata[m].colors[i].a = 1;
+    }
   }
-  for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-  {
-   positions[i].x = ai_mesh->mVertices[i].x;
-   positions[i].y = ai_mesh->mVertices[i].y;
-   positions[i].z = ai_mesh->mVertices[i].z;
-   normals[i].x = ai_mesh->mNormals[i].x;
-   normals[i].y = ai_mesh->mNormals[i].y;
-   normals[i].z = ai_mesh->mNormals[i].z;
-  }
-  if (ai_mesh->mTextureCoords[0] != NULL)
-   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-   {
-    tex_coords[i].x = ai_mesh->mTextureCoords[0][i].x;
-    tex_coords[i].y = ai_mesh->mTextureCoords[0][i].y;
-   }
-  else
-   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-   {
-    tex_coords[i].x = 0;
-    tex_coords[i].y = 0;
-   }
-  if (ai_mesh->mColors[0] != NULL)
-   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-   {
-    colors[i].r = ai_mesh->mColors[0][i].r;
-    colors[i].g = ai_mesh->mColors[0][i].g;
-    colors[i].b = ai_mesh->mColors[0][i].b;
-    colors[i].a = ai_mesh->mColors[0][i].a;
-   }
-  else
-   for (unsigned int i = 0; i < ai_mesh->mNumVertices; i++)
-   {
-    colors[i].r = 1;
-    colors[i].g = 1;
-    colors[i].b = 1;
-    colors[i].a = 1;
-   }
  }
 
  //save to file
@@ -215,7 +218,7 @@ bool MeshLibrary::processMesh(const aiMesh* ai_mesh, const aiScene* scene, const
  std::ofstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryOutputArchive archive(file);
- archive(indices, positions, normals, colors, tex_coords);
+ archive(meshdata);
 
  return true;
 }

@@ -24,7 +24,7 @@ private:
   MeshMemoryRef();
  };
 
- std::shared_ptr<MeshMemoryRef> mesh_ref;
+ std::shared_ptr<std::vector<MeshMemoryRef>> mesh_ref;
 
  //for cereal
  MeshOpengl() {};

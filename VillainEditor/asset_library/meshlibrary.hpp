@@ -31,6 +31,29 @@ struct MeshData
  std::vector<glm::vec3> normals;
  std::vector<glm::vec4> colors;
  std::vector<glm::vec2> tex_coords;
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(
+   indices,
+   positions,
+   normals,
+   colors,
+   tex_coords
+  );
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(
+   indices,
+   positions,
+   normals,
+   colors,
+   tex_coords
+  );
+ };
 };
 
 
@@ -42,12 +65,12 @@ class MeshLibrary
 
  static void addEntry(std::string name);
  static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
- static bool processMesh(const aiMesh* ai_mesh, const aiScene* scene, const std::string& directory);
+ static bool processMeshes(const aiScene* scene, const std::string& directory);
 public:
  static int getIndex(const std::string& name);
  static void init();
  static void createMeshFromFile();
- //static void deleteMesh();
+ static void deleteMesh(int index);
  static void incrementUsers(std::string& name);
  static void decrementUsers(std::string& name);
  static bool hasUsers(std::string& name);
@@ -55,8 +78,8 @@ public:
  static void setLoadPoint(std::string& name, std::shared_ptr<void> ptr);
  static std::shared_ptr<void> getLoadPoint(std::string& name);
 
- static const std::vector<std::string>& getMeshListRef();
- static std::shared_ptr<MeshData> getMeshData(std::string name);
+ static std::vector<std::string>& getMeshListRef();
+ static void getMeshData(std::string name, std::vector<MeshData>& data);
 
 };
 }
