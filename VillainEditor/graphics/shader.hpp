@@ -5,17 +5,29 @@
 #include <memory>
 #include "glm/glm.hpp"
 
-#include <logging.hpp>
+#include "logging.hpp"
+
+#include "scene/properties.hpp"
 
 namespace villain {
 class Shader
 {
 protected:
- std::string vertex_path;
- std::string fragment_path;
+ std::string name;
+ Shader(const std::string& name) :name(name) {};
 public:
 	//TODO Add proper deconstructors that cleans up opengl side also
- static std::shared_ptr<Shader> create(const std::string& vertex_path, const std::string& fragment_path);
+ static std::shared_ptr<Shader> create(
+  const std::string& name,
+  const std::string& vertex_shader,
+  const std::string& fragment_shader
+ );
+ static std::shared_ptr<Shader> create(
+  const std::string& name,
+  const std::string& vertex_shader,
+  const std::string& geometry_shader,
+  const std::string& fragment_shader
+ );
 
 
 	virtual void bind() const = 0;
@@ -29,8 +41,13 @@ public:
 	virtual void setUniformMat3(const std::string& name, const glm::mat3& mat) const = 0;
 	virtual void setUniformMat4(const std::string& name, const glm::mat4& mat) const = 0;
 
+ const std::string& getName() { return name; };
+ void setName(std::string name) { this->name = name; };
 	virtual void queryUniforms() = 0;//TODO: maybe make this queryParameters
 
- friend class Scene;
+ virtual Properties queryProperties() const = 0;
+
+ friend class ShaderLibrary;
+ friend class MaterialLibrary;
 };
 }

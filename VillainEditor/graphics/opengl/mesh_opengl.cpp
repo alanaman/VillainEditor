@@ -13,7 +13,12 @@ std::shared_ptr<Mesh> Mesh::create(const std::string& name)
 MeshOpengl::MeshOpengl(const std::string& name)
  :Mesh(name), mesh_ref(NULL)
 {
- m_shader_id = 0;
+ if (MeshLibrary::hasUsers(this->name))
+ {
+  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(this->name));
+  m_materials.resize((*mesh_ref).size());
+ }
+ m_materials = MeshLibrary::getDefaultMaterials(this->name);
 }
 
 void MeshOpengl::loadMesh()
@@ -127,13 +132,15 @@ void MeshOpengl::draw()
   ERROR("load mesh before draw call");
 
  auto& meshparts = (*mesh_ref);
-
  for (int i = 0; i < meshparts.size(); i++)
  {
+  m_materials[i]->bind();
+  m_materials[i]->getShader()->setUniformMat4("uTransform", getTransformMatrix());
   glBindVertexArray(meshparts[i].vao);
   glDrawElements(GL_TRIANGLES, meshparts[i].n_indices, GL_UNSIGNED_INT, 0);
  }
 }
+
 MeshOpengl::MeshMemoryRef::MeshMemoryRef()
  :buffer_object_ids(std::vector<GLuint>(5, -1))
 {

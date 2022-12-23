@@ -16,6 +16,7 @@ Editor::Editor()
  m_instance = this;
  
  MeshLibrary::init();
+ MaterialLibrary::init();
  gui = new GuiLayer(window->getWindowPointer());
 
 	window->attachScene(scene);

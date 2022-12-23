@@ -107,6 +107,29 @@ bool MeshLibrary::hasUsers(std::string& name)
  return true;
 }
 
+void MeshLibrary::updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials)
+{
+ auto filename = MESH_LIB_FOLDER + std::string("/") + name + "/" + MATERIAL_FILE_NAME;
+ std::ofstream file;
+ file.open(filename, std::ios::binary);
+ cereal::BinaryOutputArchive archive(file);
+ archive(materials);
+ file.close();
+}
+
+std::vector<std::shared_ptr<Material>> MeshLibrary::getDefaultMaterials(std::string& name)
+{
+ std::vector<std::shared_ptr<Material>> result;
+ auto filename = std::string(MESH_LIB_FOLDER) + "/" + name + "/" + MATERIAL_FILE_NAME;
+ std::ifstream file;
+ file.open(filename, std::ios::binary);
+ cereal::BinaryInputArchive archive(file);
+ archive(
+  result
+ );
+ return result;
+}
+
 void MeshLibrary::setLoadPoint(std::string& name, std::shared_ptr<void> ptr)
 {
  load_point[getIndex(name)] = ptr;
@@ -154,7 +177,7 @@ bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& directo
 {
  std::vector<MeshData> meshdata(scene->mNumMeshes);
 
- for (int m = 0; m < scene->mNumMeshes; m++)
+ for (unsigned int m = 0; m < scene->mNumMeshes; m++)
  {
   aiMesh* mesh = scene->mMeshes[m];
 
@@ -214,12 +237,24 @@ bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& directo
  }
 
  //save to file
- auto filename = directory + "/" + MESH_FILE_NAME;
- std::ofstream file;
- file.open(filename, std::ios::binary);
- cereal::BinaryOutputArchive archive(file);
- archive(meshdata);
-
+ {
+  auto filename = directory + "/" + MESH_FILE_NAME;
+  std::ofstream file;
+  file.open(filename, std::ios::binary);
+  cereal::BinaryOutputArchive archive(file);
+  archive(meshdata);
+  file.close();
+ }
+ //save default shaders for all mesh parts
+ {
+  std::vector<std::shared_ptr<Material>> materials(meshdata.size(), MaterialLibrary::getDefaultMaterial());
+  auto filename = directory + "/" + MATERIAL_FILE_NAME;
+  std::ofstream file;
+  file.open(filename, std::ios::binary);
+  cereal::BinaryOutputArchive archive(file);
+  archive(materials);
+  file.close();
+ }
  return true;
 }
 

@@ -158,6 +158,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\resources\shaders\default.frag.glsl" />
+    <None Include="..\resources\shaders\default.vert.glsl" />
+    <None Include="..\resources\shaders\plain_color.frag.glsl" />
+    <None Include="..\resources\shaders\plain_color.vert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

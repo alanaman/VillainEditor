@@ -5,6 +5,8 @@
 #include "window/window.hpp"
 #include "gui/gui_layer.hpp"
 
+#include "asset_library/material_library.hpp"
+
 namespace villain {
 
 class Editor

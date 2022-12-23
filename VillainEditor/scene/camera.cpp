@@ -97,6 +97,8 @@ void Camera::setControlType(CameraControllerType type)
 
 void Camera::setAspect(int width, int height)
 {
+ if (height == 0)
+   return;
  aspectX = width;
  aspectY = height;
  aspectRatio = (float)width / (float)height;

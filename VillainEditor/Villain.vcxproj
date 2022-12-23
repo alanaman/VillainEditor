@@ -183,6 +183,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="asset_library\material_library.cpp" />
+    <ClCompile Include="asset_library\shader_library.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp" />
     <ClCompile Include="external\imgui\imgui_demo.cpp" />
@@ -196,6 +198,7 @@
     <ClCompile Include="external\nativefiledialog-extended\src\nfd_win.cpp" />
     <ClCompile Include="game\bullet.cpp" />
     <ClCompile Include="game\gunner.cpp" />
+    <ClCompile Include="graphics\material.cpp" />
     <ClCompile Include="graphics\opengl\context_opengl.cpp" />
     <ClCompile Include="graphics\opengl\GLAD\src\glad.c" />
     <ClCompile Include="graphics\opengl\mesh_opengl.cpp" />
@@ -205,6 +208,7 @@
     <ClCompile Include="gui\control_bar.cpp" />
     <ClCompile Include="gui\gui_layer.cpp" />
     <ClCompile Include="gui\outliner.cpp" />
+    <ClCompile Include="gui\properties_gui.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scene\actor.cpp" />
     <ClCompile Include="scene\camera.cpp" />
@@ -219,6 +223,9 @@
     <ClCompile Include="window\nfd\nativefiledialog.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asset_library\asset_lib_macros.hpp" />
+    <ClInclude Include="asset_library\material_library.hpp" />
+    <ClInclude Include="asset_library\shader_library.hpp" />
     <ClInclude Include="external\cereal\access.hpp" />
     <ClInclude Include="external\cereal\archives\adapters.hpp" />
     <ClInclude Include="external\cereal\archives\binary.hpp" />
@@ -526,6 +533,8 @@
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.h" />
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.hpp" />
+    <ClInclude Include="graphics\material.hpp" />
+    <ClInclude Include="gui\properties_gui.hpp" />
     <ClInclude Include="shared\logging.hpp" />
     <ClInclude Include="asset_library\actor_library.hpp" />
     <ClInclude Include="asset_library\meshlibrary.hpp" />

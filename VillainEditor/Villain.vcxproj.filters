@@ -117,6 +117,18 @@
     <ClCompile Include="external\nativefiledialog-extended\src\nfd_win.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="asset_library\material_library.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="asset_library\shader_library.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\properties_gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\logging.hpp">
@@ -1134,6 +1146,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_library\material_library.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_library\asset_lib_macros.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_library\shader_library.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\properties_gui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

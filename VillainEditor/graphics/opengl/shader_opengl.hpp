@@ -11,13 +11,26 @@ namespace villain {
 class ShaderOpengl : public Shader
 {
 private:
-	GLuint m_programId;
-	static GLuint LoadShader(GLenum eShaderType, const std::string& strFilename);
+ std::string vertex_shader;
+ std::string geometry_shader;
+ std::string fragment_shader;
+
+ GLuint m_programId = -1;
 	static GLuint CreateShader(GLenum eShaderType, const std::string& strShaderFile);
 	static GLuint CreateProgram(const std::vector<GLuint>& shaderList);
 
 public:
-	ShaderOpengl(const std::string& vertex_path, const std::string& fragment_path);
+	ShaderOpengl(
+  const std::string& name, 
+  const std::string& vertex_shader, 
+  const std::string& fragment_shader
+ );
+ ShaderOpengl(
+  const std::string& name, 
+  const std::string& vertex_shader, 
+  const std::string& geometry_shader, 
+  const std::string& fragment_shader
+ );
 	void bind() const override;
 	void setUniformBool(const std::string& name, bool value) const;
 	void setUniformInt(const std::string& name, int value) const;
@@ -30,6 +43,7 @@ public:
 	void setUniformMat4(const std::string& name, const glm::mat4& mat) const;
 
 	void queryUniforms();
+ virtual Properties queryProperties() const;
 };
 }
 

@@ -6,13 +6,14 @@
 #include "scene/camera.hpp"
 #include "shader.hpp"
 
+#include "asset_library/material_library.hpp"
+
 namespace villain{
 
 class Renderer
 {
 
  std::vector<std::shared_ptr<Mesh>> mMeshes;
- std::vector<std::shared_ptr<Shader>> mShaders;
 
  std::shared_ptr<Camera> mView_cam;
  

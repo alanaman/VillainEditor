@@ -16,13 +16,11 @@
 #include <cereal/archives/json.hpp>
 #include <cereal/types/vector.hpp>
 
-
+#include "asset_lib_macros.hpp"
+#include "graphics/material.hpp"
+#include "asset_library/material_library.hpp"
 
 namespace villain {
-
-#define LIB_FOLDER "./asset_library"
-#define MESH_LIB_FOLDER "./asset_library/mesh_library"
-#define MESH_FILE_NAME "mesh.pkd"
 
 struct MeshData
 {
@@ -63,6 +61,7 @@ class MeshLibrary
  static std::vector<int> n_users;
  static std::vector<std::shared_ptr<void>> load_point;
 
+//TODO cahnge data queries to use index instaed of names;
  static void addEntry(std::string name);
  static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
  static bool processMeshes(const aiScene* scene, const std::string& directory);
@@ -74,6 +73,9 @@ public:
  static void incrementUsers(std::string& name);
  static void decrementUsers(std::string& name);
  static bool hasUsers(std::string& name);
+
+ static void updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials);
+ static std::vector<std::shared_ptr<Material>> getDefaultMaterials(std::string& name);
 
  static void setLoadPoint(std::string& name, std::shared_ptr<void> ptr);
  static std::shared_ptr<void> getLoadPoint(std::string& name);

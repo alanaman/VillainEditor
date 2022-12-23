@@ -3,6 +3,7 @@
 #include <imgui/imgui.h>
 #include "asset_library/meshlibrary.hpp"
 #include "asset_library/actor_library.hpp"
+#include "asset_library/material_library.hpp"
 
 
 namespace villain {
@@ -16,6 +17,10 @@ private:
 public:
  AssetLibrary();
  void render();
+ void renderMeshLib();
+ void renderActorLib();
+ void renderMaterialLib();
+ void renderShaderLib();
 };
 
 }

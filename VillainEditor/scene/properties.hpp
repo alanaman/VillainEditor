@@ -159,6 +159,7 @@ class Properties
 {
 public:
  std::vector<std::shared_ptr<Property>> properties;
+
  void addProperty(std::shared_ptr<Property> property);
  std::shared_ptr<Property> getPropertyfromName(const std::string& name);
  

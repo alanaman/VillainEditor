@@ -2,7 +2,7 @@
 
 #include <string>
 #include <memory>
-#include "shader.hpp"
+#include "material.hpp"
 #include "scene/entity.hpp"
 #include "scene/transform.hpp"
 #include "scene/properties.hpp"
@@ -14,7 +14,7 @@ class Mesh
 protected:
  std::string name;
 
- int m_shader_id = 0;
+ std::vector<std::shared_ptr<Material>> m_materials;
  std::weak_ptr<Entity> m_owner;
 
  Mesh(){};//for cereal
@@ -40,8 +40,8 @@ public:
   return glm::mat4(1);
  };
 
- void setShader(int id) { m_shader_id = id; };
- int getShader() { return m_shader_id; };
+ void setMaterial(int slot, std::shared_ptr<Material>& material) { m_materials[slot] = material; };
+ std::shared_ptr<Material> getMaterial(int slot) { return m_materials[slot]; };
 
  friend class Scene;
 
@@ -50,7 +50,7 @@ public:
  {
   archive(
    CEREAL_NVP(name),
-   CEREAL_NVP(m_shader_id),
+   CEREAL_NVP(m_materials),
    CEREAL_NVP(m_owner)
   );
  };
@@ -59,10 +59,11 @@ public:
  {
   archive(
    name,
-   m_shader_id,
+   m_materials,
    m_owner
   );
 
+  
   //TODO: might have load mesh here
  };
  friend class cereal::access;

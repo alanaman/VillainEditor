@@ -8,6 +8,7 @@
 #include <string>
 #include "graphics/mesh.hpp"
 #include "asset_library/meshlibrary.hpp"
+#include "asset_library/material_library.hpp"
 
 
 namespace villain {

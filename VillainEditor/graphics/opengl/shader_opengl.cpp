@@ -5,30 +5,49 @@
 
 namespace villain {
 
-std::shared_ptr<Shader> Shader::create(const std::string& vertex_path, const std::string& fragment_path)
+std::shared_ptr<Shader> Shader::create(
+ const std::string& name,
+ const std::string& vertex_shader,
+ const std::string& fragment_shader
+)
 {
- return std::make_shared<ShaderOpengl>(vertex_path, fragment_path);
+ return std::make_shared<ShaderOpengl>(name, vertex_shader, fragment_shader);
 }
 
-ShaderOpengl::ShaderOpengl(const std::string& vertex_path, const std::string& fragment_path)
+std::shared_ptr<Shader> Shader::create(
+ const std::string& name,
+ const std::string& vertex_shader,
+ const std::string& geometry_shader,
+ const std::string& fragment_shader
+)
 {
- this->vertex_path = vertex_path;
- this->fragment_path = fragment_path;
+ return std::make_shared<ShaderOpengl>(name, vertex_shader, geometry_shader, fragment_shader);
+}
+
+ShaderOpengl::ShaderOpengl(
+ const std::string& name,
+ const std::string& vertex_shader,
+ const std::string& fragment_shader
+):Shader(name), vertex_shader(vertex_shader), geometry_shader(""), fragment_shader(fragment_shader)
+{
  std::vector<GLuint> shaderList;
- shaderList.push_back(LoadShader(GL_VERTEX_SHADER, vertex_path));
- shaderList.push_back(LoadShader(GL_FRAGMENT_SHADER, fragment_path));
+ shaderList.push_back(CreateShader(GL_VERTEX_SHADER, vertex_shader));
+ shaderList.push_back(CreateShader(GL_FRAGMENT_SHADER, fragment_shader));
  m_programId = CreateProgram(shaderList);
 }
 
-GLuint ShaderOpengl::LoadShader(GLenum shaderType, const std::string& filename)
+ShaderOpengl::ShaderOpengl(
+ const std::string& name,
+ const std::string& vertex_shader,
+ const std::string& geometry_shader,
+ const std::string& fragment_shader
+):Shader(name), vertex_shader(vertex_shader), geometry_shader(geometry_shader), fragment_shader(fragment_shader)
 {
- std::ifstream shaderFile(filename.c_str());
- if (!shaderFile.is_open())
-  ERROR("Cannot find file: " + filename);
- std::stringstream shaderData;
- shaderData << shaderFile.rdbuf();
- shaderFile.close();
- return CreateShader(shaderType, shaderData.str());
+ std::vector<GLuint> shaderList;
+ shaderList.push_back(CreateShader(GL_VERTEX_SHADER, vertex_shader));
+ shaderList.push_back(CreateShader(GL_GEOMETRY_SHADER, geometry_shader));
+ shaderList.push_back(CreateShader(GL_FRAGMENT_SHADER, fragment_shader));
+ m_programId = CreateProgram(shaderList);
 }
 
 GLuint ShaderOpengl::CreateShader(GLenum eShaderType, const std::string& strShaderFile)
@@ -91,15 +110,60 @@ GLuint ShaderOpengl::CreateProgram(const std::vector<GLuint>& shaderList)
 
 void ShaderOpengl::queryUniforms()
 {
- int n_ind = 0;
- glGetProgramiv(m_programId, GL_ACTIVE_UNIFORMS, &n_ind);
- std::cout << n_ind << "\n";
- for (int i = 0; i < n_ind; i++)
+ int n_uniforms = 0;
+ glGetProgramiv(m_programId, GL_ACTIVE_UNIFORMS, &n_uniforms);
+ std::cout << n_uniforms << "\n";
+
+ for (int i = 0; i < n_uniforms; i++)
  {
    char name[100];
    glGetActiveUniformName(m_programId, i, 100, NULL, name);
    std::cout << name << "\n";
  }
+}
+
+Properties ShaderOpengl::queryProperties() const
+{
+ Properties result;
+ const char* property_blockname = "Properties";
+ auto index = glGetUniformBlockIndex(m_programId, property_blockname);
+ if (index == -1)
+  return result;
+ 
+ GLint n_uniforms;
+
+ glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &n_uniforms);
+
+ GLint* uniform_indices = new GLint[n_uniforms];
+ glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniform_indices);
+
+ GLint* uniform_type = new GLint[n_uniforms];
+ glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_TYPE, uniform_type);
+ 
+ int* uniform_namelength = new GLint[n_uniforms];
+ glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_NAME_LENGTH, uniform_namelength);
+
+ for (int i = 0; i < n_uniforms; i++)
+ {
+  std::string name(uniform_namelength[i], '\0');
+  glGetActiveUniformName(m_programId, uniform_indices[i], uniform_namelength[i], NULL, &name[0]);
+
+  switch (uniform_type[i])
+  {
+  case GL_FLOAT:
+   result.addProperty(std::make_shared<PropertyFloat>(name, 0.0f));
+   break;
+  case GL_FLOAT_VEC3:
+   result.addProperty(std::make_shared<PropertyVec3>(name, glm::vec3(0)));
+   break;
+  case GL_INT:
+   result.addProperty(std::make_shared<PropertyInt>(name, 0));
+   break;
+  default:
+   break;
+  }
+ }
+ return result;
 }
 
 void ShaderOpengl::bind() const
