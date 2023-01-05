@@ -708,6 +708,7 @@
     <None Include="external\glm\glm\gtx\vector_angle.inl" />
     <None Include="external\glm\glm\gtx\vector_query.inl" />
     <None Include="external\glm\glm\gtx\wrap.inl" />
+    <None Include="scene\cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\assimp.vcxproj">

@@ -42,8 +42,7 @@ public:
 	void setUniformMat3(const std::string& name, const glm::mat3& mat) const;
 	void setUniformMat4(const std::string& name, const glm::mat4& mat) const;
 
-	void queryUniforms();
- virtual Properties queryProperties() const;
+ std::vector<std::pair<std::string, UniformType>> queryParameters() const;
 };
 }
 

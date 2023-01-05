@@ -65,6 +65,8 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
   collection->is_selected = true;
   m_selected_entity = NULL;
   m_selected_collection = collection;
+
+  PropertiesPanel::onEntitySelection(NULL);
  }
  if (test_drag_and_drop && ImGui::BeginDragDropSource())
  {

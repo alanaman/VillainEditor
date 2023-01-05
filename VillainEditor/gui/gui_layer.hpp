@@ -9,6 +9,7 @@
 #include "outliner.hpp"
 #include "assetlib.hpp"
 #include "control_bar.hpp"
+#include "properties_gui.hpp"
 
 namespace villain {
 
@@ -17,7 +18,6 @@ class GuiLayer
 private:
  bool show_demo_window = true;
  bool show_another_window = false;
- bool show_properties_window = true;
 
  Scene* m_scene = NULL;
 

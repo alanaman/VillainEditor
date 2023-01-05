@@ -9,8 +9,7 @@ Renderer::Renderer()
 void Renderer::submitMesh(std::shared_ptr<Mesh> mesh)
 {
  mMeshes.push_back(mesh);
- if(!mesh->isLoaded())
-  mesh->loadMesh();
+ mesh->loadMesh();
 }
 
 void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
@@ -18,8 +17,7 @@ void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
  for (auto& mesh : meshes)
  {
   mMeshes.push_back(mesh);
-  if(!mesh->isLoaded())
-   mesh->loadMesh();
+  mesh->loadMesh();
  }
 }
 

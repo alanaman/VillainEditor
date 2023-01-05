@@ -75,62 +75,8 @@ void GuiLayer::render()
   ImGui::ShowDemoWindow(&show_demo_window);
 
  //ImGui::ShowExampleAppWindowTitles(&x);
-
- // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
- {
-  static float f = 0.0f;
-
-  ImGui::Begin("Properties", &show_properties_window);                          // Create a window called "Hello, world!" and append into it.
-
-
-  auto entity = m_outliner.getSelectedEntity();
-  if (entity)
-  {
-   Transform& trans = entity->getLocalTransformRef();
-   ImGui::Text("Transform");               // Display some text (you can use a format strings too)
-
-   ImGui::DragFloat3("Position", &trans.getPositionRef()[0]);
-   ImGui::DragFloat3("Scale", &trans.getScaleRef()[0]);
-   ImGui::DragFloat3("Rotation", &trans.getRotationRef()[0]);
-  //ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-   std::vector<std::shared_ptr<Property>> properties;
-   entity->collectProperties(properties);
-
-   for (auto property : properties)
-   {
-    switch (property->getType())
-    {
-    case PropertyType::FLOAT:
-    {
-     ImGui::DragFloat(
-      property->name.c_str(),
-      &(std::dynamic_pointer_cast<PropertyFloat>(property)->val)
-     );
-     break;
-    }
-    //case PropertyType::INT:
-    //{
-    // ImGui::DragInt(property->name.c_str(), (int*)property->value_ptr);
-    // break;
-    //}
-    case PropertyType::VEC3:
-    {
-     ImGui::DragFloat3(
-      property->name.c_str(),
-      (float*)&(std::dynamic_pointer_cast<PropertyVec3>(property)->val)
-     );
-     break;
-    }
-    default:
-     break;
-    }
-   }
-  }
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  //ImGui::Text("%.5f   %.5f", ImGui::GetIO().DeltaTime, ImGui::GetIO().Framerate);
-  ImGui::End();
- }
-
+ 
+ PropertiesPanel::render();
  m_outliner.render();
  m_assetlib.render();
  m_controlbar.render();

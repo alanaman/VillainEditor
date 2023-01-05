@@ -10,7 +10,6 @@
 #include <cereal/types/vector.hpp>
 
 #include "graphics/shader.hpp"
-#include "scene/properties.hpp"
 
 #include "asset_library/shader_library.hpp"
 
@@ -19,12 +18,14 @@ class Material
 {
 private:
  std::string name;
- Properties props;
 
  std::string shader;
  std::shared_ptr<Shader> shader_cache = NULL;
+
+ Properties m_properties;
  Material() {};//cereal
 public:
+ ~Material();
  Material(std::string name);
  Material(std::string name, std::shared_ptr<Shader>& shader);
 
@@ -35,6 +36,8 @@ public:
  void setShader(std::shared_ptr<Shader> shader);
  void bind();
 
+ Properties collectectProperties() { return m_properties; };
+
  friend class MaterialLibrary;
  friend class AssetLibrary;
 
@@ -43,7 +46,6 @@ public:
  {
   archive(
    CEREAL_NVP(name),
-   CEREAL_NVP(props),
    CEREAL_NVP(shader)
   );
  };
@@ -52,7 +54,6 @@ public:
  {
   archive(
    name,
-   props,
    shader
   );
  };

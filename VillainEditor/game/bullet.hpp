@@ -12,10 +12,11 @@ namespace villain {
 class Bullet : public Actor
 {
 private:
- std::shared_ptr<Mesh> bullet_mesh;
- Properties props;
+ static std::shared_ptr<Mesh> bullet_mesh;
 
- static const std::vector<std::shared_ptr<PropDef>> default_properties;
+ float speed = 7.0f;
+ glm::vec3 direction = glm::vec3(0, 1, 0);
+
 
  Bullet() {}; //for cereal
 public:
@@ -29,28 +30,28 @@ public:
 
  virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) override;
 
- virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) override;
- virtual void setProperty(std::string name, glm::vec3 val) override;
+ virtual void collectProperties(Properties& properties) override;
+ 
+ void setSpeed(float speed);
+ void setDirection(glm::vec3 direction);
 
 
  template<class Archive>
  void save(Archive& archive) const
  {
-  archive(
-   cereal::base_class<Actor>(this),
-   CEREAL_NVP(bullet_mesh),
-   CEREAL_NVP(props)
-  );
+  archive(cereal::base_class<Actor>(this));
+  archive(CEREAL_NVP(speed));
+  archive(CEREAL_NVP(direction));
+
  };
  template<class Archive>
  void load(Archive& archive)
  {
-  archive(
-   cereal::base_class<Actor>(this),
-   bullet_mesh,
-   props
-  );
-  props.resolveProperties(default_properties);
+  archive(cereal::base_class<Actor>(this));
+  try { archive(CEREAL_NVP(speed)); }
+  catch(const std::exception&){};
+  try { archive(CEREAL_NVP(direction)); }
+  catch(const std::exception&){};
  };
  friend class cereal::access;
 };

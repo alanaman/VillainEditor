@@ -18,7 +18,7 @@ public:
  virtual void updateOnFrame(const float& deltatime){};
  virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
 
- virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) override;
+ virtual void collectProperties(Properties& properties) override;
  virtual void setProperty(std::string name, glm::vec3 val) {};
 
 

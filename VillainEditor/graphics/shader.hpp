@@ -10,6 +10,20 @@
 #include "scene/properties.hpp"
 
 namespace villain {
+
+enum class UniformType
+{
+ BOOL,
+ INT,
+ FLOAT,
+ VEC2,
+ VEC3,
+ VEC4,
+ MAT2,
+ MAT3,
+ MAT4,
+};
+
 class Shader
 {
 protected:
@@ -43,9 +57,7 @@ public:
 
  const std::string& getName() { return name; };
  void setName(std::string name) { this->name = name; };
-	virtual void queryUniforms() = 0;//TODO: maybe make this queryParameters
-
- virtual Properties queryProperties() const = 0;
+	virtual std::vector<std::pair<std::string, UniformType>> queryParameters() const = 0;
 
  friend class ShaderLibrary;
  friend class MaterialLibrary;

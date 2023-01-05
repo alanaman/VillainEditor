@@ -4,14 +4,7 @@ namespace villain {
 
 REGISTER_ACTOR(Bullet);
 
-const std::vector<std::shared_ptr<PropDef>> Bullet::default_properties = {
- std::make_shared<PropDefFloat>(std::string("speed"), 7.0f),
- std::make_shared<PropDefVec3>(std::string("direction"), glm::vec3(0,1,0))
- //std::make_shared<PropDefFloat>(std::string("scale"), 1.5f)
-};
-
-
-//std::shared_ptr<Mesh> Gunner::gunner_mesh = NULL;
+std::shared_ptr<Mesh> Bullet::bullet_mesh;
 
 
 std::shared_ptr<Actor> Bullet::create()
@@ -27,25 +20,16 @@ std::shared_ptr<Actor> Bullet::create()
 Bullet::Bullet(std::string name)
  :Actor(name)
 {
- auto x = std::string("bullet");
- bullet_mesh = Mesh::create(x);
-
- for (const auto& prop : default_properties)
- {
-  props.addPropertyFromDefault(prop.get());
- }
-
+ if (bullet_mesh == NULL)
+  bullet_mesh = Mesh::create("bullet");
 }
 void Bullet::beginPlay()
 {
- //m_transform.setScale(glm::vec3(2, 2, 2));
 }
 
 void Bullet::updateOnFrame(const float& deltatime)
 {
- auto dir = props.getVec3FromName("direction");
- auto speed = props.getFloatFromName("speed");
- m_transform.setPosition(m_transform.getPosition() + deltatime*speed*dir);
+ m_transform.setPosition(m_transform.getPosition() + deltatime*speed*direction);
 }
 void Bullet::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
 {
@@ -54,19 +38,22 @@ void Bullet::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
  return;
 }
 
-void Bullet::collectProperties(std::vector<std::shared_ptr<Property>>& properties)
+void Bullet::collectProperties(Properties& properties)
 {
  this->Actor::collectProperties(properties);
- for (auto& prop : props.properties)
- {
-  properties.push_back(prop);
- }
+ properties.addProperty(new Property<float>("speed", speed));
+ properties.addProperty(new Property<glm::vec3>("direction", direction));
  return;
 }
-void Bullet::setProperty(std::string name, glm::vec3 val)
-{
- auto property = props.getPropertyfromName(name);
- std::dynamic_pointer_cast<PropertyVec3>(property)->val=val;
 
+void Bullet::setSpeed(float speed)
+{
+ this->speed = speed;
 }
+
+void Bullet::setDirection(glm::vec3 direction)
+{
+ this->direction = direction;
+}
+
 }

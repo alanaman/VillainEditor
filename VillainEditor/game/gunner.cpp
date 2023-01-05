@@ -8,14 +8,8 @@ namespace villain {
 
 REGISTER_ACTOR(Gunner);
 
-const std::vector<std::shared_ptr<PropDef>> Gunner::default_properties = {
- std::make_shared<PropDefFloat>(std::string("spin_speed"), 1.0f),
- std::make_shared<PropDefFloat>(std::string("fire_interval"), 1.0f)
- //std::make_shared<PropDefFloat>(std::string("scale"), 1.5f)
-};
-
-
 //std::shared_ptr<Mesh> Gunner::gunner_mesh = NULL;
+std::shared_ptr<Mesh> Gunner::gunner_mesh;
 
 
 std::shared_ptr<Actor> Gunner::create()
@@ -31,15 +25,10 @@ std::shared_ptr<Actor> Gunner::create()
 Gunner::Gunner(std::string name)
  :Actor(name)
 {
- auto x = std::string("gunner");
- gunner_mesh = Mesh::create(x);
-
- for (const auto& prop : default_properties)
- {
-  props.addPropertyFromDefault(prop.get());
- }
-
+ if(gunner_mesh==NULL)
+  gunner_mesh = Mesh::create("gunner");
 }
+
 void Gunner::beginPlay()
 {
 }
@@ -47,9 +36,8 @@ void Gunner::beginPlay()
 
 void Gunner::updateOnFrame(const float& deltatime)
 {
- m_transform.setRotation(m_transform.getRotation() + glm::vec3(0, deltatime*props.getFloatFromName("spin_speed"), 0));
+ m_transform.setRotation(m_transform.getRotation() + glm::vec3(0, deltatime*spin_speed, 0));
  bullet_timer += deltatime;
- float fire_interval = props.getFloatFromName("fire_interval");
  if (bullet_timer >= fire_interval)
  {
   bullet_timer -= fire_interval;
@@ -63,13 +51,11 @@ void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
  return;
 }
 
-void Gunner::collectProperties(std::vector<std::shared_ptr<Property>>& properties)
+void Gunner::collectProperties(Properties& properties)
 {
  this->Actor::collectProperties(properties);
- for (auto& prop : props.properties)
- {
-  properties.push_back(prop);
- }
+ properties.addProperty(new Property<float>("spin_speed", spin_speed));
+ properties.addProperty(new Property<float>("fire_interval", fire_interval));
  return;
 }
 void Gunner::spawnBullet()

@@ -29,7 +29,7 @@ public:
 
  void setParent(std::weak_ptr<Entity> parent);
 
- virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) { return; };
+ virtual void collectProperties(Properties& properties);
 
  template<class Archive>
  void save(Archive& archive) const

@@ -36,5 +36,10 @@ void Entity::setParent(std::weak_ptr<Entity> parent)
  m_parent = parent;
 }
 
+void Entity::collectProperties(Properties& properties)
+{
+ properties.addProperty(new Property("Transform", m_transform));
+}
+
 
 }

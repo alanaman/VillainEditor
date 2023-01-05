@@ -4,6 +4,7 @@
 
 #include "scene/scene.hpp"
 #include "assetlib.hpp"
+#include "properties_gui.hpp"
 
 namespace villain {
 

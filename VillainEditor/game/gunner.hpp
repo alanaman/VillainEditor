@@ -11,15 +11,21 @@ namespace villain {
 
 class Gunner : public Actor
 {
+ //make properties member vars
+ //property classes shud have references to these member vars
 private:
- std::shared_ptr<Mesh> gunner_mesh;
- Properties props;
 
- static const std::vector<std::shared_ptr<PropDef>> default_properties;
+ //shared vars
+ static std::shared_ptr<Mesh> gunner_mesh;
+
+ //per instance editable vars
+ float spin_speed = 1.0f;
+ float fire_interval = 1.0f;
+
+ //unexposed vars
+ float bullet_timer = 0;
 
  Gunner() {}; //for cereal
-
- float bullet_timer = 0;
 public:
  static std::shared_ptr<Actor> create();
 
@@ -31,7 +37,7 @@ public:
 
  virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) override;
 
- virtual void collectProperties(std::vector<std::shared_ptr<Property>>& properties) override;
+ virtual void collectProperties(Properties& properties) override;
 
  void spawnBullet();
  template<class Archive>
@@ -39,19 +45,18 @@ public:
  {
   archive(
    cereal::base_class<Actor>(this),
-   CEREAL_NVP(gunner_mesh),
-   CEREAL_NVP(props)
-   );
+   CEREAL_NVP(spin_speed),
+   CEREAL_NVP(fire_interval)
+  );
  };
  template<class Archive>
  void load(Archive& archive)
  {
-  archive(
-   cereal::base_class<Actor>(this),
-   gunner_mesh,
-   props
-  );
-  props.resolveProperties(default_properties);
+  archive(cereal::base_class<Actor>(this));
+  try { archive(CEREAL_NVP(spin_speed)); }
+  catch(const std::exception&){};
+  try { archive(CEREAL_NVP(fire_interval)); }
+  catch(const std::exception&){};
  };
  friend class cereal::access;
 };

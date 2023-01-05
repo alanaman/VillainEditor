@@ -17,7 +17,6 @@
 #include <cereal/types/vector.hpp>
 
 #include "asset_lib_macros.hpp"
-#include "graphics/material.hpp"
 #include "asset_library/material_library.hpp"
 
 namespace villain {

@@ -4,190 +4,148 @@
 #include "transform.hpp"
 #include "glm/glm.hpp"
 
+
+//namespace glm
+//{
+//template<class Archive>
+//void serialize(Archive& archive,
+// vec3& m)
+//{
+// archive(m.x, m.y, m.z);
+//}
+//template<class Archive>
+//void serialize(Archive& archive,
+// vec2& m)
+//{
+// archive(m.x, m.y);
+//}
+//}
+
 namespace villain {
+
+class Mesh;
 
 enum class PropertyType
 {
  NONE,
- INT, FLOAT, VEC2, VEC3
+ INT, FLOAT, VEC2, VEC3,
+ MESH, TRANSFORM
 };
 
-class PropDef
-{
-public:
- const std::string name;
- PropDef(std::string name) :name(name) {};
- virtual PropertyType getType() const = 0;
-};
+//class PropDefault
+//{
+//public:
+// const std::string name;
+// PropDefault(std::string name) :name(name) {};
+// virtual PropertyType getType() const = 0;
+//};
+//
+//#define DEFINE_PROPERTY_DEFAULT(name_tag, type, type_enum) \
+//struct PropDef##name_tag:public PropDefault \
+//{ \
+//public:\
+// type def_val;\
+// PropDef##name_tag(std::string name, type default_val) : PropDefault(name), def_val(default_val) {};\
+// virtual PropertyType getType() const override { return type_enum; };\
+//};\
+//
+//DEFINE_PROPERTY_DEFAULT(Float, float, PropertyType::FLOAT)
+//DEFINE_PROPERTY_DEFAULT(Vec3, glm::vec3, PropertyType::VEC3)
+//DEFINE_PROPERTY_DEFAULT(Vec2, glm::vec2, PropertyType::VEC2)
+//DEFINE_PROPERTY_DEFAULT(Int, int, PropertyType::INT)
 
-struct PropDefFloat :public PropDef
+class PropertyBase
 {
-public:
- float def_val;
- PropDefFloat(std::string name, float default_val) : PropDef(name), def_val(default_val) {};
- virtual PropertyType getType() const override { return PropertyType::FLOAT; };
-};
-
-struct PropDefVec3 :public PropDef
-{
-public:
- glm::vec3 def_val;
- PropDefVec3(std::string name, glm::vec3 default_val) : PropDef(name), def_val(default_val) {};
- virtual PropertyType getType() const override { return PropertyType::VEC3; };
-};
-
-class Property
-{
-protected:
- Property() {};//cereal
 public:
  std::string name;
- Property(std::string name) :name(name) {};
+ PropertyBase(std::string name) :name(name) {};
  virtual PropertyType getType() const = 0;
-
- template<class Archive>
- void save(Archive& archive) const
- {
-  archive(
-   CEREAL_NVP(name)
-  );
- };
- template<class Archive>
- void load(Archive& archive)
- {
-  archive(
-   name
-  );
- };
- friend class cereal::access;
 };
 
-class PropertyFloat :public Property
+//#define SERIALIZE_PROPERTY(classname)\
+//template<class Archive>\
+//void save(Archive& archive, const classname& prop)\
+//{\
+// archive(\
+//  cereal::virtual_base_class<Property>(&prop),\
+//  CEREAL_NVP(prop.val)\
+// );\
+//};\
+//template<class Archive>\
+//void load(Archive& archive, classname& prop)\
+//{\
+// archive(\
+//  cereal::virtual_base_class<Property>(&prop),\
+//  CEREAL_NVP(prop.val)\
+// );\
+//};\
+
+template<typename T>
+class Property: public PropertyBase
 {
- PropertyFloat() {};//cereal
 public:
- float val;
- PropertyFloat(std::string name, float val) : Property(name), val(val) {};
- virtual PropertyType getType() const override { return PropertyType::FLOAT; };
-
- template<class Archive>
- void save(Archive& archive) const
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   CEREAL_NVP(val)
-  );
- };
- template<class Archive>
- void load(Archive& archive)
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   val
-  );
- };
- friend class cereal::access;
+ T& val;
+ Property(std::string name, T& val) :PropertyBase(name), val(val) {};
+ virtual PropertyType getType() const override;
 };
 
-class PropertyVec3 :public Property
-{
- PropertyVec3() {};//cereal
-public:
- glm::vec3 val;
- PropertyVec3(std::string name, glm::vec3 val) : Property(name), val(val) {};
- virtual PropertyType getType() const override { return PropertyType::VEC3; };
 
- template<class Archive>
- void save(Archive& archive) const
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   CEREAL_NVP(val.x),
-   CEREAL_NVP(val.y),
-   CEREAL_NVP(val.z)
-  );
- };
- template<class Archive>
- void load(Archive& archive)
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   val.x,
-   val.y,
-   val.z
-  );
- };
- friend class cereal::access;
-};
-
-class PropertyInt :public Property
-{
- PropertyInt() {};//cereal
-public:
- int val;
- PropertyInt(std::string name, int val) : Property(name), val(val) {};
- virtual PropertyType getType() const override { return PropertyType::INT; };
-
- template<class Archive>
- void save(Archive& archive) const
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   CEREAL_NVP(val)
-  );
- };
- template<class Archive>
- void load(Archive& archive)
- {
-  archive(
-   cereal::virtual_base_class<Property>(this),
-   val
-  );
- };
- friend class cereal::access;
-};
-
+//class PropertyFloat :public Property
+//{
+//public:
+// float &val;
+// PropertyFloat(std::string name, float &val) : Property(name), val(val) {};
+// virtual PropertyType getType() const override { return PropertyType::FLOAT; };
+//};
+//
+//class PropertyTransform :public Property
+//{
+//public:
+// Transform &val;
+// PropertyTransform(std::string name, Transform &val) : Property(name), val(val) {};
+// virtual PropertyType getType() const override { return PropertyType::TRANSFORM; };
+//};
+//
+//class PropertyVec3 :public Property
+//{
+//public:
+// glm::vec3 &val;
+// PropertyVec3(std::string name, glm::vec3 &val) : Property(name), val(val) {};
+// virtual PropertyType getType() const override { return PropertyType::VEC3; };
+//};
+//
+//class PropertyInt :public Property
+//{
+//public:
+// int &val;
+// PropertyInt(std::string name, int &val) : Property(name), val(val) {};
+// virtual PropertyType getType() const override { return PropertyType::INT; };
+//};
+//
 //class PropertyMesh : public Property
 //{
-// PropertyMesh() {};//cereal
 //public:
-// std::shared_ptr<Mesh> mesh;
-//
+// std::shared_ptr<Mesh> &val;
+// PropertyMesh(std::string name, std::shared_ptr<Mesh> &val) : Property(name), val(val) {};
+// virtual PropertyType getType() const override { return PropertyType::MESH; };
 //};
 
 class Properties
 {
+ std::vector<PropertyBase*> properties;
 public:
- std::vector<std::shared_ptr<Property>> properties;
+ ~Properties();
 
- void addProperty(std::shared_ptr<Property> property);
- std::shared_ptr<Property> getPropertyfromName(const std::string& name);
- 
- float getFloatFromName(const std::string& name);
- glm::vec3 getVec3FromName(const std::string& name);
- 
- void addPropertyFromDefault(PropDef* default_prop);
- void resolveProperties(const std::vector<std::shared_ptr<PropDef>>& default_properties);
+ void clear();
+ std::vector<PropertyBase*>& getPropertiesVector() { return properties; };
 
- template<class Archive>
- void save(Archive& archive) const
- {
-  archive(
-   CEREAL_NVP(properties)
-  );
- };
- template<class Archive>
- void load(Archive& archive)
- {
-  archive(
-   properties
-  );
- };
- friend class cereal::access;
+ void addProperty(PropertyBase* property);
 };
 
 }
 
-CEREAL_REGISTER_TYPE(villain::PropertyFloat);
-CEREAL_REGISTER_TYPE(villain::PropertyInt);
-CEREAL_REGISTER_TYPE(villain::PropertyVec3);
+//TODO add this to macro
+//CEREAL_REGISTER_TYPE(villain::PropertyFloat);
+//CEREAL_REGISTER_TYPE(villain::PropertyInt);
+//CEREAL_REGISTER_TYPE(villain::PropertyVec3);
+//CEREAL_REGISTER_TYPE(villain::PropertyMesh);

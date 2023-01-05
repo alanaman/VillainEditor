@@ -68,8 +68,6 @@ void MeshLibrary::createMeshFromFile()
  }
  if (processMeshes(scene, mesh_dir))
   addEntry(name);
-
-
  //TODO read and create folders+datafiles;
 
 }

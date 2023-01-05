@@ -108,23 +108,23 @@ GLuint ShaderOpengl::CreateProgram(const std::vector<GLuint>& shaderList)
  return program;
 }
 
-void ShaderOpengl::queryUniforms()
-{
- int n_uniforms = 0;
- glGetProgramiv(m_programId, GL_ACTIVE_UNIFORMS, &n_uniforms);
- std::cout << n_uniforms << "\n";
+//void ShaderOpengl::queryUniforms()
+//{
+// int n_uniforms = 0;
+// glGetProgramiv(m_programId, GL_ACTIVE_UNIFORMS, &n_uniforms);
+// std::cout << n_uniforms << "\n";
+//
+// for (int i = 0; i < n_uniforms; i++)
+// {
+//   char name[100];
+//   glGetActiveUniformName(m_programId, i, 100, NULL, name);
+//   std::cout << name << "\n";
+// }
+//}
 
- for (int i = 0; i < n_uniforms; i++)
- {
-   char name[100];
-   glGetActiveUniformName(m_programId, i, 100, NULL, name);
-   std::cout << name << "\n";
- }
-}
-
-Properties ShaderOpengl::queryProperties() const
+std::vector<std::pair<std::string, UniformType>> ShaderOpengl::queryParameters() const
 {
- Properties result;
+ std::vector<std::pair<std::string, UniformType>> result;
  const char* property_blockname = "Properties";
  auto index = glGetUniformBlockIndex(m_programId, property_blockname);
  if (index == -1)
@@ -151,13 +151,13 @@ Properties ShaderOpengl::queryProperties() const
   switch (uniform_type[i])
   {
   case GL_FLOAT:
-   result.addProperty(std::make_shared<PropertyFloat>(name, 0.0f));
+   result.push_back(std::make_pair(name, UniformType::FLOAT));
    break;
   case GL_FLOAT_VEC3:
-   result.addProperty(std::make_shared<PropertyVec3>(name, glm::vec3(0)));
+   result.push_back(std::make_pair(name, UniformType::VEC3));
    break;
   case GL_INT:
-   result.addProperty(std::make_shared<PropertyInt>(name, 0));
+   result.push_back(std::make_pair(name, UniformType::INT));
    break;
   default:
    break;

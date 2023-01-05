@@ -1,0 +1,2 @@
+#define PROPERTY_CLASS_DEFINITION(name_tag, type, type_enum)
+#define PROPERTY_CLASS_DEFINITION
