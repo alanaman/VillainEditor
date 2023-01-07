@@ -24,7 +24,7 @@ public:
  static std::shared_ptr<StaticMesh> create(std::string name, std::shared_ptr<Mesh>& mesh);
 
  std::shared_ptr<Mesh> getMesh();
-
+ virtual void collectProperties(Properties& properties) override;
 
  template<class Archive>
  void save(Archive& archive) const
@@ -32,7 +32,7 @@ public:
   archive(
    cereal::base_class<Entity>(this),
    CEREAL_NVP(m_mesh)
-   );
+  );
  };
  template<class Archive>
  void load(Archive& archive)

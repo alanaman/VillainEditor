@@ -36,7 +36,12 @@ void PropertiesPanel::render()
    renderVec3Property((Property<glm::vec3>*)property);
    break;
   
+  case PropertyType::TRANSFORM:
+   renderTransformProperty((Property<Transform>*)property);
+   break;
+  
   default:
+   ERROR("unimplemented type");
    break;
   }
  }//end for loop
@@ -68,6 +73,23 @@ inline void PropertiesPanel::renderIntProperty(Property<int>* prop)
  ImGui::DragInt(
   prop->name.c_str(),
   &(prop->val)
+ );
+}
+
+inline void PropertiesPanel::renderTransformProperty(Property<Transform>* prop)
+{
+ auto& trans = prop->val;
+ ImGui::DragFloat3(
+  "Position",
+  (float*)&(trans.getPositionRef())
+ );
+ ImGui::DragFloat3(
+  "Rotation",
+  (float*)&(trans.getRotationRef())
+ );
+ ImGui::DragFloat3(
+  "Scale",
+  (float*)&(trans.getScaleRef())
  );
 }
 

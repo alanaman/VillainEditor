@@ -4,24 +4,15 @@ namespace villain {
 
 REGISTER_ACTOR(Bullet);
 
-std::shared_ptr<Mesh> Bullet::bullet_mesh;
-
-
 std::shared_ptr<Actor> Bullet::create()
 {
  auto ptr = std::make_shared<Bullet>(std::string("bullet_inst"));
- std::vector<std::shared_ptr<Mesh>> meshes;
- ptr->collectMeshes(meshes);
- for (auto& mesh : meshes)
-  mesh->setParent(ptr);
  return ptr;
 }
 
 Bullet::Bullet(std::string name)
  :Actor(name)
 {
- if (bullet_mesh == NULL)
-  bullet_mesh = Mesh::create("bullet");
 }
 void Bullet::beginPlay()
 {

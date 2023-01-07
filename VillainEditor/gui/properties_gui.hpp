@@ -18,9 +18,11 @@ private:
  static void inline renderFloatProperty(Property<float>* prop);
  static void inline renderVec3Property(Property<glm::vec3>* prop);
  static void inline renderIntProperty(Property<int>* prop);
+ static void inline renderTransformProperty(Property<Transform>* prop);
 
 public:
  static void onEntitySelection(std::shared_ptr<Entity> entity);
+ static void onSceneReload() {};
 
 
  static void render();

@@ -20,8 +20,8 @@ class Renderer
 public:
  Renderer();
 
- void submitMesh(std::shared_ptr<Mesh> mesh);
- void submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes);
+ void submitMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<Entity> parent);
+ void submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, std::shared_ptr<Entity> parent);
  void submitCamera(std::shared_ptr<Camera> cam);
  void clearAll();
  //void addShaderFromFile(const std::string& vertexpath, const std::string& fragmentpath);

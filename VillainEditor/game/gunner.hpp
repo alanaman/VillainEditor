@@ -6,6 +6,7 @@
 #include "scene/actor.hpp"
 #include "graphics/mesh.hpp"
 
+#include "bullet.hpp"
 namespace villain {
 
 

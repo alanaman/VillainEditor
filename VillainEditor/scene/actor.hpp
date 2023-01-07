@@ -19,7 +19,6 @@ public:
  virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
 
  virtual void collectProperties(Properties& properties) override;
- virtual void setProperty(std::string name, glm::vec3 val) {};
 
 
  template<class Archive>

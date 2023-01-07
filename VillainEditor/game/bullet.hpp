@@ -12,8 +12,7 @@ namespace villain {
 class Bullet : public Actor
 {
 private:
- static std::shared_ptr<Mesh> bullet_mesh;
-
+ std::shared_ptr<Mesh> bullet_mesh = Mesh::create("bullet");
  float speed = 7.0f;
  glm::vec3 direction = glm::vec3(0, 1, 0);
 
@@ -42,6 +41,7 @@ public:
   archive(cereal::base_class<Actor>(this));
   archive(CEREAL_NVP(speed));
   archive(CEREAL_NVP(direction));
+  archive(CEREAL_NVP(bullet_mesh));
 
  };
  template<class Archive>
@@ -51,6 +51,8 @@ public:
   try { archive(CEREAL_NVP(speed)); }
   catch(const std::exception&){};
   try { archive(CEREAL_NVP(direction)); }
+  catch(const std::exception&){};
+  try { archive(CEREAL_NVP(bullet_mesh)); }
   catch(const std::exception&){};
  };
  friend class cereal::access;

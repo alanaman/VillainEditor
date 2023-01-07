@@ -26,4 +26,9 @@ std::shared_ptr<Mesh> StaticMesh::getMesh()
 {
  return m_mesh;
 }
+void StaticMesh::collectProperties(Properties& properties)
+{
+ this->Entity::collectProperties(properties);
+
+}
 }

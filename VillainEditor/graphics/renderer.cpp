@@ -6,19 +6,19 @@ Renderer::Renderer()
 {
 }
 
-void Renderer::submitMesh(std::shared_ptr<Mesh> mesh)
+void Renderer::submitMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<Entity> parent)
 {
+ if (mesh == NULL || parent == NULL)
+  ERROR("invalid mesh / parent submitted");
+ mesh->setParent(parent);
  mMeshes.push_back(mesh);
  mesh->loadMesh();
 }
 
-void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
+void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, std::shared_ptr<Entity> parent)
 {
  for (auto& mesh : meshes)
- {
-  mMeshes.push_back(mesh);
-  mesh->loadMesh();
- }
+  submitMesh(mesh, parent);
 }
 
 void Renderer::submitCamera(std::shared_ptr<Camera> cam)

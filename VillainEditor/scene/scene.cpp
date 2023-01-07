@@ -36,7 +36,7 @@ std::shared_ptr<StaticMesh> Scene::addStaticMesh(const std::string& name)
  auto mesh = Mesh::create(name);
  auto static_mesh = StaticMesh::create(name, mesh);
  mStaticMeshes.push_back(static_mesh);
- mRenderer.submitMesh(mesh);
+ mRenderer.submitMesh(mesh, static_mesh);
  return static_mesh;
 }
 
@@ -45,11 +45,12 @@ void Scene::addActor(std::shared_ptr<Actor> actor)
  mActors.push_back(actor);
  std::vector<std::shared_ptr<Mesh>> meshes;
  actor->collectMeshes(meshes);
- mRenderer.submitMeshes(meshes);
+ mRenderer.submitMeshes(meshes, actor);
 }
 
 void Scene::startPlay()
 {
+ //TODO: create new scene for game
  saveScene();
  is_playing = true;
  for (auto& actor : mActors)
@@ -154,13 +155,13 @@ void Scene::loadScene()
  mRenderer.submitCamera(m_view_cam);
  for (auto static_mesh : mStaticMeshes)
  {
-  mRenderer.submitMesh(static_mesh->getMesh());
+  mRenderer.submitMesh(static_mesh->getMesh(), static_mesh);
  }
  for (auto actor : mActors)
  {
   std::vector<std::shared_ptr<Mesh>> meshes;
   actor->collectMeshes(meshes);
-  mRenderer.submitMeshes(meshes);
+  mRenderer.submitMeshes(meshes, actor);
  }
 
  Editor::getEditorInstance()->onSceneReload();

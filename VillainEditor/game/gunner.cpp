@@ -15,10 +15,6 @@ std::shared_ptr<Mesh> Gunner::gunner_mesh;
 std::shared_ptr<Actor> Gunner::create()
 {
  auto ptr = std::make_shared<Gunner>(std::string("gunner_inst"));
- std::vector<std::shared_ptr<Mesh>> meshes;
- ptr->collectMeshes(meshes);
- for (auto& mesh : meshes)
-  mesh->setParent(ptr);
  return ptr;
 }
 
@@ -64,7 +60,7 @@ void Gunner::spawnBullet()
  auto bullet = ActorLibrary::instantiate(bullet_name);
 
  glm::vec3 dir = glm::vec3(m_transform.getTransformMatrix() * glm::vec4(0, 0, 1, 0));
- bullet->setProperty("direction", dir);
+ std::dynamic_pointer_cast<Bullet>(bullet)->setDirection(dir);
 
  glm::mat4 transform = glm::mat4(1);
  transform = glm::rotate(

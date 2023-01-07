@@ -11,6 +11,7 @@ Actor::Actor(std::string name)
 }
 void Actor::collectProperties(Properties& properties)
 {
+ this->Entity::collectProperties(properties);
  return;
 }
 

@@ -143,6 +143,7 @@ void Outliner::renderEntity(std::shared_ptr<Entity> entity)
   entity->is_selected = true;
   m_selected_collection = NULL;
   m_selected_entity = entity;
+  PropertiesPanel::onEntitySelection(m_selected_entity);
  }
  if (test_drag_and_drop && ImGui::BeginDragDropSource())
  {
@@ -252,6 +253,8 @@ void Outliner::onSceneReload()
  deselect(m_scene->root_collection);
  m_selected_entity = NULL;
  m_selected_collection = NULL;
+ PropertiesPanel::onEntitySelection(NULL);
+ PropertiesPanel::onSceneReload();
 }
 
 void Outliner::addCollection()

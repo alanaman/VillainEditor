@@ -110,6 +110,7 @@ void GuiLayer::render()
 void GuiLayer::onSceneReload()
 {
  m_outliner.onSceneReload();
+
 }
 float GuiLayer::getDeltaTime()
 {

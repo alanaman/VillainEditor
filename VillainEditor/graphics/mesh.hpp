@@ -30,6 +30,7 @@ public:
  virtual void draw() = 0;
 
  void setParent(std::weak_ptr<Entity> parent) { m_owner = parent; };
+ std::shared_ptr<Entity> getParent() { return m_owner.lock(); };
 
  glm::mat4 getTransformMatrix()
  {

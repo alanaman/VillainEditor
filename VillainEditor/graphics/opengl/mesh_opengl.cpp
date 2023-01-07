@@ -16,7 +16,7 @@ MeshOpengl::MeshOpengl(const std::string& name)
  if (MeshLibrary::hasUsers(this->name))
  {
   mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(this->name));
-  m_materials.resize((*mesh_ref).size());
+  MeshLibrary::incrementUsers(this->name);
  }
  m_materials = MeshLibrary::getDefaultMaterials(this->name);
 }
