@@ -8,9 +8,6 @@ namespace villain {
 
 REGISTER_ACTOR(Gunner);
 
-//std::shared_ptr<Mesh> Gunner::gunner_mesh = NULL;
-std::shared_ptr<Mesh> Gunner::gunner_mesh;
-
 
 std::shared_ptr<Actor> Gunner::create()
 {
@@ -21,8 +18,6 @@ std::shared_ptr<Actor> Gunner::create()
 Gunner::Gunner(std::string name)
  :Actor(name)
 {
- if(gunner_mesh==NULL)
-  gunner_mesh = Mesh::create("gunner");
 }
 
 void Gunner::beginPlay()

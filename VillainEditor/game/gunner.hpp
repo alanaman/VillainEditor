@@ -17,13 +17,14 @@ class Gunner : public Actor
 private:
 
  //shared vars
- static std::shared_ptr<Mesh> gunner_mesh;
 
  //per instance editable vars
  float spin_speed = 1.0f;
  float fire_interval = 1.0f;
 
  //unexposed vars
+ const std::shared_ptr<Mesh> gunner_mesh = Mesh::create("gunner");
+ 
  float bullet_timer = 0;
 
  Gunner() {}; //for cereal
@@ -48,6 +49,7 @@ public:
    cereal::base_class<Actor>(this),
    CEREAL_NVP(spin_speed),
    CEREAL_NVP(fire_interval)
+   //CEREAL_NVP(gunner_mesh)
   );
  };
  template<class Archive>
@@ -58,6 +60,8 @@ public:
   catch(const std::exception&){};
   try { archive(CEREAL_NVP(fire_interval)); }
   catch(const std::exception&){};
+  //try { archive(CEREAL_NVP(gunner_mesh)); }
+  //catch(const std::exception&){};
  };
  friend class cereal::access;
 };
