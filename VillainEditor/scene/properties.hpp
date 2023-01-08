@@ -24,12 +24,14 @@
 namespace villain {
 
 class Mesh;
+class Shader;
+class Material;
 
-enum class PropertyType
+enum class DataType
 {
  NONE,
- INT, FLOAT, VEC2, VEC3,
- MESH, TRANSFORM
+ INT, FLOAT, VEC2, VEC3, STRING,
+ MESH, TRANSFORM, SHADER, MATERIAL
 };
 
 //class PropDefault
@@ -37,7 +39,7 @@ enum class PropertyType
 //public:
 // const std::string name;
 // PropDefault(std::string name) :name(name) {};
-// virtual PropertyType getType() const = 0;
+// virtual DataType getType() const = 0;
 //};
 //
 //#define DEFINE_PROPERTY_DEFAULT(name_tag, type, type_enum) \
@@ -46,20 +48,42 @@ enum class PropertyType
 //public:\
 // type def_val;\
 // PropDef##name_tag(std::string name, type default_val) : PropDefault(name), def_val(default_val) {};\
-// virtual PropertyType getType() const override { return type_enum; };\
+// virtual DataType getType() const override { return type_enum; };\
 //};\
 //
-//DEFINE_PROPERTY_DEFAULT(Float, float, PropertyType::FLOAT)
-//DEFINE_PROPERTY_DEFAULT(Vec3, glm::vec3, PropertyType::VEC3)
-//DEFINE_PROPERTY_DEFAULT(Vec2, glm::vec2, PropertyType::VEC2)
-//DEFINE_PROPERTY_DEFAULT(Int, int, PropertyType::INT)
+//DEFINE_PROPERTY_DEFAULT(Float, float, DataType::FLOAT)
+//DEFINE_PROPERTY_DEFAULT(Vec3, glm::vec3, DataType::VEC3)
+//DEFINE_PROPERTY_DEFAULT(Vec2, glm::vec2, DataType::VEC2)
+//DEFINE_PROPERTY_DEFAULT(Int, int, DataType::INT)
 
 class PropertyBase
 {
 public:
  std::string name;
  PropertyBase(std::string name) :name(name) {};
- virtual PropertyType getType() const = 0;
+ virtual DataType getType() const = 0;
+};
+
+template<typename T>
+class Property: public PropertyBase
+{
+public:
+ T& val;
+ Property(std::string name, T& val) :PropertyBase(name), val(val) {};
+ virtual DataType getType() const override;
+};
+
+
+class Properties
+{
+ std::vector<PropertyBase*> properties;
+public:
+ ~Properties();
+
+ void clear();
+ std::vector<PropertyBase*>& getPropertiesVector() { return properties; };
+
+ void addProperty(PropertyBase* property);
 };
 
 //#define SERIALIZE_PROPERTY(classname)\
@@ -80,22 +104,12 @@ public:
 // );\
 //};\
 
-template<typename T>
-class Property: public PropertyBase
-{
-public:
- T& val;
- Property(std::string name, T& val) :PropertyBase(name), val(val) {};
- virtual PropertyType getType() const override;
-};
-
-
 //class PropertyFloat :public Property
 //{
 //public:
 // float &val;
 // PropertyFloat(std::string name, float &val) : Property(name), val(val) {};
-// virtual PropertyType getType() const override { return PropertyType::FLOAT; };
+// virtual DataType getType() const override { return DataType::FLOAT; };
 //};
 //
 //class PropertyTransform :public Property
@@ -103,7 +117,7 @@ public:
 //public:
 // Transform &val;
 // PropertyTransform(std::string name, Transform &val) : Property(name), val(val) {};
-// virtual PropertyType getType() const override { return PropertyType::TRANSFORM; };
+// virtual DataType getType() const override { return DataType::TRANSFORM; };
 //};
 //
 //class PropertyVec3 :public Property
@@ -111,7 +125,7 @@ public:
 //public:
 // glm::vec3 &val;
 // PropertyVec3(std::string name, glm::vec3 &val) : Property(name), val(val) {};
-// virtual PropertyType getType() const override { return PropertyType::VEC3; };
+// virtual DataType getType() const override { return DataType::VEC3; };
 //};
 //
 //class PropertyInt :public Property
@@ -119,7 +133,7 @@ public:
 //public:
 // int &val;
 // PropertyInt(std::string name, int &val) : Property(name), val(val) {};
-// virtual PropertyType getType() const override { return PropertyType::INT; };
+// virtual DataType getType() const override { return DataType::INT; };
 //};
 //
 //class PropertyMesh : public Property
@@ -127,22 +141,85 @@ public:
 //public:
 // std::shared_ptr<Mesh> &val;
 // PropertyMesh(std::string name, std::shared_ptr<Mesh> &val) : Property(name), val(val) {};
-// virtual PropertyType getType() const override { return PropertyType::MESH; };
+// virtual DataType getType() const override { return DataType::MESH; };
 //};
 
-class Properties
+
+class ParameterBase
 {
- std::vector<PropertyBase*> properties;
 public:
- ~Properties();
+ std::string name;
+ ParameterBase(std::string name) :name(name) {};
+ virtual DataType getType() const = 0;
 
- void clear();
- std::vector<PropertyBase*>& getPropertiesVector() { return properties; };
+ virtual PropertyBase* getProperty()=0;
 
- void addProperty(PropertyBase* property);
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(CEREAL_NVP(name));
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  try { archive(CEREAL_NVP(name)); }
+  catch (const std::exception&) {};
+ };
+ friend class cereal::access;
 };
 
+template<typename T>
+class Parameter : public ParameterBase
+{
+public:
+ T val;
+ Parameter(std::string name, T val) :ParameterBase(name), val(val) {};
+ virtual DataType getType() const override;
+ virtual PropertyBase* getProperty() override { return new Property<T>(name, val); };
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(cereal::base_class<ParameterBase>(this));
+  archive(CEREAL_NVP(val));
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  archive(cereal::base_class<ParameterBase>(this));
+  try { archive(CEREAL_NVP(val)); }
+  catch (const std::exception&) {};
+ };
+ friend class cereal::access;
+};
+
+class Parameters
+{
+ std::vector<ParameterBase*> parameters;
+public:
+ ~Parameters();
+
+ void clear();
+ std::vector<ParameterBase*>& getParameterVector() { return parameters; };
+
+ void addParameter(ParameterBase* parameter);
+
+ template<class Archive>
+ void save(Archive& archive) const
+ {
+  archive(CEREAL_NVP(parameters));
+ };
+ template<class Archive>
+ void load(Archive& archive)
+ {
+  try { archive(CEREAL_NVP(parameters)); }
+  catch (const std::exception&) {};
+ };
+ friend class cereal::access;
+};
 }
+
+
 
 //TODO add this to macro
 //CEREAL_REGISTER_TYPE(villain::PropertyFloat);

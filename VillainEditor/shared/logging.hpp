@@ -14,4 +14,6 @@ exit(1);
 
 #define INFO(x) std::cout<<x<<std::endl;
 
+#define WARNING(x) std::cout<<"WARNING: "<<x<<std::endl;
+
 #define ASSERT(x) if(!(x)) ERROR(X);

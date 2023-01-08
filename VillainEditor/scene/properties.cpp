@@ -6,11 +6,32 @@
 
 namespace villain{
 
-PropertyType Property<int>::getType() const { return PropertyType::INT; }
-PropertyType Property<float>::getType() const { return PropertyType::FLOAT; }
-PropertyType Property<glm::vec2>::getType() const { return PropertyType::VEC2; }
-PropertyType Property<glm::vec3>::getType() const { return PropertyType::VEC3; }
-PropertyType Property<Transform>::getType() const { return PropertyType::TRANSFORM; }
+DataType Property<int>::getType() const { return DataType::INT; }
+DataType Property<float>::getType() const { return DataType::FLOAT; }
+DataType Property<glm::vec2>::getType() const { return DataType::VEC2; }
+DataType Property<glm::vec3>::getType() const { return DataType::VEC3; }
+DataType Property<std::string>::getType() const { return DataType::STRING; }
+DataType Property<Transform>::getType() const { return DataType::TRANSFORM; }
+DataType Property<std::shared_ptr<Shader>>::getType() const { return DataType::SHADER; }
+DataType Property<std::shared_ptr<Material>>::getType() const { return DataType::MATERIAL; }
+
+
+DataType Parameter<int>::getType() const { return DataType::INT; }
+DataType Parameter<float>::getType() const { return DataType::FLOAT; }
+DataType Parameter<glm::vec2>::getType() const { return DataType::VEC2; }
+DataType Parameter<glm::vec3>::getType() const { return DataType::VEC3; }
+DataType Parameter<std::string>::getType() const { return DataType::STRING; }
+DataType Parameter<Transform>::getType() const { return DataType::TRANSFORM; }
+DataType Parameter<std::shared_ptr<Shader>>::getType() const { return DataType::SHADER; }
+DataType Parameter<std::shared_ptr<Material>>::getType() const { return DataType::MATERIAL; }
+
+//template<typename T>
+//PropertyBase* Parameter<T>::getProperty()
+//{
+// return nullptr;
+// //return new Property<T>(name, val);
+//}
+
 
 
 
@@ -54,7 +75,7 @@ void Properties::addProperty(PropertyBase* property)
 //{
 // switch (default_prop->getType())
 // {
-// case PropertyType::FLOAT:
+// case DataType::FLOAT:
 // {
 //  properties.push_back(
 //   std::make_shared<PropertyFloat>(
@@ -64,7 +85,7 @@ void Properties::addProperty(PropertyBase* property)
 //  );
 //  break;
 // }
-// case PropertyType::VEC3:
+// case DataType::VEC3:
 // {
 //  properties.push_back(
 //   std::make_shared<PropertyVec3>(
@@ -93,5 +114,23 @@ void Properties::addProperty(PropertyBase* property)
 // properties = new_props.properties;
 //}
 
+
+Parameters::~Parameters()
+{
+ for (auto param : parameters)
+  delete param;
+}
+
+void Parameters::clear()
+{
+ for (auto param : parameters)
+  delete param;
+ parameters.clear();
+}
+
+void Parameters::addParameter(ParameterBase* parameter)
+{
+ parameters.push_back(parameter);
+}
 
 }

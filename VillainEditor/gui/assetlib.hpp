@@ -5,6 +5,8 @@
 #include "asset_library/actor_library.hpp"
 #include "asset_library/material_library.hpp"
 
+#include "properties_gui.hpp"
+
 
 namespace villain {
 

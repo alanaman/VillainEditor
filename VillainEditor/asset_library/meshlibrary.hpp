@@ -85,6 +85,8 @@ public:
 };
 }
 
+//TODO move this somewhere else
+
 namespace glm {
 template<class Archive>
 void serialize(Archive& archive, glm::vec2& m)

@@ -63,7 +63,7 @@ void ShaderLibrary::init()
    auto fragment_shader = readShaderFromFile(shaderfiles.frag);
    default_shader = Shader::create(shaderfiles.name, vertex_shader, fragment_shader);
   }
-  else if (shaderfiles.geom == "")
+  if (shaderfiles.geom == "")
   {
    auto vertex_shader = readShaderFromFile(shaderfiles.vert);
    auto fragment_shader = readShaderFromFile(shaderfiles.frag);
@@ -106,7 +106,8 @@ std::shared_ptr<Shader> ShaderLibrary::getShaderByName(std::string& name)
   if (shaders[i]->getName() == name)
    return shaders[i];
  }
- return default_shader;
+ WARNING("shader with name: " << name << " doesn't exist");
+ return getDefaultShader();
 }
 
 }//end namespace villain

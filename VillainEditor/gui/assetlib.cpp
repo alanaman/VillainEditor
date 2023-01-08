@@ -28,7 +28,8 @@ void AssetLibrary::render()
   {
    renderMaterialLib();
    ImGui::EndTabItem();
-  }  if (ImGui::BeginTabItem("Shaders"))
+  }  
+  if (ImGui::BeginTabItem("Shaders"))
   {
    renderShaderLib();
    ImGui::EndTabItem();
@@ -105,7 +106,10 @@ void AssetLibrary::renderMaterialLib()
  {
   if (material_rename_index != i)
   {
-   ImGui::Selectable(materials[i]->name.c_str());
+   if (ImGui::Selectable(materials[i]->name.c_str()))
+   {
+    PropertiesPanel::onMaterialSelection(materials[i]);
+   }
    if (ImGui::IsItemFocused() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
    {
     material_rename_index = i;

@@ -19,10 +19,10 @@ class Material
 private:
  std::string name;
 
- std::string shader;
- std::shared_ptr<Shader> shader_cache = NULL;
+ std::shared_ptr<Shader> shader = NULL;
 
- Properties m_properties;
+ std::string shader_name;
+ Parameters m_parameters;
  Material() {};//cereal
 public:
  ~Material();
@@ -36,7 +36,7 @@ public:
  void setShader(std::shared_ptr<Shader> shader);
  void bind();
 
- Properties collectectProperties() { return m_properties; };
+ virtual void collectProperties(Properties& properties);
 
  friend class MaterialLibrary;
  friend class AssetLibrary;

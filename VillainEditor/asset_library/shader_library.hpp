@@ -41,6 +41,7 @@ public:
  static void setCameraMatrix(glm::mat4 camMatrix);
 
  static std::shared_ptr<Shader> getShaderByIndex(int index) { return shaders[index]; };
+ static int getNumShaders() { return (int)shaders.size(); };
  static std::shared_ptr<Shader> getShaderByName(std::string& name);
 
  friend class AssetLibrary;
