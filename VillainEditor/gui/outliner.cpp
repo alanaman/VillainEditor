@@ -102,10 +102,10 @@ void villain::Outliner::renderCollection(std::shared_ptr<Collection> collection)
 
   if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_LIB_MESH"))
   {
-   IM_ASSERT(payload->DataSize == sizeof(int));
-   int index = *(const int*)payload->Data;
+   IM_ASSERT(payload->DataSize == sizeof(MeshId));
+   MeshId id = *(const MeshId*)payload->Data;
 
-   auto entity = m_scene->addStaticMesh(MeshLibrary::getMeshListRef()[index]);
+   auto entity = m_scene->addStaticMesh(id);
    collection->addEntity(entity);
   }
   if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_LIB_ACTOR"))

@@ -218,6 +218,7 @@
     <ClCompile Include="scene\scene.cpp" />
     <ClCompile Include="scene\static_mesh.cpp" />
     <ClCompile Include="scene\transform.cpp" />
+    <ClCompile Include="shared\name_handler.cpp" />
     <ClCompile Include="VillainEditor.cpp" />
     <ClCompile Include="window\glfw\window_glfw.cpp" />
     <ClCompile Include="window\nfd\nativefiledialog.cpp" />
@@ -563,6 +564,7 @@
     <ClInclude Include="scene\scene.hpp" />
     <ClInclude Include="scene\static_mesh.hpp" />
     <ClInclude Include="scene\transform.hpp" />
+    <ClInclude Include="shared\name_handler.hpp" />
     <ClInclude Include="VillainEditor.hpp" />
     <ClInclude Include="window\filedialog.hpp" />
     <ClInclude Include="window\glfw\window_glfw.hpp" />

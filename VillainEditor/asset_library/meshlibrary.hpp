@@ -1,6 +1,7 @@
 #pragma once
 
 #include "logging.hpp"
+#include "name_handler.hpp"
 #include "window/filedialog.hpp"
 #include <filesystem>
 
@@ -16,6 +17,7 @@
 #include <cereal/archives/json.hpp>
 #include <cereal/types/vector.hpp>
 
+#include "graphics/mesh.hpp"
 #include "asset_lib_macros.hpp"
 #include "asset_library/material_library.hpp"
 
@@ -56,32 +58,49 @@ struct MeshData
 
 class MeshLibrary
 {
- static std::vector<std::string> names;
- static std::vector<int> n_users;
- static std::vector<std::shared_ptr<void>> load_point;
+ //static std::vector<std::string> names;
+ //static std::vector<int> n_users;
+ //static std::vector<std::shared_ptr<void>> load_point;
+
+ struct MeshEntry
+ {
+  std::string name;
+  int n_users;
+  std::shared_ptr<void> load_point;
+ };
+
+ static int nxt_id;
+ static std::unordered_map<MeshId, MeshEntry> id_meshentry;
+ static NameHandler mName_handler;
+
+ static std::unordered_map<MeshId, MeshEntry>& getEntriesRef();//for gui
 
 //TODO cahnge data queries to use index instaed of names;
  static void addEntry(std::string name);
- static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
- static bool processMeshes(const aiScene* scene, const std::string& directory);
+ //static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
+ static bool processMeshes(const aiScene* scene, const std::string& filename);
 public:
- static int getIndex(const std::string& name);
+ static MeshId getId(const std::string name);
  static void init();
  static void createMeshFromFile();
- static void deleteMesh(int index);
- static void incrementUsers(std::string& name);
- static void decrementUsers(std::string& name);
- static bool hasUsers(std::string& name);
+ static void deleteMesh(MeshId mesh_id);
+ static void incrementUsers(MeshId mesh_id);
+ static void decrementUsers(MeshId mesh_id);
+ static bool hasUsers(MeshId mesh_id);
 
- static void updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials);
- static std::vector<std::shared_ptr<Material>> getDefaultMaterials(std::string& name);
+ //static void updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials);
+ static void updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& material_ids);
+ //static std::vector<std::shared_ptr<Material>> getDefaultMaterials(std::string& name);
+ static std::vector<int> getDefaultMaterialIds(MeshId mesh_id);
 
- static void setLoadPoint(std::string& name, std::shared_ptr<void> ptr);
- static std::shared_ptr<void> getLoadPoint(std::string& name);
+ static void setLoadPoint(MeshId mesh_id, std::shared_ptr<void> ptr);
+ static std::shared_ptr<void> getLoadPoint(MeshId mesh_id);
 
- static std::vector<std::string>& getMeshListRef();
- static void getMeshData(std::string name, std::vector<MeshData>& data);
+ //static void getMeshData(std::string name, std::vector<MeshData>& data);
+ static void getMeshData(MeshId id, std::vector<MeshData>& data);
 
+ friend class AssetLibrary;
+ friend class PropertiesPanel;
 };
 }
 

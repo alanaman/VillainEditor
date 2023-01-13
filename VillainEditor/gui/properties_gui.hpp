@@ -3,7 +3,9 @@
 #include "imgui/imgui.h"
 
 #include "scene/properties.hpp"
+#include "asset_library/meshlibrary.hpp"
 #include "graphics/material.hpp"
+#include "graphics/mesh.hpp"
 #include "scene/entity.hpp"
 
 namespace villain {
@@ -16,7 +18,7 @@ private:
  static Properties m_properties;
 
  static std::shared_ptr<Entity> selected_entity;
- static std::shared_ptr<Material> selected_material;
+ static int selected_material_id;
  static std::shared_ptr<Shader> selected_shader;
 
 
@@ -24,6 +26,7 @@ private:
  static void inline renderVec3Property(Property<glm::vec3>* prop);
  static void inline renderIntProperty(Property<int>* prop);
  static void inline renderTransformProperty(Property<Transform>* prop);
+ static void inline renderMeshProperty(Property<std::shared_ptr<Mesh>>* prop);
  static void inline renderShaderProperty(Property<std::shared_ptr<Shader>>* prop);
  static void inline renderMaterialProperty(Property<std::shared_ptr<Material>>* prop);
 
@@ -31,7 +34,7 @@ public:
  static void render();
 
  static void onEntitySelection(std::shared_ptr<Entity> entity);
- static void onMaterialSelection(std::shared_ptr<Material> material);
+ static void onMaterialSelection(int material_id);
  static void onShaderSelection(std::shared_ptr<Shader> shader);
 
  static void onSceneReload() {};

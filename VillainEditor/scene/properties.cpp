@@ -12,6 +12,7 @@ DataType Property<glm::vec2>::getType() const { return DataType::VEC2; }
 DataType Property<glm::vec3>::getType() const { return DataType::VEC3; }
 DataType Property<std::string>::getType() const { return DataType::STRING; }
 DataType Property<Transform>::getType() const { return DataType::TRANSFORM; }
+DataType Property<std::shared_ptr<Mesh>>::getType() const { return DataType::MESH; }
 DataType Property<std::shared_ptr<Shader>>::getType() const { return DataType::SHADER; }
 DataType Property<std::shared_ptr<Material>>::getType() const { return DataType::MATERIAL; }
 
@@ -22,6 +23,7 @@ DataType Parameter<glm::vec2>::getType() const { return DataType::VEC2; }
 DataType Parameter<glm::vec3>::getType() const { return DataType::VEC3; }
 DataType Parameter<std::string>::getType() const { return DataType::STRING; }
 DataType Parameter<Transform>::getType() const { return DataType::TRANSFORM; }
+DataType Parameter<std::shared_ptr<Mesh>>::getType() const { return DataType::MESH; }
 DataType Parameter<std::shared_ptr<Shader>>::getType() const { return DataType::SHADER; }
 DataType Parameter<std::shared_ptr<Material>>::getType() const { return DataType::MATERIAL; }
 

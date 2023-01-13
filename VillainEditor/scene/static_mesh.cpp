@@ -13,22 +13,22 @@ StaticMesh::StaticMesh(std::string& name, std::shared_ptr<Mesh>& mesh)
 std::shared_ptr<StaticMesh> StaticMesh::create(std::shared_ptr<Mesh>& mesh)
 {
  auto ptr = std::make_shared<StaticMesh>(mesh);
- ptr->m_mesh->setParent(ptr);
+ //ptr->m_mesh->setParent(ptr);
  return ptr;
 }
 std::shared_ptr<StaticMesh> StaticMesh::create(std::string name, std::shared_ptr<Mesh>& mesh)
 {
  auto ptr = std::make_shared<StaticMesh>(name, mesh);
- ptr->m_mesh->setParent(ptr);
+ //ptr->m_mesh->setParent(ptr);
  return ptr;
 }
-std::shared_ptr<Mesh> StaticMesh::getMesh()
+std::shared_ptr<Mesh>* StaticMesh::getMeshRef()
 {
- return m_mesh;
+ return &m_mesh;
 }
 void StaticMesh::collectProperties(Properties& properties)
 {
  this->Entity::collectProperties(properties);
-
+ properties.addProperty(new Property("mesh", m_mesh));
 }
 }

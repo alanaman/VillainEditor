@@ -22,10 +22,10 @@ void Bullet::updateOnFrame(const float& deltatime)
 {
  m_transform.setPosition(m_transform.getPosition() + deltatime*speed*direction);
 }
-void Bullet::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
+void Bullet::collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes)
 {
  this->Actor::collectMeshes(meshes);
- meshes.push_back(bullet_mesh);
+ meshes.push_back(&bullet_mesh);
  return;
 }
 

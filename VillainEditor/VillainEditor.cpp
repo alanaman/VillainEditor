@@ -70,6 +70,11 @@ void Editor::onSceneReload()
  gui->onSceneReload();
 }
 
+void Editor::onSave()
+{
+ MaterialLibrary::onSave();
+}
+
 Editor::~Editor()
 {
 	window->terminate();

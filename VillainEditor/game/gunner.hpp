@@ -23,7 +23,7 @@ private:
  float fire_interval = 1.0f;
 
  //unexposed vars
- const std::shared_ptr<Mesh> gunner_mesh = Mesh::create("gunner");
+ std::shared_ptr<Mesh> gunner_mesh = Mesh::create(MeshLibrary::getId("gunner"));
  
  float bullet_timer = 0;
 
@@ -37,7 +37,7 @@ public:
 
 
 
- virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) override;
+ virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes) override;
 
  virtual void collectProperties(Properties& properties) override;
 

@@ -16,7 +16,7 @@ public:
  virtual void beginPlay(){};
  virtual void actorBeginOverlap(Actor& otherActor){};
  virtual void updateOnFrame(const float& deltatime){};
- virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) { return; };
+ virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes) { return; };
 
  virtual void collectProperties(Properties& properties) override;
 

@@ -3,41 +3,41 @@
 
 namespace villain {
 
-std::shared_ptr<Mesh> Mesh::create(const std::string name)
+std::shared_ptr<Mesh> Mesh::create(const MeshId mesh_id)
 {
- if (MeshLibrary::getIndex(name) == -1)
+ if (mesh_id == (MeshId)-1)
   ERROR("mesh does not exist in library:check mesh name");
- return std::make_shared<MeshOpengl>(name);
+ return std::make_shared<MeshOpengl>(mesh_id);
 }
 
-MeshOpengl::MeshOpengl(const std::string& name)
- :Mesh(name), mesh_ref(NULL)
+MeshOpengl::MeshOpengl(MeshId mesh_id)
+ :Mesh(mesh_id), mesh_ref(NULL)
 {
- if (MeshLibrary::hasUsers(this->name))
+ if (MeshLibrary::hasUsers(mesh_id))
  {
-  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(this->name));
-  MeshLibrary::incrementUsers(this->name);
+  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(mesh_id));
+  MeshLibrary::incrementUsers(mesh_id);
  }
- m_materials = MeshLibrary::getDefaultMaterials(this->name);
+ material_ids = MeshLibrary::getDefaultMaterialIds(mesh_id);
 }
 
 void MeshOpengl::loadMesh()
 {
  if (isLoaded())
   return;
- if (MeshLibrary::hasUsers(name))
+ if (MeshLibrary::hasUsers(mesh_id))
  {
-  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(name));
+  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(mesh_id));
 
-  MeshLibrary::incrementUsers(name);
+  MeshLibrary::incrementUsers(mesh_id);
   return;
  }
 
  std::vector<MeshData> mesh_data;
- MeshLibrary::getMeshData(name, mesh_data);
+ MeshLibrary::getMeshData(mesh_id, mesh_data);
  mesh_ref = std::make_shared<std::vector<MeshMemoryRef>>();
- MeshLibrary::incrementUsers(name);
- MeshLibrary::setLoadPoint(name, mesh_ref);
+ MeshLibrary::incrementUsers(mesh_id);
+ MeshLibrary::setLoadPoint(mesh_id, mesh_ref);
 
  mesh_ref->resize(mesh_data.size());
  for (int i = 0; i < mesh_data.size(); i++)
@@ -102,17 +102,18 @@ void MeshOpengl::loadMesh()
 
 bool MeshOpengl::isLoaded()
 {
- if(mesh_ref==NULL)
-  return false;
- return true;
+ //if(mesh_ref==NULL)
+ // return false;
+ //return true;
+ return mesh_ref.get();
 }
 
 void MeshOpengl::unLoadMesh()
 {
  if (!isLoaded())
   return;
- MeshLibrary::decrementUsers(name);
- if (MeshLibrary::hasUsers(name))
+ MeshLibrary::decrementUsers(mesh_id);
+ if (MeshLibrary::hasUsers(mesh_id))
   return;
 
  auto& meshparts = (*mesh_ref);
@@ -123,10 +124,10 @@ void MeshOpengl::unLoadMesh()
   glDeleteVertexArrays(1, &meshparts[i].vao);
  }
  mesh_ref = NULL;
- MeshLibrary::setLoadPoint(name, NULL);
+ MeshLibrary::setLoadPoint(mesh_id, NULL);
 }
 
-void MeshOpengl::draw()
+void MeshOpengl::draw(std::shared_ptr<Entity> parent)
 {
  if (!isLoaded())
   ERROR("load mesh before draw call");
@@ -134,8 +135,7 @@ void MeshOpengl::draw()
  auto& meshparts = (*mesh_ref);
  for (int i = 0; i < meshparts.size(); i++)
  {
-  m_materials[i]->bind();
-  m_materials[i]->getShader()->setUniformMat4("uTransform", getTransformMatrix());
+  MaterialLibrary::bind(material_ids[i], parent->getTransformMatrix());
   glBindVertexArray(meshparts[i].vao);
   glDrawElements(GL_TRIANGLES, meshparts[i].n_indices, GL_UNSIGNED_INT, 0);
  }

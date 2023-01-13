@@ -2,69 +2,105 @@
 
 namespace villain {
 
-std::vector<std::shared_ptr<Material>> MaterialLibrary::materials;
-std::shared_ptr<Material> MaterialLibrary::default_material;
+//std::vector<std::shared_ptr<Material>> MaterialLibrary::materials;
+
+std::unordered_map<int, Material> MaterialLibrary::materials;
+Material MaterialLibrary::default_material;
+int MaterialLibrary::nxt_id = 0;
+NameHandler MaterialLibrary::mName_handler;
 
 void MaterialLibrary::init()
 {
  ShaderLibrary::init();
- auto def_shader = ShaderLibrary::getDefaultShader();
- default_material = std::make_shared<Material>("default_mat", def_shader);
+ default_material = Material("default_mat", ShaderLibrary::getDefaultShader());
 
-
+ loadLibFile();
 }
 
-void MaterialLibrary::addMaterial(std::shared_ptr<Material> new_material)
+void MaterialLibrary::loadLibFile()
 {
- for (auto& mat : materials)
+ auto filename = MATERIAL_LIB_FILE;
+ std::ifstream file;
+ file.open(filename, std::ios::binary);
+
+ cereal::BinaryInputArchive archive(file);
+ //archive(nxt_id, materials);
+ 
+ mName_handler.clear();
+ for (auto& id_material : materials)
+  mName_handler.addEntry(id_material.second.name);
+}
+
+void MaterialLibrary::addMaterial()
+{
+ materials[nxt_id] = Material("Material", ShaderLibrary::getDefaultShader());
+ mName_handler.addEntry(materials[nxt_id].name);
+}
+
+void MaterialLibrary::addMaterial(std::shared_ptr<Shader> shader)
+{
+ materials[nxt_id] = Material("Material", shader);
+ mName_handler.addEntry(materials[nxt_id].name);
+}
+
+
+int MaterialLibrary::getMaterialIdByName(std::string& name)
+{
+ for (const auto& id_material:materials)
  {
-  if (mat->name == new_material->name)
-   return;
+  if (id_material.second.name == name)
+   return id_material.first;
  }
- materials.push_back(new_material);
+ return -1;
 }
 
-std::shared_ptr<Material> MaterialLibrary::getDefaultMaterial()
+Material& MaterialLibrary::getMaterial(int mat_id)
 {
- if (default_material == NULL)
-  ERROR("default material not initialised");
+ if(materials.count(mat_id))
+  return materials[mat_id];
  return default_material;
 }
 
-std::shared_ptr<Material> MaterialLibrary::getMaterialByIndex(int index)
+void MaterialLibrary::renameMaterial(int mat_id, std::string new_name)
 {
- return materials[index];
+ mName_handler.rename(materials[mat_id].name, new_name);
 }
 
-std::shared_ptr<Material> MaterialLibrary::getMaterialByName(std::string& name)
+void MaterialLibrary::saveLibFile()
 {
- for (const auto& material:materials)
- {
-  if (material->name == name)
-   return material;
- }
- return default_material;
+ auto filename = MATERIAL_LIB_FILE;
+ std::ofstream file;
+ file.open(filename, std::ios::binary);
+ cereal::BinaryOutputArchive archive(file);
+ //archive(nxt_id, materials);
+ file.close();
 }
 
-void MaterialLibrary::resolve(std::vector<std::shared_ptr<Material>>& loaded_materials)
+
+void MaterialLibrary::onSave()
 {
- for (auto& loaded_mat : loaded_materials)
- {
-  auto& name = loaded_mat->name;
-  bool found = false;
-  for (auto& mat : materials)
-  {
-   if (mat->name == name)
-   {
-    loaded_mat = mat;
-    found = true;
-    break;
-   }
-  }
-  //if material not in library add it
-  if(!found)
-   materials.push_back(loaded_mat);
- }
+ saveLibFile();
 }
+
+//void MaterialLibrary::resolve(std::vector<std::shared_ptr<Material>>& loaded_materials)
+//{
+// for (auto& loaded_mat : loaded_materials)
+// {
+//  auto& name = loaded_mat->name;
+//  bool found = false;
+//  for (auto& mat : materials)
+//  {
+//   if (mat->name == name)
+//   {
+//    loaded_mat = mat;
+//    found = true;
+//    break;
+//   }
+//  }
+//  //if material not in library add it
+//  if(!found)
+//   materials.push_back(loaded_mat);
+// }
+//}
 
 }//end namespace villain

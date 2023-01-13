@@ -4,6 +4,9 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <unordered_set>
+#include <functional>
+
 
 #ifdef _MSC_VER
 #define ERROR(x) __debugbreak();

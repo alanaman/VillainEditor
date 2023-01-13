@@ -23,14 +23,14 @@ private:
 
  std::string shader_name;
  Parameters m_parameters;
- Material() {};//cereal
 public:
+ Material() {};//cereal
  ~Material();
  Material(std::string name);
- Material(std::string name, std::shared_ptr<Shader>& shader);
+ Material(std::string name, std::shared_ptr<Shader> shader);
 
- std::string& getName() { return name; };
- void setName(std::string name) { this->name = name; };
+ std::string getName() { return name; };
+ //void rename(std::string name) { this->name = name; };//Through library namehandler
 
  std::shared_ptr<Shader> getShader();
  void setShader(std::shared_ptr<Shader> shader);
@@ -39,24 +39,25 @@ public:
  virtual void collectProperties(Properties& properties);
 
  friend class MaterialLibrary;
- friend class AssetLibrary;
+ friend class cereal::access;
+
+ //friend class AssetLibrary;
 
  template<class Archive>
  void save(Archive& archive) const
  {
-  archive(
-   CEREAL_NVP(name),
-   CEREAL_NVP(shader)
-  );
+  archive(CEREAL_NVP(name));
+  archive(CEREAL_NVP(shader_name));
  };
  template<class Archive>
  void load(Archive& archive)
  {
-  archive(
-   name,
-   shader
-  );
+  try { archive(CEREAL_NVP(name)); }
+  catch (const std::exception&) {};
+  try { archive(CEREAL_NVP(shader_name)); }
+  catch (const std::exception&) {};
+
+  setShader(ShaderLibrary::getShaderByName(shader_name));
  };
- friend class cereal::access;
 };
 }

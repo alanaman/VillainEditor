@@ -87,7 +87,7 @@ std::shared_ptr<Shader> ShaderLibrary::getDefaultShader()
  return default_shader;
 }
 
-void ShaderLibrary::setCameraMatrix(glm::mat4 camMatrix)
+void ShaderLibrary::setCameraMatrix(const glm::mat4& camMatrix)
 {
  default_shader->bind();
  default_shader->setUniformMat4("uProjViewModelMat", camMatrix);

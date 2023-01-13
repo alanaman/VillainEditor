@@ -31,19 +31,19 @@ void Scene::updateOnFrame(const float& deltatime)
  mRenderer.renderFrame();
 }
 
-std::shared_ptr<StaticMesh> Scene::addStaticMesh(const std::string& name)
+std::shared_ptr<StaticMesh> Scene::addStaticMesh(const MeshId mesh_id)
 {
- auto mesh = Mesh::create(name);
- auto static_mesh = StaticMesh::create(name, mesh);
+ auto mesh = Mesh::create(mesh_id);
+ auto static_mesh = StaticMesh::create("NewStaticMesh", mesh);
  mStaticMeshes.push_back(static_mesh);
- mRenderer.submitMesh(mesh, static_mesh);
+ mRenderer.submitMesh(static_mesh->getMeshRef(), static_mesh);
  return static_mesh;
 }
 
 void Scene::addActor(std::shared_ptr<Actor> actor)
 {
  mActors.push_back(actor);
- std::vector<std::shared_ptr<Mesh>> meshes;
+ std::vector<std::shared_ptr<Mesh>*> meshes;
  actor->collectMeshes(meshes);
  mRenderer.submitMeshes(meshes, actor);
 }
@@ -155,11 +155,11 @@ void Scene::loadScene()
  mRenderer.submitCamera(m_view_cam);
  for (auto static_mesh : mStaticMeshes)
  {
-  mRenderer.submitMesh(static_mesh->getMesh(), static_mesh);
+  mRenderer.submitMesh(static_mesh->getMeshRef(), static_mesh);
  }
  for (auto actor : mActors)
  {
-  std::vector<std::shared_ptr<Mesh>> meshes;
+  std::vector<std::shared_ptr<Mesh>*> meshes;
   actor->collectMeshes(meshes);
   mRenderer.submitMeshes(meshes, actor);
  }

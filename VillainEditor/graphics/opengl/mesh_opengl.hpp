@@ -31,11 +31,11 @@ private:
 public:
 
 
- MeshOpengl(const std::string& name);
+ MeshOpengl(MeshId mesh_id);
  void loadMesh() override;
  virtual bool isLoaded() override;
  virtual void unLoadMesh() override;
- void draw() override;
+ void draw(std::shared_ptr<Entity> parent) override;
 
 
  template<class Archive>

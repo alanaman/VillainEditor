@@ -3,10 +3,24 @@
 
 namespace villain {
 
-std::vector<std::string> MeshLibrary::names;
-std::vector<int> MeshLibrary::n_users;
-std::vector<std::shared_ptr<void>> MeshLibrary::load_point;
+//std::vector<std::string> MeshLibrary::names;
+//std::vector<int> MeshLibrary::n_users;
+//std::vector<std::shared_ptr<void>> MeshLibrary::load_point;
 
+int MeshLibrary::nxt_id = 0;
+
+std::unordered_map<MeshId, MeshLibrary::MeshEntry> MeshLibrary::id_meshentry;
+
+MeshId MeshLibrary::getId(const std::string name)
+{
+ for (const auto& mesh : id_meshentry)
+ {
+  if (mesh.second.name == name)
+   return mesh.first;
+ }
+ ERROR("invalid mesh");//TODO make this warning and make null mesh work
+ return -1;
+}
 
 void MeshLibrary::init()
 {
@@ -20,12 +34,18 @@ void MeshLibrary::init()
  {
   std::cout << entry.path() << std::endl;
 
-  if (entry.is_directory())
+  if (entry.is_regular_file())
   {
    std::stringstream ss;
-   ss << entry.path().filename();
-   auto temp = ss.str();
-   addEntry(temp.substr(1, temp.length()-2));
+   auto filepath = std::string((char*)entry.path().c_str());
+   auto filename = std::string((char*)entry.path().filename().c_str());
+   std::ifstream file;
+   file.open(filepath, std::ios::binary);
+   cereal::BinaryInputArchive archive(file);
+   int id;
+   archive(id);
+   id_meshentry[id] = { filename, 0, NULL };
+
   }
  }
 }
@@ -40,21 +60,12 @@ void MeshLibrary::createMeshFromFile()
  auto name_start = filepath.find_last_of("\\");
  auto name_end = filepath.find_last_of(".");
  auto name = filepath.substr(name_start + 1, name_end - name_start - 1);
- if (getIndex(name) != -1)
- {
-  std::string new_name = name;
-  int i = 1;
-  while (getIndex(new_name) != -1)
-  {
-   auto numstr = std::to_string(i);
-   new_name = name + "." + std::string(4 - numstr.size(), '0') + numstr;
-  }
-  name = new_name;
- }
  
- std::string mesh_dir = MESH_LIB_FOLDER + ("/" + name);
-
- std::filesystem::create_directory(mesh_dir);
+ auto filename = MESH_LIB_FOLDER + ("/" + name + ".mesh");
+ if (std::filesystem::exists(filename))
+ {
+  INFO("mesh with same name already exists. import cancelled");
+ }
 
 
  Assimp::Importer importer;
@@ -66,112 +77,123 @@ void MeshLibrary::createMeshFromFile()
   ERROR("ASSIMP::" << import.GetErrorString());
   return;
  }
- if (processMeshes(scene, mesh_dir))
+ if (processMeshes(scene, MESH_LIB_FOLDER + std::string("/") + name))
   addEntry(name);
  //TODO read and create folders+datafiles;
 
 }
 
-void MeshLibrary::deleteMesh(int index)
+void MeshLibrary::deleteMesh(MeshId mesh_id)
 {
- if (n_users[index] != 0)
-  INFO("mesh has " << n_users[index] << " users: cant delete")
+ if (id_meshentry[mesh_id].n_users != 0)
+  INFO("mesh has " << id_meshentry[mesh_id].n_users << " users: cant delete")
  else
  {
-  std::filesystem::remove_all(MESH_LIB_FOLDER + std::string("/") + names[index]);
-  names.erase(std::next(names.begin(), index));
-  n_users.erase(std::next(n_users.begin(), index));
-  load_point.erase(std::next(load_point.begin(), index));
+  std::filesystem::remove(MESH_LIB_FOLDER + std::string("/") + id_meshentry[mesh_id].name);
+  id_meshentry.erase(mesh_id);
  }
 }
 
-void MeshLibrary::incrementUsers(std::string& name)
+void MeshLibrary::incrementUsers(MeshId mesh_id)
 {
- n_users[getIndex(name)]++;
+ id_meshentry[mesh_id].n_users++;
 }
 
-void MeshLibrary::decrementUsers(std::string& name)
+void MeshLibrary::decrementUsers(MeshId mesh_id)
 {
- int index = getIndex(name);
- if (n_users[index] == 0)
+ int n_users = id_meshentry[mesh_id].n_users;
+ if (n_users == 0)
   ERROR("number of user cant be negative: only active users can call decrementUsers");
- n_users[index]--;
+ id_meshentry[mesh_id].n_users--;
 }
 
-bool MeshLibrary::hasUsers(std::string& name)
+bool MeshLibrary::hasUsers(MeshId mesh_id)
 {
- if (n_users[getIndex(name)] == 0)
-  return false;
- return true;
+ return  id_meshentry[mesh_id].n_users != 0;
 }
 
-void MeshLibrary::updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials)
+void MeshLibrary::updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& material_ids)
 {
- auto filename = MESH_LIB_FOLDER + std::string("/") + name + "/" + MATERIAL_FILE_NAME;
+ if (!id_meshentry.count(mesh_id))
+ {
+  WARNING("mesh with given id does not exist");
+  return;
+ }
+ auto filename = MESH_LIB_FOLDER + std::string("/") + id_meshentry[mesh_id].name + "/" + MATERIAL_FILE_NAME;
  std::ofstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryOutputArchive archive(file);
- archive(materials);
+ archive(material_ids);
  file.close();
 }
 
-std::vector<std::shared_ptr<Material>> MeshLibrary::getDefaultMaterials(std::string& name)
+std::vector<int> MeshLibrary::getDefaultMaterialIds(MeshId mesh_id)
 {
- std::vector<std::shared_ptr<Material>> result;
- auto filename = std::string(MESH_LIB_FOLDER) + "/" + name + "/" + MATERIAL_FILE_NAME;
+ if (!id_meshentry.count(mesh_id))
+ {
+  WARNING("mesh with given id does not exist");
+  return std::vector<int>();
+ }
+ int id;
+ std::vector<MeshData> meshdata;
+ std::vector<int> result;
+ auto filename = std::string(MESH_LIB_FOLDER) + "/" + id_meshentry[mesh_id].name;
  std::ifstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryInputArchive archive(file);
- archive(
-  result
- );
+ archive(id);
+ archive(meshdata);
+ archive(result);
  return result;
 }
 
-void MeshLibrary::setLoadPoint(std::string& name, std::shared_ptr<void> ptr)
+void MeshLibrary::setLoadPoint(MeshId mesh_id, std::shared_ptr<void> ptr)
 {
- load_point[getIndex(name)] = ptr;
+ id_meshentry[mesh_id].load_point = ptr;
 }
 
-std::shared_ptr<void> MeshLibrary::getLoadPoint(std::string& name)
+std::shared_ptr<void> MeshLibrary::getLoadPoint(MeshId mesh_id)
 {
- return load_point[getIndex(name)];
+ return id_meshentry[mesh_id].load_point;
 }
 
-std::vector<std::string>& MeshLibrary::getMeshListRef()
-{
- return names;
-}
 
-void MeshLibrary::getMeshData(std::string name, std::vector<MeshData>& data)
+void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data)
 {
- auto filename = std::string(MESH_LIB_FOLDER) + "/" + name + "/" + MESH_FILE_NAME;
+ auto filename = std::string(MESH_LIB_FOLDER) + "/" + id_meshentry[mesh_id].name;
  std::ifstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryInputArchive archive(file);
- archive(
-  data
- );
+ int id;
+ archive(id);
+ archive(data);
+}
+
+std::unordered_map<MeshId, MeshLibrary::MeshEntry>& MeshLibrary::getEntriesRef()
+{
+ return id_meshentry;
 }
 
 void MeshLibrary::addEntry(std::string name)
 {
- names.push_back(name);
- n_users.push_back(0);
- load_point.push_back(NULL);
+ //names.push_back(name);
+ //n_users.push_back(0);
+ //load_point.push_back(NULL);
+ id_meshentry[nxt_id] = { name, 0, NULL };
+ nxt_id++;
 }
 
-bool MeshLibrary::processNode(const aiNode* node, const aiScene* scene, const std::string& directory)
-{
- for (unsigned int i = 0; i < node->mNumChildren; i++)
- {
-  if (processNode(node->mChildren[i], scene, directory))
-   return true;
- }
- return false;
-}
+//bool MeshLibrary::processNode(const aiNode* node, const aiScene* scene, const std::string& directory)
+//{
+// for (unsigned int i = 0; i < node->mNumChildren; i++)
+// {
+//  if (processNode(node->mChildren[i], scene, directory))
+//   return true;
+// }
+// return false;
+//}
 
-bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& directory)
+bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& filename)
 {
  std::vector<MeshData> meshdata(scene->mNumMeshes);
 
@@ -236,34 +258,26 @@ bool MeshLibrary::processMeshes(const aiScene* scene, const std::string& directo
 
  //save to file
  {
-  auto filename = directory + "/" + MESH_FILE_NAME;
   std::ofstream file;
   file.open(filename, std::ios::binary);
   cereal::BinaryOutputArchive archive(file);
+  std::vector<int> default_materials(meshdata.size(), -1);
+  archive(nxt_id);
   archive(meshdata);
-  file.close();
- }
- //save default shaders for all mesh parts
- {
-  std::vector<std::shared_ptr<Material>> materials(meshdata.size(), MaterialLibrary::getDefaultMaterial());
-  auto filename = directory + "/" + MATERIAL_FILE_NAME;
-  std::ofstream file;
-  file.open(filename, std::ios::binary);
-  cereal::BinaryOutputArchive archive(file);
-  archive(materials);
+  archive(default_materials);
   file.close();
  }
  return true;
 }
 
-int MeshLibrary::getIndex(const std::string& name)
-{
- for (int i = 0; i < names.size(); i++)
- {
-  if (names[i] == name)
-   return i;
- }
- return -1;
-}
+//int MeshLibrary::getId(const std::string& name)
+//{
+// for (int i = 0; i < names.size(); i++)
+// {
+//  if (names[i] == name)
+//   return i;
+// }
+// return -1;
+//}
 
 }

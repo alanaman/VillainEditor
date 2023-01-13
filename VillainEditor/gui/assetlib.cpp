@@ -3,7 +3,7 @@
 namespace villain {
 AssetLibrary::AssetLibrary()
  :
- mesh_list(MeshLibrary::getMeshListRef()),
+ mesh_list(MeshLibrary::getEntriesRef()),
  actor_list(ActorLibrary::actor_list())
 {
 }
@@ -44,14 +44,14 @@ void AssetLibrary::renderMeshLib()
 {
  if (ImGui::Button("+##AddMeshToLib"))
   MeshLibrary::createMeshFromFile();
- for (int i = 0; i < mesh_list.size(); i++)
+ for (auto& mesh:mesh_list)
  {
-  ImGui::Selectable(mesh_list[i].c_str());
+  ImGui::Selectable(mesh.second.name.c_str());
 
   if (ImGui::BeginDragDropSource())
   {
-   ImGui::SetDragDropPayload("ASSET_LIB_MESH", &i, sizeof(int));
-   ImGui::Text(("Add static mesh: " + mesh_list[i]).c_str());
+   ImGui::SetDragDropPayload("ASSET_LIB_MESH", &mesh.first, sizeof(MeshId));
+   ImGui::Text(("Add static mesh: " + mesh.second.name).c_str());
    ImGui::EndDragDropSource();
   }
 
@@ -59,7 +59,7 @@ void AssetLibrary::renderMeshLib()
   {
    //TODO
    if (ImGui::Selectable("Delete"))
-    MeshLibrary::deleteMesh(i);
+    MeshLibrary::deleteMesh(mesh.first);
    ImGui::EndPopup();
   }
  }
@@ -95,25 +95,23 @@ void AssetLibrary::renderMaterialLib()
  auto& materials = MaterialLibrary::materials;
  if (ImGui::Button("+"))
  {
-  MaterialLibrary::addMaterial(
-   std::make_shared<Material>(std::string("Material"), ShaderLibrary::default_shader)
-  );
+  MaterialLibrary::addMaterial();
  }
- static int material_rename_index = -1;
+ static int material_rename_id = -1;
  static char name[128];
 
- for (int i = 0; i < materials.size(); i++)
+ for (auto& mat:materials)
  {
-  if (material_rename_index != i)
+  if (material_rename_id != mat.first)
   {
-   if (ImGui::Selectable(materials[i]->name.c_str()))
+   if ( ImGui::Selectable(mat.second.getName().c_str()) )
    {
-    PropertiesPanel::onMaterialSelection(materials[i]);
+    PropertiesPanel::onMaterialSelection(mat.first);
    }
    if (ImGui::IsItemFocused() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
    {
-    material_rename_index = i;
-    strcpy_s(name, materials[i]->getName().c_str());
+    material_rename_id = mat.first;
+    strcpy_s(name, mat.second.getName().c_str());
    }
    if (ImGui::BeginPopupContextItem())
    {
@@ -132,9 +130,9 @@ void AssetLibrary::renderMaterialLib()
    ImGui::SetKeyboardFocusHere(-1);
    if (ImGui::IsItemDeactivated())
    {
-    material_rename_index = -1;
+    material_rename_id = -1;
     if (ImGui::IsItemDeactivatedAfterEdit())
-     materials[i]->setName(name);
+     MaterialLibrary::renameMaterial(mat.first, name);
    }
   }//end renaming display
  }//end for loop
@@ -150,9 +148,7 @@ void AssetLibrary::renderShaderLib()
   {
    if (ImGui::Selectable("Create Material"))
    {
-    MaterialLibrary::addMaterial(
-     std::make_shared<Material>(shaders[i]->getName() + "mat", shaders[i])
-    );
+    MaterialLibrary::addMaterial(shaders[i]);
    }
    ImGui::EndPopup();
   }

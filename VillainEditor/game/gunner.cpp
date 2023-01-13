@@ -35,10 +35,10 @@ void Gunner::updateOnFrame(const float& deltatime)
   spawnBullet();
  }
 }
-void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes)
+void Gunner::collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes)
 {
  this->Actor::collectMeshes(meshes);
- meshes.push_back(gunner_mesh);
+ meshes.push_back(&gunner_mesh);
  return;
 }
 

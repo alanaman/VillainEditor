@@ -27,6 +27,9 @@ public:
  void dispatchEvent(Event& e);
  void onResizeEvent(int width, int height);
  void onSceneReload();
+ void onSave();
+ void onLoad();
+
 
  Scene* getScene() { return &scene; };
  //void startPlay();

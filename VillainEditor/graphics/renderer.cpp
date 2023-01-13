@@ -6,16 +6,15 @@ Renderer::Renderer()
 {
 }
 
-void Renderer::submitMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<Entity> parent)
+void Renderer::submitMesh(std::shared_ptr<Mesh>* mesh, std::shared_ptr<Entity> parent)
 {
  if (mesh == NULL || parent == NULL)
   ERROR("invalid mesh / parent submitted");
- mesh->setParent(parent);
  mMeshes.push_back(mesh);
- mesh->loadMesh();
+ mParents.push_back(parent);
 }
 
-void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>>& meshes, std::shared_ptr<Entity> parent)
+void Renderer::submitMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes, std::shared_ptr<Entity> parent)
 {
  for (auto& mesh : meshes)
   submitMesh(mesh, parent);
@@ -29,7 +28,7 @@ void Renderer::submitCamera(std::shared_ptr<Camera> cam)
 void Renderer::clearAll()
 {
  for (auto mesh : mMeshes)
-  mesh->unLoadMesh();
+  (*mesh)->unLoadMesh();
  mMeshes.clear();
 }
 
@@ -42,7 +41,8 @@ void Renderer::renderFrame()
  ShaderLibrary::setCameraMatrix(mView_cam->getProjectionViewMatrix());
  for (int i=0;i<mMeshes.size();i++)
  {
-  mMeshes[i]->draw();
+  (*mMeshes[i])->loadMesh();
+  (*mMeshes[i])->draw(mParents[i]);
  }
 }
 }

@@ -12,7 +12,7 @@ namespace villain {
 class Bullet : public Actor
 {
 private:
- const std::shared_ptr<Mesh> bullet_mesh = Mesh::create("bullet");
+ std::shared_ptr<Mesh> bullet_mesh = Mesh::create(MeshLibrary::getId("bullet"));
 
  float speed = 7.0f;
  glm::vec3 direction = glm::vec3(0, 1, 0);
@@ -28,7 +28,7 @@ public:
 
 
 
- virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>>& meshes) override;
+ virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes) override;
 
  virtual void collectProperties(Properties& properties) override;
  

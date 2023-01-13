@@ -6,7 +6,7 @@ bool PropertiesPanel::show_properties_window = true;
 Properties PropertiesPanel::m_properties;
 
 std::shared_ptr<Entity> PropertiesPanel::selected_entity = NULL;
-std::shared_ptr<Material> PropertiesPanel::selected_material = NULL;
+int PropertiesPanel::selected_material_id = -1;
 std::shared_ptr<Shader> PropertiesPanel::selected_shader = NULL;
 
 void PropertiesPanel::onEntitySelection(std::shared_ptr<Entity> entity)
@@ -15,22 +15,18 @@ void PropertiesPanel::onEntitySelection(std::shared_ptr<Entity> entity)
  if (entity == NULL)
   return;
  selected_entity = entity;
- selected_material = NULL;
+ selected_material_id = -1;
  selected_shader = NULL;
  entity->collectProperties(PropertiesPanel::m_properties);
 }
 
-void PropertiesPanel::onMaterialSelection(std::shared_ptr<Material> material)
+void PropertiesPanel::onMaterialSelection(int material_id)
 {
  m_properties.clear();
- if (material == NULL)
- {
-  return;
- }
  selected_entity = NULL;
- selected_material = material;
+ selected_material_id = material_id;
  selected_shader = NULL;
- material->collectProperties(m_properties);
+ MaterialLibrary::getMaterial(material_id).collectProperties(m_properties);
 }
 
 void PropertiesPanel::render()
@@ -59,6 +55,10 @@ void PropertiesPanel::render()
   case DataType::TRANSFORM:
    renderTransformProperty((Property<Transform>*)property);
    break;
+
+  case DataType::MESH:
+   renderMeshProperty((Property<std::shared_ptr<Mesh>>*)property);
+  break;
 
   case DataType::SHADER:
    renderShaderProperty((Property<std::shared_ptr<Shader>>*)property);
@@ -121,6 +121,74 @@ inline void PropertiesPanel::renderTransformProperty(Property<Transform>* prop)
  );
 }
 
+inline void PropertiesPanel::renderMeshProperty(Property<std::shared_ptr<Mesh>>* prop)
+{
+ ImGui::Text("Mesh");
+ auto& meshes = MeshLibrary::getEntriesRef();
+ if (
+  ImGui::BeginCombo(
+   "##Mesh",
+   MeshLibrary::getEntriesRef()[prop->val->getId()].name.c_str(),
+   ImGuiComboFlags_PopupAlignLeft
+  ))
+ {
+  for (auto& mesh:meshes)
+  {
+   const bool is_selected = (mesh.first == prop->val->getId());
+   if (ImGui::Selectable(mesh.second.name.c_str(), is_selected))
+   {
+    prop->val = Mesh::create(mesh.first);
+   }
+
+   // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+   if (is_selected)
+    ImGui::SetItemDefaultFocus();
+  }
+  ImGui::EndCombo();
+ }
+
+ ImGui::SameLine(0.0f, -1.0f);
+
+ if (ImGui::Button("\u02C5Mat\u02C5"))
+  ImGui::OpenPopup("Material_edit_popup");
+ if (ImGui::BeginPopup("Material_edit_popup"))
+ {
+  auto n_slots = prop->val->getNumMaterialSlots();
+  int n_mats = MaterialLibrary::getNumMaterials();
+  for (int slot_index = 0; slot_index < n_slots; slot_index++)
+  {
+   auto current_mat_id = prop->val->getMaterialId(slot_index);
+   if (
+    ImGui::BeginCombo(
+     "Material",
+     MaterialLibrary::getMaterial(current_mat_id).getName().c_str(),
+     ImGuiComboFlags_PopupAlignLeft
+    ))
+   {
+    for (auto& mat:MaterialLibrary::materials)
+    {
+     const bool is_selected = (mat.first == current_mat_id);
+     if (ImGui::Selectable(mat.second.getName().c_str(), is_selected))
+     {
+      prop->val->setMaterial(slot_index, mat.first);
+     }
+
+     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+     if (is_selected)
+      ImGui::SetItemDefaultFocus();
+    }
+    ImGui::EndCombo();
+   }
+  }
+ }
+
+ //Materials
+
+
+
+
+}
+
 inline void PropertiesPanel::renderShaderProperty(Property<std::shared_ptr<Shader>>* prop)
 {
  
@@ -130,7 +198,7 @@ inline void PropertiesPanel::renderShaderProperty(Property<std::shared_ptr<Shade
   ImGui::BeginCombo(
    "Shader",
    prop->val->getName().c_str(),
-   ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_PopupAlignLeft
+   ImGuiComboFlags_PopupAlignLeft
   ))
  {
   for (int n = 0; n < n_shaders; n++)
@@ -139,8 +207,8 @@ inline void PropertiesPanel::renderShaderProperty(Property<std::shared_ptr<Shade
    const bool is_selected = (shader == prop->val);
    if (ImGui::Selectable(shader->getName().c_str(), is_selected))
    {
-    selected_material->setShader(shader);
-    PropertiesPanel::onMaterialSelection(selected_material);
+    MaterialLibrary::getMaterial(selected_material_id).setShader(shader);
+    PropertiesPanel::onMaterialSelection(selected_material_id);
     //prop changed
     //dont render rest of shaders
     break;

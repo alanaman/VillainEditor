@@ -13,7 +13,7 @@ Material::~Material()
 
 }
 
-Material::Material(std::string name, std::shared_ptr<Shader>& shader)
+Material::Material(std::string name, std::shared_ptr<Shader> shader)
  :name(name)
 {
  setShader(shader);
@@ -23,8 +23,8 @@ std::shared_ptr<Shader> Material::getShader()
 {
  if (shader == NULL)
  {
-  //shader_cache = ShaderLibrary::getShaderByName(shader);
-  WARNING("shader_cache is NULL: setShader may not have been called");
+  shader = ShaderLibrary::getShaderByName(shader_name);
+  //WARNING("shader_cache is NULL: setShader may not have been called");
  }
  return shader;
 }
