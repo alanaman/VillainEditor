@@ -89,8 +89,7 @@ public:
  template<class Archive>
  void load(Archive& archive)
  {
-  int id;
-  try { archive(CEREAL_NVP(id)); mesh_id = (MeshId)id; }
+  try { archive(CEREAL_NVP(mesh_id.id)); }
   catch (const std::exception&) { ERROR("id couldnt load") };//might wanna assign default mesh id
   try { archive(CEREAL_NVP(material_ids)); }
   catch (const std::exception&)

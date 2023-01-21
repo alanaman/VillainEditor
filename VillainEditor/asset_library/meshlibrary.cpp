@@ -37,13 +37,15 @@ void MeshLibrary::init()
   if (entry.is_regular_file())
   {
    std::stringstream ss;
-   auto filepath = std::string((char*)entry.path().c_str());
-   auto filename = std::string((char*)entry.path().filename().c_str());
+   auto filepath = entry.path().string();
+   auto filename = entry.path().filename().string();
    std::ifstream file;
    file.open(filepath, std::ios::binary);
    cereal::BinaryInputArchive archive(file);
-   int id;
+   int id=0;
    archive(id);
+   if (id >= nxt_id)
+    nxt_id = id + 1;
    id_meshentry[id] = { filename, 0, NULL };
 
   }

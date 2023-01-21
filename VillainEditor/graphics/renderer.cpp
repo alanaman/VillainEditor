@@ -30,6 +30,8 @@ void Renderer::clearAll()
  for (auto mesh : mMeshes)
   (*mesh)->unLoadMesh();
  mMeshes.clear();
+ mParents.clear();
+ mView_cam = NULL;
 }
 
 void Renderer::renderFrame()

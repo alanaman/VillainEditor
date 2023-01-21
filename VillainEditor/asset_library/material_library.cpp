@@ -19,16 +19,20 @@ void MaterialLibrary::init()
 
 void MaterialLibrary::loadLibFile()
 {
+ if (!std::filesystem::exists(MATERIAL_LIB_FILE))
+  return;
  auto filename = MATERIAL_LIB_FILE;
  std::ifstream file;
  file.open(filename, std::ios::binary);
 
  cereal::BinaryInputArchive archive(file);
- //archive(nxt_id, materials);
- 
+ archive(nxt_id, materials);
  mName_handler.clear();
  for (auto& id_material : materials)
+ {
+  id_material.second.setShader(ShaderLibrary::getShaderByName(id_material.second.name));
   mName_handler.addEntry(id_material.second.name);
+ }
 }
 
 void MaterialLibrary::addMaterial()
@@ -72,7 +76,7 @@ void MaterialLibrary::saveLibFile()
  std::ofstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryOutputArchive archive(file);
- //archive(nxt_id, materials);
+ archive(nxt_id, materials);
  file.close();
 }
 
@@ -80,6 +84,11 @@ void MaterialLibrary::saveLibFile()
 void MaterialLibrary::onSave()
 {
  saveLibFile();
+}
+
+void MaterialLibrary::onLoad()
+{
+ loadLibFile();
 }
 
 //void MaterialLibrary::resolve(std::vector<std::shared_ptr<Material>>& loaded_materials)

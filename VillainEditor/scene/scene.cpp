@@ -77,12 +77,7 @@ void Scene::eventHandler(Event& e)
   KeyPressEvent* ke = (KeyPressEvent*)&e;
   int key = ke->key;
   //if (key == KEY::A && (e.mods & MOD::SHIFT))
-
-  if (key == KEY::S && (e.mods & MOD::CONTROL))
-   saveScene();
-  else if (key == KEY::L && (e.mods & MOD::CONTROL))
-   loadScene();
-  else if (key == KEY::P && (e.mods & MOD::CONTROL))
+  if (key == KEY::P && (e.mods & MOD::CONTROL))
   {
    if (is_playing)
     stopPlay();
@@ -153,11 +148,11 @@ void Scene::loadScene()
  );
  mRenderer.clearAll();
  mRenderer.submitCamera(m_view_cam);
- for (auto static_mesh : mStaticMeshes)
+ for (auto& static_mesh : mStaticMeshes)
  {
   mRenderer.submitMesh(static_mesh->getMeshRef(), static_mesh);
  }
- for (auto actor : mActors)
+ for (auto& actor : mActors)
  {
   std::vector<std::shared_ptr<Mesh>*> meshes;
   actor->collectMeshes(meshes);

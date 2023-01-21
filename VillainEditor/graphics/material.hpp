@@ -8,6 +8,7 @@
 #include <cereal/access.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/unordered_map.hpp>
 
 #include "graphics/shader.hpp"
 
@@ -48,6 +49,7 @@ public:
  {
   archive(CEREAL_NVP(name));
   archive(CEREAL_NVP(shader_name));
+  //archive(CEREAL_NVP(m_parameters));
  };
  template<class Archive>
  void load(Archive& archive)
@@ -56,8 +58,8 @@ public:
   catch (const std::exception&) {};
   try { archive(CEREAL_NVP(shader_name)); }
   catch (const std::exception&) {};
-
-  setShader(ShaderLibrary::getShaderByName(shader_name));
+  //try { archive(CEREAL_NVP(m_parameters)); }
+  //catch (const std::exception&) {};
  };
 };
 }

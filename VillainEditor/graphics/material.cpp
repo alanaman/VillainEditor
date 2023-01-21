@@ -24,7 +24,7 @@ std::shared_ptr<Shader> Material::getShader()
  if (shader == NULL)
  {
   shader = ShaderLibrary::getShaderByName(shader_name);
-  //WARNING("shader_cache is NULL: setShader may not have been called");
+  WARNING("shader_cache is NULL: setShader may not have been called");
  }
  return shader;
 }
@@ -48,7 +48,7 @@ void Material::setShader(std::shared_ptr<Shader> shader)
    new_prop = new Parameter(param.first, 0);
    break;
   case UniformType::VEC3:
-   new_prop = new Parameter(param.first, glm::vec3(0,0,0));
+   new_prop = new Parameter(param.first, glm::vec3(1,0,0));
    break;
   default:
    ERROR("unimplemented type");
@@ -63,16 +63,17 @@ void Material::bind()
  getShader()->bind();
  for (auto& param : m_parameters.getParameterVector())
  {
+  auto name = param->name;
   switch (param->getType())
   {
   case DataType::FLOAT:
-   getShader()->setUniformFloat(param->name, ((Parameter<float>*)param)->val);
+   getShader()->setUniformFloat(name, ((Parameter<float>*)param)->val);
    break;
   case DataType::INT:
-   getShader()->setUniformInt(param->name, ((Parameter<int>*)param)->val);
+   getShader()->setUniformInt(name, ((Parameter<int>*)param)->val);
    break;
   case DataType::VEC3:
-   getShader()->setUniformVec3(param->name, ((Parameter<glm::vec3>*)param)->val);
+   getShader()->setUniformVec3(name, ((Parameter<glm::vec3>*)param)->val);
    break;
   default:
    break;

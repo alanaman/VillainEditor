@@ -172,6 +172,8 @@ public:
 template<typename T>
 class Parameter : public ParameterBase
 {
+private:
+ Parameter();//for cereal
 public:
  T val;
  Parameter(std::string name, T val) :ParameterBase(name), val(val) {};
@@ -220,7 +222,15 @@ public:
 };
 }
 
-
+//CEREAL_REGISTER_TYPE(villain::Parameter<int>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<float>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec2>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec3>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<std::string>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<villain::Transform>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Mesh>>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Shader>>);
+//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Material>>);
 
 //TODO add this to macro
 //CEREAL_REGISTER_TYPE(villain::PropertyFloat);

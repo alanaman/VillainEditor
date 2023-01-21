@@ -33,8 +33,15 @@ public:
  static void loadLibFile();
 
  static void onSave();
- static void bind(int mat_id, const glm::mat4& model_trans) 
+ static void onLoad();
+ static void bind(int mat_id, const glm::mat4& model_trans)
  { 
+  if (materials.find(mat_id) == materials.end())
+  {
+   default_material.bind();
+   default_material.getShader()->setUniformMat4("uTransform", model_trans);
+   return;
+  }
   materials[mat_id].bind();
   materials[mat_id].getShader()->setUniformMat4("uTransform", model_trans);
  };

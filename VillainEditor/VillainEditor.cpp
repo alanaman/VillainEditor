@@ -19,7 +19,7 @@ Editor::Editor()
  MaterialLibrary::init();
  gui = new GuiLayer(window->getWindowPointer());
 
-	window->attachScene(scene);
+	//window->attachScene(scene);
 	gui->attachScene(&scene);
 
 }
@@ -51,6 +51,10 @@ void Editor::dispatchEvent(Event& e)
   int key = ke->key;
   if (key == KEY::A && (e.mods & MOD::SHIFT))
    MeshLibrary::createMeshFromFile();
+  else if (key == KEY::S && (e.mods & MOD::CONTROL))
+   onSave();
+  else if (key == KEY::L && (e.mods & MOD::CONTROL))
+   onLoad();
   break;
  }
  default:
@@ -72,7 +76,15 @@ void Editor::onSceneReload()
 
 void Editor::onSave()
 {
+ scene.saveScene();
  MaterialLibrary::onSave();
+
+}
+
+void Editor::onLoad()
+{
+ MaterialLibrary::onLoad();
+ scene.loadScene();
 }
 
 Editor::~Editor()

@@ -125,39 +125,62 @@ GLuint ShaderOpengl::CreateProgram(const std::vector<GLuint>& shaderList)
 std::vector<std::pair<std::string, UniformType>> ShaderOpengl::queryParameters() const
 {
  std::vector<std::pair<std::string, UniformType>> result;
- const char* property_blockname = "Properties";
- auto index = glGetUniformBlockIndex(m_programId, property_blockname);
- if (index == -1)
+ //const char* property_blockname = "Properties";
+ //auto index = glGetUniformBlockIndex(m_programId, property_blockname);
+ /*if (index == -1)
   return result;
- 
+ */
+ //GLint n_uniforms;
+
+ //glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &n_uniforms);
+
+ //GLint* uniform_indices = new GLint[n_uniforms];
+ //glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniform_indices);
+
+ //GLint* uniform_type = new GLint[n_uniforms];
+ //glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_TYPE, uniform_type);
+ //
+ //int* uniform_namelength = new GLint[n_uniforms];
+ //glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_NAME_LENGTH, uniform_namelength);
+
+ //for (int i = 0; i < n_uniforms; i++)
+ //{
+ // std::string name(uniform_namelength[i], '\0');
+ // glGetActiveUniformName(m_programId, uniform_indices[i], uniform_namelength[i], NULL, &name[0]);
+
  GLint n_uniforms;
 
- glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &n_uniforms);
+ glGetProgramiv(m_programId, GL_ACTIVE_UNIFORMS, &n_uniforms);
 
- GLint* uniform_indices = new GLint[n_uniforms];
- glGetActiveUniformBlockiv(m_programId, index, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniform_indices);
+ std::vector<std::string> uniform_names;
+ std::vector<GLenum> uniform_types;
 
- GLint* uniform_type = new GLint[n_uniforms];
- glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_TYPE, uniform_type);
- 
- int* uniform_namelength = new GLint[n_uniforms];
- glGetActiveUniformsiv(m_programId, n_uniforms, (const GLuint*)uniform_indices, GL_UNIFORM_NAME_LENGTH, uniform_namelength);
-
- for (int i = 0; i < n_uniforms; i++)
+ for (int uniform_idx = 0; uniform_idx < n_uniforms; uniform_idx++)
  {
-  std::string name(uniform_namelength[i], '\0');
-  glGetActiveUniformName(m_programId, uniform_indices[i], uniform_namelength[i], NULL, &name[0]);
-
-  switch (uniform_type[i])
+  char uniform_name[64];
+  GLenum type;
+  GLsizei length;
+  GLint size;
+  glGetActiveUniform(m_programId, (GLuint)uniform_idx, 64, &length, &size, &type, uniform_name);
+  std::string name_str(uniform_name);
+  if (name_str.substr(0, 5) == "prop_")
+  {
+   uniform_names.push_back(name_str);
+   uniform_types.push_back(type);
+  }
+ }
+ for(int prop_index=0;prop_index< uniform_names.size(); prop_index++)
+ {
+  switch (uniform_types[prop_index])
   {
   case GL_FLOAT:
-   result.push_back(std::make_pair(name, UniformType::FLOAT));
+   result.push_back(std::make_pair(uniform_names[prop_index], UniformType::FLOAT));
    break;
   case GL_FLOAT_VEC3:
-   result.push_back(std::make_pair(name, UniformType::VEC3));
+   result.push_back(std::make_pair(uniform_names[prop_index], UniformType::VEC3));
    break;
   case GL_INT:
-   result.push_back(std::make_pair(name, UniformType::INT));
+   result.push_back(std::make_pair(uniform_names[prop_index], UniformType::INT));
    break;
   default:
    break;

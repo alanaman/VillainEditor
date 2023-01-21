@@ -179,6 +179,7 @@ inline void PropertiesPanel::renderMeshProperty(Property<std::shared_ptr<Mesh>>*
     }
     ImGui::EndCombo();
    }
+   ImGui::EndPopup();
   }
  }
 
