@@ -1,20 +1,6 @@
 #include "name_handler.hpp"
 
-//namespace std {
-//template <>
-//struct std::hash<std::reference_wrapper<std::string>> {
-// size_t operator()(const std::reference_wrapper<std::string>& x) const {
-//  return std::hash<std::string>()(x);
-// }
-//};
-//
-//template <>
-//struct std::equal_to<std::reference_wrapper<std::string>> {
-// size_t operator()(const std::reference_wrapper<std::string>& a, const std::reference_wrapper<std::string>& b) const {
-//  return std::equal_to<std::string>()(a, b);
-// }
-//};
-//}
+
 namespace villain {
 
 int NameHandler::getNumberExtension(const std::string& name)
@@ -33,26 +19,40 @@ int NameHandler::getNumberExtension(const std::string& name)
  return -1;
 }
 
+//int NameHandler::getIndex(std::string& name)
+//{
+ //for (int idx=0;idx<names.size();idx++)
+ //{
+ // if (name.get() == names[idx].get())
+ //  return idx;
+ //}
+ //return -1;
+//}
+
 void NameHandler::addEntry(std::string& new_entry)
 {
- //auto x = names.find(new_entry);
- //if (x != names.end())
+ //auto idx = getIndex(new_entry);
+ //if (idx==-1)
  //{
- // rename(x->get(), getNext(x->get()));
+ // rename(names[idx].get(), getNext(names[idx].get()));
  //}
- //names.insert(new_entry);
-
-
+ //names.push_back(new_entry);
+ auto x = names.find(new_entry);
+ if (x != names.end())
+ {
+  rename(x->get(), getNext(x->get()));
+ }
+ names.insert(new_entry);
 }
 
 void villain::NameHandler::removeEntry(std::string& name)
 {
- //names.erase(name);
+ names.erase(name);
 }
 
 void NameHandler::rename(std::string& to_be_renamed, std::string new_name)
 {
- /*auto x = names.find(new_name);
+ auto x = names.find(new_name);
  if (x != names.end())
  {
   rename(x->get(), getNext(x->get()));
@@ -60,8 +60,8 @@ void NameHandler::rename(std::string& to_be_renamed, std::string new_name)
 
  auto prev_entry = names.find(to_be_renamed);
  names.erase(prev_entry);
- prev_entry->get() = new_name;
- names.insert(*prev_entry);*/
+ to_be_renamed = new_name;
+ names.insert(to_be_renamed);
 
 }
 
@@ -74,7 +74,7 @@ std::string NameHandler::getNext(std::string& name)
 
  return
   name.substr(0, name.length() - 3) +
-  std::string('0', 3 - new_ext_string.length()) +
+  std::string(3 - new_ext_string.length(), '0') +
   new_ext_string;
 }
 

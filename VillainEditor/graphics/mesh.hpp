@@ -102,3 +102,4 @@ public:
  friend class cereal::access;
 };
 }
+CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Mesh>>);

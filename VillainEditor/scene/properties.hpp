@@ -148,6 +148,8 @@ public:
 
 class ParameterBase
 {
+protected:
+ ParameterBase() = default;//for cereal
 public:
  std::string name;
  ParameterBase(std::string name) :name(name) {};
@@ -173,7 +175,7 @@ template<typename T>
 class Parameter : public ParameterBase
 {
 private:
- Parameter();//for cereal
+ Parameter() = default;//for cereal
 public:
  T val;
  Parameter(std::string name, T val) :ParameterBase(name), val(val) {};
@@ -198,14 +200,17 @@ public:
 
 class Parameters
 {
- std::vector<ParameterBase*> parameters;
+ std::vector<std::shared_ptr<ParameterBase>> parameters;
 public:
  ~Parameters();
 
  void clear();
- std::vector<ParameterBase*>& getParameterVector() { return parameters; };
+ std::vector<std::shared_ptr<ParameterBase>>& getParameterVector() { return parameters; };
 
- void addParameter(ParameterBase* parameter);
+ void addParameter(std::shared_ptr<ParameterBase> parameter);
+
+ //returns NULL if parameter doesnt exist
+ std::shared_ptr<ParameterBase> getParameter(std::string& parameter_name);
 
  template<class Archive>
  void save(Archive& archive) const
@@ -222,18 +227,35 @@ public:
 };
 }
 
-//CEREAL_REGISTER_TYPE(villain::Parameter<int>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<float>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec2>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec3>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<std::string>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<villain::Transform>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Mesh>>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Shader>>);
-//CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Material>>);
+CEREAL_REGISTER_TYPE(villain::Parameter<int>);
+CEREAL_REGISTER_TYPE(villain::Parameter<float>);
+CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec2>);
+CEREAL_REGISTER_TYPE(villain::Parameter<glm::vec3>);
+CEREAL_REGISTER_TYPE(villain::Parameter<std::string>);
+CEREAL_REGISTER_TYPE(villain::Parameter<villain::Transform>);
 
 //TODO add this to macro
 //CEREAL_REGISTER_TYPE(villain::PropertyFloat);
 //CEREAL_REGISTER_TYPE(villain::PropertyInt);
 //CEREAL_REGISTER_TYPE(villain::PropertyVec3);
 //CEREAL_REGISTER_TYPE(villain::PropertyMesh);
+
+//TODO move this somewhere else
+
+namespace glm {
+template<class Archive>
+void serialize(Archive& archive, glm::vec2& m)
+{
+ archive(m.x, m.y);
+};
+template<class Archive>
+void serialize(Archive& archive, glm::vec3& m)
+{
+ archive(m.x, m.y, m.z);
+};
+template<class Archive>
+void serialize(Archive& archive, glm::vec4& m)
+{
+ archive(m.r, m.g, m.b, m.a);
+};
+}

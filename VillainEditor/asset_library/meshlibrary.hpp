@@ -104,22 +104,3 @@ public:
 };
 }
 
-//TODO move this somewhere else
-
-namespace glm {
-template<class Archive>
-void serialize(Archive& archive, glm::vec2& m)
-{
- archive(m.x, m.y);
-};
-template<class Archive>
-void serialize(Archive& archive, glm::vec3& m)
-{
- archive(m.x, m.y, m.z);
-};
-template<class Archive>
-void serialize(Archive& archive, glm::vec4& m)
-{
- archive(m.r, m.g, m.b, m.a);
-};
-}

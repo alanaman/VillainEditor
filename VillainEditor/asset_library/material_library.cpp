@@ -30,7 +30,7 @@ void MaterialLibrary::loadLibFile()
  mName_handler.clear();
  for (auto& id_material : materials)
  {
-  id_material.second.setShader(ShaderLibrary::getShaderByName(id_material.second.name));
+  id_material.second.setShader(ShaderLibrary::getShaderByName(id_material.second.shader_name));
   mName_handler.addEntry(id_material.second.name);
  }
 }
@@ -39,12 +39,14 @@ void MaterialLibrary::addMaterial()
 {
  materials[nxt_id] = Material("Material", ShaderLibrary::getDefaultShader());
  mName_handler.addEntry(materials[nxt_id].name);
+ nxt_id++;
 }
 
 void MaterialLibrary::addMaterial(std::shared_ptr<Shader> shader)
 {
  materials[nxt_id] = Material("Material", shader);
  mName_handler.addEntry(materials[nxt_id].name);
+ nxt_id++;
 }
 
 

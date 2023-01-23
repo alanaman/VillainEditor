@@ -49,7 +49,7 @@ public:
  {
   archive(CEREAL_NVP(name));
   archive(CEREAL_NVP(shader_name));
-  //archive(CEREAL_NVP(m_parameters));
+  archive(CEREAL_NVP(m_parameters));
  };
  template<class Archive>
  void load(Archive& archive)
@@ -58,8 +58,10 @@ public:
   catch (const std::exception&) {};
   try { archive(CEREAL_NVP(shader_name)); }
   catch (const std::exception&) {};
-  //try { archive(CEREAL_NVP(m_parameters)); }
-  //catch (const std::exception&) {};
+  try { archive(CEREAL_NVP(m_parameters)); }
+  catch (const std::exception&) {};
  };
 };
 }
+
+CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Material>>);

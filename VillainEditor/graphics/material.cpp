@@ -31,6 +31,7 @@ std::shared_ptr<Shader> Material::getShader()
 
 void Material::setShader(std::shared_ptr<Shader> shader)
 {
+ auto parameter_copy = m_parameters;
  m_parameters.clear();
  this->shader = shader;
  this->shader_name = shader->getName();
@@ -38,17 +39,23 @@ void Material::setShader(std::shared_ptr<Shader> shader)
 
  for (auto& param : parameter_list)
  {
-  ParameterBase* new_prop = NULL;
+  std::shared_ptr<ParameterBase> new_prop = parameter_copy.getParameter(param.first);
+  if (new_prop)
+  {
+   m_parameters.addParameter(new_prop);
+   continue;
+  }
+
   switch (param.second)
   {
   case UniformType::FLOAT:
-   new_prop = new Parameter(param.first, 0.0f);
+   new_prop = std::make_shared<Parameter<float>>(param.first, 0.0f);
    break;
   case UniformType::INT:
-   new_prop = new Parameter(param.first, 0);
+   new_prop = std::make_shared<Parameter<int>>(param.first, 0);
    break;
   case UniformType::VEC3:
-   new_prop = new Parameter(param.first, glm::vec3(1,0,0));
+   new_prop = std::make_shared<Parameter<glm::vec3>>(param.first, glm::vec3(1,0,0));
    break;
   default:
    ERROR("unimplemented type");
@@ -67,13 +74,13 @@ void Material::bind()
   switch (param->getType())
   {
   case DataType::FLOAT:
-   getShader()->setUniformFloat(name, ((Parameter<float>*)param)->val);
+   getShader()->setUniformFloat(name, std::dynamic_pointer_cast<Parameter<float>>(param)->val);
    break;
   case DataType::INT:
-   getShader()->setUniformInt(name, ((Parameter<int>*)param)->val);
+   getShader()->setUniformInt(name, std::dynamic_pointer_cast<Parameter<int>>(param)->val);
    break;
   case DataType::VEC3:
-   getShader()->setUniformVec3(name, ((Parameter<glm::vec3>*)param)->val);
+   getShader()->setUniformVec3(name, std::dynamic_pointer_cast<Parameter<glm::vec3>>(param)->val);
    break;
   default:
    break;

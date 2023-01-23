@@ -119,20 +119,27 @@ void Properties::addProperty(PropertyBase* property)
 
 Parameters::~Parameters()
 {
- for (auto param : parameters)
-  delete param;
+ //TODO add warning if still being used;
 }
 
 void Parameters::clear()
 {
- for (auto param : parameters)
-  delete param;
  parameters.clear();
 }
 
-void Parameters::addParameter(ParameterBase* parameter)
+void Parameters::addParameter(std::shared_ptr<ParameterBase> parameter)
 {
  parameters.push_back(parameter);
+}
+
+std::shared_ptr<ParameterBase> Parameters::getParameter(std::string& parameter_name)
+{
+ for (auto& param : parameters)
+ {
+  if (parameter_name == param->name)
+   return param;
+ }
+ return NULL;
 }
 
 }

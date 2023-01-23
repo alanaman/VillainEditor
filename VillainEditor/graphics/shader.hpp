@@ -63,3 +63,4 @@ public:
  friend class MaterialLibrary;
 };
 }
+CEREAL_REGISTER_TYPE(villain::Parameter<std::shared_ptr<villain::Shader>>);
