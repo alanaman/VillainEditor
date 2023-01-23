@@ -19,7 +19,7 @@ public:
  MeshId() {};
  MeshId(const MeshId& m_id) { this->id = m_id.id; };
  MeshId(const int& id) { this->id = id; };
- MeshId& operator=(const int& id) { this->id = id; };
+ MeshId operator=(const int& id) { return MeshId(id); };
  bool operator==(const MeshId& rhs) const { return (this->id == rhs.id); };
  //bool operator==(const int& rhs) { return (this->id == rhs); };
 };

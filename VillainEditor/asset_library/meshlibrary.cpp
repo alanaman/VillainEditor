@@ -116,15 +116,19 @@ bool MeshLibrary::hasUsers(MeshId mesh_id)
 
 void MeshLibrary::updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& material_ids)
 {
+ std::vector<MeshData> data;
+ getMeshData(mesh_id, data);
  if (!id_meshentry.count(mesh_id))
  {
   WARNING("mesh with given id does not exist");
   return;
  }
- auto filename = MESH_LIB_FOLDER + std::string("/") + id_meshentry[mesh_id].name + "/" + MATERIAL_FILE_NAME;
+ auto filename = MESH_LIB_FOLDER + std::string("/") + id_meshentry[mesh_id].name;
  std::ofstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryOutputArchive archive(file);
+ archive(mesh_id.id);
+ archive(data);
  archive(material_ids);
  file.close();
 }
@@ -169,6 +173,18 @@ void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data)
  int id;
  archive(id);
  archive(data);
+}
+
+void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats)
+{
+ auto filename = std::string(MESH_LIB_FOLDER) + "/" + id_meshentry[mesh_id].name;
+ std::ifstream file;
+ file.open(filename, std::ios::binary);
+ cereal::BinaryInputArchive archive(file);
+ int id;
+ archive(id);
+ archive(data);
+ archive(def_mats);
 }
 
 std::unordered_map<MeshId, MeshLibrary::MeshEntry>& MeshLibrary::getEntriesRef()

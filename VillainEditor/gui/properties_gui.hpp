@@ -19,25 +19,34 @@ private:
 
  static std::shared_ptr<Entity> selected_entity;
  static int selected_material_id;
+ static MeshId selected_mesh_id;
  static std::shared_ptr<Shader> selected_shader;
+ static std::vector<int> mesh_def_mats;
 
+ static bool is_context_default;
 
  static void inline renderFloatProperty(Property<float>* prop);
  static void inline renderVec3Property(Property<glm::vec3>* prop);
  static void inline renderIntProperty(Property<int>* prop);
  static void inline renderTransformProperty(Property<Transform>* prop);
  static void inline renderMeshProperty(Property<std::shared_ptr<Mesh>>* prop);
- static void inline renderShaderProperty(Property<std::shared_ptr<Shader>>* prop);
- static void inline renderMaterialProperty(Property<std::shared_ptr<Material>>* prop);
 
+ static void inline renderShaderProperty(Property<std::shared_ptr<Shader>>* prop);
+ static void inline renderDefaultMaterialProperty();
+
+ static void renderInstanceProperties();
+ static void renderDefaultProperties();
 public:
  static void render();
 
  static void onEntitySelection(std::shared_ptr<Entity> entity);
+ static void onMeshSelection(MeshId mesh_id);
  static void onMaterialSelection(int material_id);
  static void onShaderSelection(std::shared_ptr<Shader> shader);
 
  static void onSceneReload() {};
+
+ static void clear();
 
 
 };

@@ -97,7 +97,8 @@ public:
  static std::shared_ptr<void> getLoadPoint(MeshId mesh_id);
 
  //static void getMeshData(std::string name, std::vector<MeshData>& data);
- static void getMeshData(MeshId id, std::vector<MeshData>& data);
+ static void getMeshData(MeshId mesh_id, std::vector<MeshData>& data);
+ static void getMeshData(MeshId mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats);
 
  friend class AssetLibrary;
  friend class PropertiesPanel;

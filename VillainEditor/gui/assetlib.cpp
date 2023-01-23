@@ -46,7 +46,10 @@ void AssetLibrary::renderMeshLib()
   MeshLibrary::createMeshFromFile();
  for (auto& mesh:mesh_list)
  {
-  ImGui::Selectable(mesh.second.name.c_str());
+  if (ImGui::Selectable(mesh.second.name.c_str()))
+  {
+   PropertiesPanel::onMeshSelection(mesh.first);
+  }
 
   if (ImGui::BeginDragDropSource())
   {

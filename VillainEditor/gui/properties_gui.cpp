@@ -7,31 +7,63 @@ Properties PropertiesPanel::m_properties;
 
 std::shared_ptr<Entity> PropertiesPanel::selected_entity = NULL;
 int PropertiesPanel::selected_material_id = -1;
+MeshId PropertiesPanel::selected_mesh_id = -1;
 std::shared_ptr<Shader> PropertiesPanel::selected_shader = NULL;
+std::vector<int> PropertiesPanel::mesh_def_mats;
+bool PropertiesPanel::is_context_default = true;
 
 void PropertiesPanel::onEntitySelection(std::shared_ptr<Entity> entity)
 {
- PropertiesPanel::m_properties.clear();
+ clear();
  if (entity == NULL)
   return;
  selected_entity = entity;
- selected_material_id = -1;
- selected_shader = NULL;
  entity->collectProperties(PropertiesPanel::m_properties);
+ is_context_default = false;
 }
 
 void PropertiesPanel::onMaterialSelection(int material_id)
 {
+ clear();
+ is_context_default = false;
+ selected_material_id = material_id;
+ MaterialLibrary::getMaterial(material_id).collectProperties(m_properties);
+}
+
+void PropertiesPanel::clear()
+{
  m_properties.clear();
  selected_entity = NULL;
- selected_material_id = material_id;
+ selected_material_id = -1;
+ selected_mesh_id = -1;
  selected_shader = NULL;
- MaterialLibrary::getMaterial(material_id).collectProperties(m_properties);
+ mesh_def_mats.clear();
+}
+
+void PropertiesPanel::onMeshSelection(MeshId mesh_id)
+{
+ clear();
+ is_context_default = true;
+ selected_mesh_id = mesh_id;
+ mesh_def_mats = MeshLibrary::getDefaultMaterialIds(mesh_id);
 }
 
 void PropertiesPanel::render()
 {
  ImGui::Begin("Properties", &show_properties_window);
+
+ if (is_context_default)
+  renderDefaultProperties();
+ else
+  renderInstanceProperties();
+
+ ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+ //ImGui::Text("%.5f   %.5f", ImGui::GetIO().DeltaTime, ImGui::GetIO().Framerate);
+ ImGui::End();
+}
+
+void PropertiesPanel::renderInstanceProperties()
+{
  auto& properties = m_properties.getPropertiesVector();
 
  for (int i = 0;i< properties.size();i++)
@@ -64,9 +96,9 @@ void PropertiesPanel::render()
    renderShaderProperty((Property<std::shared_ptr<Shader>>*)property);
   break;
 
-  case DataType::MATERIAL:
-   renderMaterialProperty((Property<std::shared_ptr<Material>>*)property);
-   break;
+  //case DataType::MATERIAL:
+   //renderMaterialProperty((Property<std::shared_ptr<Material>>*)property);
+   //break;
   
   default:
    ERROR("unimplemented type");
@@ -75,9 +107,15 @@ void PropertiesPanel::render()
  }//end for loop
 
 
- ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
- //ImGui::Text("%.5f   %.5f", ImGui::GetIO().DeltaTime, ImGui::GetIO().Framerate);
- ImGui::End();
+
+}
+
+void PropertiesPanel::renderDefaultProperties()
+{
+ if (selected_mesh_id == -1)
+  return;
+
+ renderDefaultMaterialProperty();
 }
 
 inline void PropertiesPanel::renderFloatProperty(Property<float>* prop)
@@ -179,8 +217,8 @@ inline void PropertiesPanel::renderMeshProperty(Property<std::shared_ptr<Mesh>>*
     }
     ImGui::EndCombo();
    }
-   ImGui::EndPopup();
   }
+  ImGui::EndPopup();
  }
 
  //Materials
@@ -223,8 +261,36 @@ inline void PropertiesPanel::renderShaderProperty(Property<std::shared_ptr<Shade
  }
 }
 
-inline void PropertiesPanel::renderMaterialProperty(Property<std::shared_ptr<Material>>* prop)
+inline void PropertiesPanel::renderDefaultMaterialProperty()
 {
+ auto n_slots = mesh_def_mats.size();
+ int n_mats = MaterialLibrary::getNumMaterials();
+ for (int slot_index = 0; slot_index < n_slots; slot_index++)
+ {
+  auto current_mat_id = mesh_def_mats[slot_index];
+  if (
+   ImGui::BeginCombo(
+    "Material",
+    MaterialLibrary::getMaterial(current_mat_id).getName().c_str(),
+    ImGuiComboFlags_PopupAlignLeft
+   ))
+  {
+   for (auto& mat : MaterialLibrary::materials)
+   {
+    const bool is_selected = (mat.first == current_mat_id);
+    if (ImGui::Selectable(mat.second.getName().c_str(), is_selected))
+    {
+     mesh_def_mats[slot_index]= mat.first;
+     MeshLibrary::updateDefaultMaterialIds(selected_mesh_id, mesh_def_mats);
+    }
+
+    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+    if (is_selected)
+     ImGui::SetItemDefaultFocus();
+   }
+   ImGui::EndCombo();
+  }
+ }
 }
 
 
