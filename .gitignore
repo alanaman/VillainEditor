@@ -46,7 +46,8 @@ _deps
 out/build
 [Bb][Uu][Ii][Ll][Dd]
 
-bin*
+bin
+bin_int
 
 *vcxproj.user
 
