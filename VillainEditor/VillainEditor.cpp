@@ -40,6 +40,9 @@ void Editor::run()
 void Editor::runProjectSelector()
 {
  window->setResizeable(false);
+
+#define VILLAIN_AUTO_LOAD_FILE
+#ifndef VILLAIN_AUTO_LOAD_FILE
  while (!window->shouldClose())
  {
   gui->renderSelector();
@@ -47,9 +50,33 @@ void Editor::runProjectSelector()
   if (mProjectName != "")
    break;
  }
+#else
+ std::ifstream infile;
+ infile.open("most_recent_project.txt", std::ios::in);
+ std::string projectFile;
+ if (infile.is_open()) {
+  std::getline(infile, projectFile);
+  infile.close();
+ }
+ std::filesystem::path filepath(projectFile); 
+ if (std::filesystem::directory_entry(filepath).exists())
+ {
+  mProjectFolder = filepath.parent_path().string();
+  mProjectName = filepath.stem().string();
+ }
+ else
+ {
+  while (!window->shouldClose())
+  {
+   gui->renderSelector();
+   window->update();
+   if (mProjectName != "")
+    break;
+  }
+ }
+#endif
  gui->setProjectDirectory(mProjectFolder);
  run();
-
 }
 
 Editor* Editor::getEditorInstance()
