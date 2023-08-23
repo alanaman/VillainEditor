@@ -14,15 +14,13 @@ class WindowGLFW : public Window
 {
 private:
   GLFWwindow* m_window;
-  GraphicsContext* m_context;
-
-
-
 
 public:
   WindowGLFW(const WindowProperties& props);
   bool shouldClose() const override;
   void update() const override;
+  void setResizeable(bool val) const override;
+  void setShowTitleBar(bool val) const override;
   void terminate() const override;
   int getKeyStatus(int key) const override;
   void* getWindowPointer() const override;

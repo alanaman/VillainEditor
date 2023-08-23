@@ -76,7 +76,7 @@ void MeshLibrary::createMeshFromFile()
   aiProcess_Triangulate | aiProcess_FlipUVs);
  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
  {
-  ERROR("ASSIMP::" << import.GetErrorString());
+  ERROR("ASSIMP::" << importer.GetErrorString());
   return;
  }
  if (processMeshes(scene, MESH_LIB_FOLDER + std::string("/") + name))

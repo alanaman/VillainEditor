@@ -25,6 +25,7 @@ protected:
 
  struct WindowData
  {
+  //what is cursor here for?
   Cursor cursor;
   GraphicsContext* context = NULL;
  };
@@ -37,6 +38,8 @@ public:
   virtual void* getWindowPointer() const = 0;
   virtual bool shouldClose() const = 0;
   virtual void update() const = 0;
+  virtual void setResizeable(bool val) const = 0;
+  virtual void setShowTitleBar(bool val) const = 0;
   virtual void terminate() const = 0;
   //void attachScene(Scene &scene) {};
 

@@ -15,8 +15,13 @@ void ContextOpengl::initiate() const
   exit(1);
  }
 }
-void villain::ContextOpengl::resizeViewport(int width, int height)
+void ContextOpengl::resizeViewport(int width, int height)
 {
  glViewport(0, 0, width, height);
+}
+void ContextOpengl::clearBuffer()
+{
+ glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 }

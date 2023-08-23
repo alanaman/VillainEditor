@@ -36,10 +36,6 @@ void Renderer::clearAll()
 
 void Renderer::renderFrame()
 {
- //TODO clean this up
- glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
- glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
  ShaderLibrary::setCameraMatrix(mView_cam->getProjectionViewMatrix());
  for (int i=0;i<mMeshes.size();i++)
  {

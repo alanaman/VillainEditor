@@ -9,7 +9,7 @@
 
 
 #ifdef _MSC_VER
-#define ERROR(x) __debugbreak();
+#define ERROR(x)  {std::cout<<"ERROR: "<<x<<std::endl;__debugbreak();}
 #else
 #define ERROR(x) std::cout<<x<<std::endl;\
 exit(1);
@@ -19,4 +19,4 @@ exit(1);
 
 #define WARNING(x) std::cout<<"WARNING: "<<x<<std::endl;
 
-#define ASSERT(x) if(!(x)) ERROR(X);
+#define ASSERT(x) if(!(x)) ERROR(#x);

@@ -32,22 +32,6 @@ GuiLayer::GuiLayer(void* window)
  ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window, true);
  ImGui_ImplOpenGL3_Init("#version 130");
 
- 
- // Load Fonts
-// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-// - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-// - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-// - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-// - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-// - Read 'docs/FONTS.md' for more instructions and details.
-// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-//io.Fonts->AddFontDefault();
-//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-//IM_ASSERT(font != NULL);
 }
 
 GuiLayer::~GuiLayer()
@@ -66,39 +50,51 @@ void GuiLayer::render()
  ImGui_ImplOpenGL3_NewFrame();
  ImGui_ImplGlfw_NewFrame();
  ImGui::NewFrame();
+ if (ImGui::BeginMainMenuBar())
+ {
+  if (ImGui::BeginMenu("File"))
+  {
+   if (ImGui::MenuItem("New"))
+   {
+    Editor::getEditorInstance();
+   }
+   if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+   //if (ImGui::BeginMenu("Open Recent"))
+   //{
+   // for(file in recent)
+   //  ImGui::MenuItem(file);
+   // ImGui::EndMenu();
+   //}
+   ImGui::EndMenu();
+  }
+  if (ImGui::BeginMenu("Edit"))
+  {
+   if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+   if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+   ImGui::Separator();
+   if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+   if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+   if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+   ImGui::EndMenu();
+  }
+  ImGui::EndMainMenuBar();
+ }
 
  //for docking to main window
  ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
- // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
  if (show_demo_window)
   ImGui::ShowDemoWindow(&show_demo_window);
 
- //ImGui::ShowExampleAppWindowTitles(&x);
- 
  PropertiesPanel::render();
  m_outliner.render();
  m_assetlib.render();
  m_controlbar.render();
  m_assetbrowser.render();
 
- // 3. Show another simple window.
- if (show_another_window)
- {
-  ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-  ImGui::Text("Hello from another window!");
-  if (ImGui::Button("Close Me"))
-   show_another_window = false;
-  ImGui::End();
- }
-
- // Rendering
  ImGui::Render();
 
  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
- // Update and Render additional Platform Windows
-// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-//  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
  ImGuiIO& io = ImGui::GetIO();
  if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
  {
@@ -108,11 +104,95 @@ void GuiLayer::render()
   glfwMakeContextCurrent(backup_current_context);
  }
 }
+
+void GuiLayer::renderSelector()
+{
+ ImGui_ImplOpenGL3_NewFrame();
+ ImGui_ImplGlfw_NewFrame();
+ ImGui::NewFrame();
+ ImGuiIO& io = ImGui::GetIO();
+
+ ImGuiViewport* viewport = ImGui::GetMainViewport();
+ ImGui::SetNextWindowPos(viewport->Pos);
+ ImGui::SetNextWindowSize(viewport->Size);
+ ImGui::SetNextWindowViewport(viewport->ID);
+
+ ImGuiWindowFlags window_flags = 0;
+
+ window_flags |=
+  ImGuiWindowFlags_NoTitleBar |
+  ImGuiWindowFlags_NoScrollbar |
+  ImGuiWindowFlags_NoResize |
+  ImGuiWindowFlags_AlwaysAutoResize |
+  ImGuiWindowFlags_NoMove |
+  ImGuiWindowFlags_NoDocking;
+
+ ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+ ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(50, 50));
+ ImGui::Begin("ControlBar", NULL, window_flags);
+ 
+ struct TextFilters
+ {
+  // Return 0 (pass) if the character is letter digit or '_'
+  static int imguiUpLowDigUndSc(ImGuiInputTextCallbackData* data)
+  {
+   //digits
+   if (data->EventChar >= 48 && data->EventChar <= 57)
+    return 0;
+   //upper
+   if (data->EventChar >= 65 && data->EventChar <= 90)
+    return 0;
+   //lower
+   if (data->EventChar >= 97 && data->EventChar <= 122)
+    return 0;
+   //'_'
+   if (data->EventChar == 95)
+    return 0;
+   return 1;
+  }
+ };
+
+ static char projName[64] = "";
+ if (ImGui::Button("New", ImVec2(100, 50)))
+  Editor::getEditorInstance()->createNewProject(projName);
+ ImGui::SameLine();
+ ImGui::InputText("Project Name", projName, 64, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::imguiUpLowDigUndSc);
+
+
+ if (ImGui::Button("Select", ImVec2(100, 50)))
+   Editor::getEditorInstance()->selectProject();
+
+ ImGui::End();
+ ImGui::PopStyleVar(2);
+
+ if (show_demo_window)
+  ImGui::ShowDemoWindow(&show_demo_window);
+
+ ImGui::Render();
+
+ ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+ io = ImGui::GetIO();
+ if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+ {
+  GLFWwindow* backup_current_context = glfwGetCurrentContext();
+  ImGui::UpdatePlatformWindows();
+  ImGui::RenderPlatformWindowsDefault();
+  glfwMakeContextCurrent(backup_current_context);
+ }
+}
+
+
 void GuiLayer::onSceneReload()
 {
  m_outliner.onSceneReload();
 
 }
+
+void GuiLayer::setProjectDirectory(const std::string& projectDirectory)
+{
+ m_assetbrowser.init(projectDirectory);
+}
+
 float GuiLayer::getDeltaTime()
 {
  return ImGui::GetIO().DeltaTime;

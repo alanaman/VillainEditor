@@ -11,5 +11,7 @@ public:
 
  void initiate() const override;
  void resizeViewport(int width, int height) override;
+ void clearBuffer() override;
+
 };
 }

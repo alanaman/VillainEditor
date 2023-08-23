@@ -6,6 +6,7 @@
 
 #include "GLFW/glfw3.h"
 
+#include "VillainEditor.hpp"
 #include "outliner.hpp"
 #include "assetlib.hpp"
 #include "control_bar.hpp"
@@ -34,7 +35,9 @@ public:
  ~GuiLayer();
  void attachScene(Scene *scene);
  void render();
+ void renderSelector();
  void onSceneReload();
+ void setProjectDirectory(const std::string& projectDirectory);
  float getDeltaTime();
 
 };

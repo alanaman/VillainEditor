@@ -49,8 +49,20 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
 
 void WindowGLFW::update() const
 {
-  glfwSwapBuffers(m_window);
-  glfwPollEvents();
+ glfwSwapBuffers(m_window);
+ glfwPollEvents();
+ //TODO:might wanna call this for first frame
+ m_data.context->clearBuffer();
+}
+
+void WindowGLFW::setResizeable(bool val) const
+{
+ glfwSetWindowAttrib(m_window, GLFW_RESIZABLE, val);
+}
+
+void WindowGLFW::setShowTitleBar(bool val) const
+{
+ glfwSetWindowAttrib(m_window, GLFW_DECORATED, val);
 }
 
 bool WindowGLFW::shouldClose() const

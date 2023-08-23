@@ -9,5 +9,7 @@ public:
  static std::string selectFile();
 
  static std::string saveFile();
+
+ static std::string selectDirectory();
 };
 }

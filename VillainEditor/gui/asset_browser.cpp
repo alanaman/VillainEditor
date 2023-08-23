@@ -5,8 +5,10 @@ namespace fs = std::filesystem;
 
 namespace villain{
 
-AssetBrowser::AssetBrowser()
+void AssetBrowser::init(const std::string& projectDirectory)
 {
+ m_rootDir = projectDirectory;
+ m_currentDir = projectDirectory;
  for (const auto &entry : fs::directory_iterator(m_currentDir))
   m_entries.push_back({ entry.path().filename().string(), entry.is_directory()});
 }
@@ -34,8 +36,8 @@ void AssetBrowser::render()
     ImGui::Selectable(entry.name.c_str());
   }
 
-  ImGui::End();
  }
+ ImGui::End();
 }
 void AssetBrowser::update_entries(const std::string &dirName)
 {

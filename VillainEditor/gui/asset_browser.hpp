@@ -10,8 +10,8 @@ namespace villain {
 class AssetBrowser
 {
 private:
- std::string m_rootDir = "D:\\games";
- std::string m_currentDir = "D:\\games";
+ std::string m_rootDir;
+ std::string m_currentDir;
  struct Entry
  {
   std::string name;
@@ -20,7 +20,7 @@ private:
  std::vector<Entry> m_entries;
 
 public:
- AssetBrowser();
+ void init(const std::string& projectDirectory);
  void render();
  void update_entries(const std::string &dirName);
  ~AssetBrowser()=default;

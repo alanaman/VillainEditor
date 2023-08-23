@@ -4,5 +4,5 @@
 int main()
 {
  villain::Editor editor;
- editor.run();
+ editor.runProjectSelector();
 }
