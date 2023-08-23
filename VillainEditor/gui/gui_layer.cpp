@@ -80,6 +80,7 @@ void GuiLayer::render()
  m_outliner.render();
  m_assetlib.render();
  m_controlbar.render();
+ m_assetbrowser.render();
 
  // 3. Show another simple window.
  if (show_another_window)

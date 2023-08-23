@@ -10,6 +10,7 @@
 #include "assetlib.hpp"
 #include "control_bar.hpp"
 #include "properties_gui.hpp"
+#include "asset_browser.hpp"
 
 namespace villain {
 
@@ -24,6 +25,7 @@ private:
  Outliner m_outliner;
  AssetLibrary m_assetlib;
  ControlBar m_controlbar;
+ AssetBrowser m_assetbrowser;
 
  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 

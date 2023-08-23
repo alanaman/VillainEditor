@@ -206,6 +206,7 @@
     <ClCompile Include="graphics\renderer.cpp" />
     <ClCompile Include="gui\assetlib.cpp" />
     <ClCompile Include="gui\control_bar.cpp" />
+    <ClCompile Include="gui\asset_browser.cpp" />
     <ClCompile Include="gui\gui_layer.cpp" />
     <ClCompile Include="gui\outliner.cpp" />
     <ClCompile Include="gui\properties_gui.cpp" />
@@ -535,6 +536,7 @@
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.h" />
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.hpp" />
     <ClInclude Include="graphics\material.hpp" />
+    <ClInclude Include="gui\asset_browser.hpp" />
     <ClInclude Include="gui\properties_gui.hpp" />
     <ClInclude Include="shared\logging.hpp" />
     <ClInclude Include="asset_library\actor_library.hpp" />
