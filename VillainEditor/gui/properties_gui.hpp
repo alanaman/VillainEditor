@@ -2,11 +2,11 @@
 
 #include "imgui/imgui.h"
 
-#include "scene/properties.hpp"
+#include "properties.hpp"
 #include "asset_library/meshlibrary.hpp"
 #include "graphics/material.hpp"
 #include "graphics/mesh.hpp"
-#include "scene/entity.hpp"
+#include "entity.hpp"
 
 namespace villain {
 
@@ -19,7 +19,7 @@ private:
 
  static std::shared_ptr<Entity> selected_entity;
  static int selected_material_id;
- static MeshId selected_mesh_id;
+ static int selected_mesh_id;
  static std::shared_ptr<Shader> selected_shader;
  static std::vector<int> mesh_def_mats;
 
@@ -40,7 +40,7 @@ public:
  static void render();
 
  static void onEntitySelection(std::shared_ptr<Entity> entity);
- static void onMeshSelection(MeshId mesh_id);
+ static void onMeshSelection(int mesh_id);
  static void onMaterialSelection(int material_id);
  static void onShaderSelection(std::shared_ptr<Shader> shader);
 

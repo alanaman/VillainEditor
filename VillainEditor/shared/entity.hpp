@@ -11,7 +11,6 @@ class Entity
 {
 private:
  static int next_id;
-
 protected:
  std::weak_ptr<Entity> m_parent;
 

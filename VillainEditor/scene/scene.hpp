@@ -33,7 +33,7 @@ public:
 
  Scene(std::string name, int aspectX, int aspectY);
  void updateOnFrame(const float& deltatime);
- std::shared_ptr<StaticMesh> addStaticMesh(const MeshId mesh_id);
+ std::shared_ptr<StaticMesh> addStaticMesh(const int mesh_id);
  void addActor(std::shared_ptr<Actor> actor);
 
  void startPlay();

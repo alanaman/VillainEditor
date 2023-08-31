@@ -1,7 +1,6 @@
 ﻿// VillainEditor.cpp : Defines the entry point for the application.
 #include "VillainEditor.hpp"
 
-
 namespace villain {
 
 Editor* Editor::m_instance = NULL;
@@ -21,6 +20,12 @@ Editor::Editor()
 
 	//window->attachScene(scene);
 	gui->attachScene(&scene);
+
+
+
+ //auto bullet_inst = my_imp.createActor("bullet");
+ //Properties p;
+ //bullet_inst->collectProperties(p);
 
 }
 
@@ -47,7 +52,7 @@ void Editor::runProjectSelector()
  {
   gui->renderSelector();
   window->update();
-  if (mProjectName != "")
+  if (m_projectName != "")
    break;
  }
 #else
@@ -61,8 +66,8 @@ void Editor::runProjectSelector()
  std::filesystem::path filepath(projectFile); 
  if (std::filesystem::directory_entry(filepath).exists())
  {
-  mProjectFolder = filepath.parent_path().string();
-  mProjectName = filepath.stem().string();
+  m_projectFolder = filepath.parent_path().string();
+  m_projectName = filepath.stem().string();
  }
  else
  {
@@ -70,13 +75,23 @@ void Editor::runProjectSelector()
   {
    gui->renderSelector();
    window->update();
-   if (mProjectName != "")
+   if (m_projectName != "")
     break;
   }
  }
 #endif
- gui->setProjectDirectory(mProjectFolder);
+ gui->setProjectDirectory(m_projectFolder);
+ //TODO create dll before loading
+ ASSERT(m_dllImporter.load(m_projectFolder));
+ setDllFunctionPointers();
  run();
+}
+
+void Editor::setDllFunctionPointers()
+{
+ FunctionHandoverInterface funcHander(m_dllImporter.getEditorRep());
+
+ funcHander.set_getMeshIdFP(MeshLibrary::getId);
 }
 
 Editor* Editor::getEditorInstance()
@@ -144,8 +159,8 @@ void Editor::selectProject()
   return;
  }
 
- mProjectFolder = filepath.parent_path().string();
- mProjectName = filepath.stem().string();
+ m_projectFolder = filepath.parent_path().string();
+ m_projectName = filepath.stem().string();
 
 }
 
@@ -161,7 +176,7 @@ void Editor::createNewProject(std::string projectName)
  if (!std::filesystem::exists(folder))
  {
   if (!std::filesystem::create_directories(folder))
-   ERROR("Failed to create directory: " << folder);
+   VLLN_ERR("Failed to create directory: " << folder);
  }
 
  for (const auto& entry : std::filesystem::directory_iterator(folder))
@@ -180,8 +195,8 @@ void Editor::createNewProject(std::string projectName)
   }
  }
 
- mProjectFolder = filepath.string();
- mProjectName = projectName;
+ m_projectFolder = filepath.string();
+ m_projectName = projectName;
 
  std::ofstream outFile;
  outFile.open(projFile, std::ios::out);

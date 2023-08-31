@@ -3,7 +3,7 @@
 #include "asset_library/actor_library.hpp"
 #include "asset_library/meshlibrary.hpp"
 #include "logging.hpp"
-#include "scene/actor.hpp"
+#include "actor.hpp"
 #include "graphics/mesh.hpp"
 
 #include "bullet.hpp"

@@ -31,7 +31,9 @@ private:
 public:
 
 
- MeshOpengl(MeshId mesh_id);
+ MeshOpengl(int mesh_id);
+ MeshOpengl(const MeshComponent& meshComp);
+
  void loadMesh() override;
  virtual bool isLoaded() override;
  virtual void unLoadMesh() override;

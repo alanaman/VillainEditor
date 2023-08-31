@@ -4,19 +4,22 @@
 #include "properties.hpp"
 #include "transform.hpp"
 #include "entity.hpp"
-#include "graphics/mesh.hpp"
+#include "alternate_impl/mesh_component.hpp"
 
 namespace villain {
 
+
+
 class Actor : public Entity
 {
+
 public:
  Actor();
  Actor(std::string name);
  virtual void beginPlay(){};
  virtual void actorBeginOverlap(Actor& otherActor){};
  virtual void updateOnFrame(const float& deltatime){};
- virtual void collectMeshes(std::vector<std::shared_ptr<Mesh>*>& meshes) { return; };
+ virtual void collectMeshes(std::vector<MeshComponent*>& meshes) { return; };
 
  virtual void collectProperties(Properties& properties) override;
 

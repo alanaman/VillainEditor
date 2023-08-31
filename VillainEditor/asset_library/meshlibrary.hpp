@@ -70,35 +70,35 @@ class MeshLibrary
  };
 
  static int nxt_id;
- static std::unordered_map<MeshId, MeshEntry> id_meshentry;
+ static std::unordered_map<int, MeshEntry> id_meshentry;
  static NameHandler mName_handler;
 
- static std::unordered_map<MeshId, MeshEntry>& getEntriesRef();//for gui
+ static std::unordered_map<int, MeshEntry>& getEntriesRef();//for gui
 
 //TODO cahnge data queries to use index instaed of names;
  static void addEntry(std::string name);
  //static bool processNode(const aiNode* node, const aiScene* scene, const std::string& directory);
  static bool processMeshes(const aiScene* scene, const std::string& filename);
 public:
- static MeshId getId(const std::string name);
+ static int getId(const std::string& name);
  static void init();
  static void createMeshFromFile();
- static void deleteMesh(MeshId mesh_id);
- static void incrementUsers(MeshId mesh_id);
- static void decrementUsers(MeshId mesh_id);
- static bool hasUsers(MeshId mesh_id);
+ static void deleteMesh(int mesh_id);
+ static void incrementUsers(int mesh_id);
+ static void decrementUsers(int mesh_id);
+ static bool hasUsers(int mesh_id);
 
  //static void updateDefaultMaterials(std::string& name, std::vector<std::shared_ptr<Material>>& materials);
- static void updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& material_ids);
+ static void updateDefaultMaterialIds(int mesh_id, std::vector<int>& material_ids);
  //static std::vector<std::shared_ptr<Material>> getDefaultMaterials(std::string& name);
- static std::vector<int> getDefaultMaterialIds(MeshId mesh_id);
+ static std::vector<int> getDefaultMaterialIds(int mesh_id);
 
- static void setLoadPoint(MeshId mesh_id, std::shared_ptr<void> ptr);
- static std::shared_ptr<void> getLoadPoint(MeshId mesh_id);
+ static void setLoadPoint(int mesh_id, std::shared_ptr<void> ptr);
+ static std::shared_ptr<void> getLoadPoint(int mesh_id);
 
  //static void getMeshData(std::string name, std::vector<MeshData>& data);
- static void getMeshData(MeshId mesh_id, std::vector<MeshData>& data);
- static void getMeshData(MeshId mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats);
+ static void getMeshData(int mesh_id, std::vector<MeshData>& data);
+ static void getMeshData(int mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats);
 
  friend class AssetLibrary;
  friend class PropertiesPanel;

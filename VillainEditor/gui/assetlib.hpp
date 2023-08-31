@@ -13,8 +13,8 @@ namespace villain {
 class AssetLibrary
 {
 private:
- const std::unordered_map<MeshId, MeshLibrary::MeshEntry>& mesh_list;
- const std::map<std::string, ActorLibrary::create_funtion*>& actor_list;
+ const std::unordered_map<int, MeshLibrary::MeshEntry>& mesh_list;
+ const std::vector<std::string>& actor_list;
 
 public:
  AssetLibrary();

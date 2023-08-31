@@ -7,7 +7,7 @@
 
 #include "logging.hpp"
 
-#include "scene/properties.hpp"
+#include "properties.hpp"
 
 namespace villain {
 

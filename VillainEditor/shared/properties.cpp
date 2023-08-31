@@ -98,7 +98,7 @@ void Properties::addProperty(PropertyBase* property)
 //  break;
 // }
 // default:
-//  ERROR("unknown type");
+//  VLLN_ERR("unknown type");
 // }
 //};
 //

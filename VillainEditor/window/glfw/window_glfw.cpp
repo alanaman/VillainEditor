@@ -15,7 +15,7 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
  m_height = props.height;
 
  if (!glfwInit())
-   ERROR("glfw initialization failed (might be reinitialization)");
+   VLLN_ERR("glfw initialization failed (might be reinitialization)");
  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -24,7 +24,7 @@ WindowGLFW::WindowGLFW(const WindowProperties& props)
  if (!m_window)
  {
    glfwTerminate();
-   ERROR("failed to create m_window");
+   VLLN_ERR("failed to create m_window");
  }
 
  glfwMakeContextCurrent(m_window);

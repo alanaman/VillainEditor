@@ -1,4 +1,5 @@
 #pragma once
+#include "VillainEditor.hpp"
 #include <GLFW/glfw3.h>
 #include "logging.hpp"
 
@@ -7,7 +8,6 @@
 //TODO remove this
 #include "graphics/opengl/context_opengl.hpp"
 
-#include "VillainEditor.hpp"
 
 namespace villain {
 class WindowGLFW : public Window

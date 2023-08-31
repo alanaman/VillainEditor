@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "scene/actor.hpp"
+#include "actor.hpp"
 
 namespace villain {
 
@@ -12,43 +12,28 @@ namespace villain {
 class ActorLibrary
 {
 public:
- using create_funtion = std::shared_ptr<Actor>();
+ //using create_funtion = std::shared_ptr<Actor>();
 
-private:
- static void registerMethod(std::string const& name, create_funtion* fp)
- {
-  actor_list().insert({name, fp});
- }
+ using createActorFT = Actor * (*)(const std::string&);
+
+ static createActorFT createActorFP;
+
 public:
- static std::shared_ptr<Actor> instantiate(std::string const& name)
+ static std::vector<std::string> actor_list;
+ 
+ static std::shared_ptr<Actor> instantiate(const std::string& name)
  {
-  auto it = actor_list().find(name);
-  return it == actor_list().end() ? nullptr : (it->second)();
+  return std::shared_ptr<Actor>(createActorFP(name));
  }
+
  static std::shared_ptr<Actor> instantiate(int index)
  {
-  if (index >= actor_list().size())
+  if (index >= actor_list.size())
    return NULL;
-  auto actor = actor_list().begin();
-  std::advance(actor, index);
-  return actor->second();
+  return std::shared_ptr<Actor>(createActorFP(actor_list[index]));
  }
 
- template <typename DerivedActor>
- struct Registrar
- {
-  explicit Registrar(std::string const& name)
-  {
-   ActorLibrary::registerMethod(name, &DerivedActor::create);
-  }
-  Registrar(const Registrar&) = delete;
-  Registrar& operator=(const Registrar&) = delete;
- };
+ static void updateActorsFromDll(const std::map<std::string, Actor* (*)()>& actor_map);
 
- //in function form so that map is initialized before insert is called
- static std::map<std::string, ActorLibrary::create_funtion*>& actor_list();
 };
-
-#define REGISTER_ACTOR(x) namespace{ActorLibrary::Registrar<x> registrar(#x);}
-
 }

@@ -9,16 +9,16 @@ namespace villain {
 
 int MeshLibrary::nxt_id = 0;
 
-std::unordered_map<MeshId, MeshLibrary::MeshEntry> MeshLibrary::id_meshentry;
+std::unordered_map<int, MeshLibrary::MeshEntry> MeshLibrary::id_meshentry;
 
-MeshId MeshLibrary::getId(const std::string name)
+int MeshLibrary::getId(const std::string& name)
 {
  for (const auto& mesh : id_meshentry)
  {
   if (mesh.second.name == name)
    return mesh.first;
  }
- ERROR("invalid mesh");//TODO make this warning and make null mesh work
+ VLLN_ERR("invalid mesh");//TODO make this warning and make null mesh work
  return -1;
 }
 
@@ -76,7 +76,7 @@ void MeshLibrary::createMeshFromFile()
   aiProcess_Triangulate | aiProcess_FlipUVs);
  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
  {
-  ERROR("ASSIMP::" << importer.GetErrorString());
+  VLLN_ERR("ASSIMP::" << importer.GetErrorString());
   return;
  }
  if (processMeshes(scene, MESH_LIB_FOLDER + std::string("/") + name))
@@ -85,7 +85,7 @@ void MeshLibrary::createMeshFromFile()
 
 }
 
-void MeshLibrary::deleteMesh(MeshId mesh_id)
+void MeshLibrary::deleteMesh(int mesh_id)
 {
  if (id_meshentry[mesh_id].n_users != 0)
   INFO("mesh has " << id_meshentry[mesh_id].n_users << " users: cant delete")
@@ -96,25 +96,25 @@ void MeshLibrary::deleteMesh(MeshId mesh_id)
  }
 }
 
-void MeshLibrary::incrementUsers(MeshId mesh_id)
+void MeshLibrary::incrementUsers(int mesh_id)
 {
  id_meshentry[mesh_id].n_users++;
 }
 
-void MeshLibrary::decrementUsers(MeshId mesh_id)
+void MeshLibrary::decrementUsers(int mesh_id)
 {
  int n_users = id_meshentry[mesh_id].n_users;
  if (n_users == 0)
-  ERROR("number of user cant be negative: only active users can call decrementUsers");
+  VLLN_ERR("number of user cant be negative: only active users can call decrementUsers");
  id_meshentry[mesh_id].n_users--;
 }
 
-bool MeshLibrary::hasUsers(MeshId mesh_id)
+bool MeshLibrary::hasUsers(int mesh_id)
 {
  return  id_meshentry[mesh_id].n_users != 0;
 }
 
-void MeshLibrary::updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& material_ids)
+void MeshLibrary::updateDefaultMaterialIds(int mesh_id, std::vector<int>& material_ids)
 {
  std::vector<MeshData> data;
  getMeshData(mesh_id, data);
@@ -127,13 +127,13 @@ void MeshLibrary::updateDefaultMaterialIds(MeshId mesh_id, std::vector<int>& mat
  std::ofstream file;
  file.open(filename, std::ios::binary);
  cereal::BinaryOutputArchive archive(file);
- archive(mesh_id.id);
+ archive(mesh_id);
  archive(data);
  archive(material_ids);
  file.close();
 }
 
-std::vector<int> MeshLibrary::getDefaultMaterialIds(MeshId mesh_id)
+std::vector<int> MeshLibrary::getDefaultMaterialIds(int mesh_id)
 {
  if (!id_meshentry.count(mesh_id))
  {
@@ -153,18 +153,18 @@ std::vector<int> MeshLibrary::getDefaultMaterialIds(MeshId mesh_id)
  return result;
 }
 
-void MeshLibrary::setLoadPoint(MeshId mesh_id, std::shared_ptr<void> ptr)
+void MeshLibrary::setLoadPoint(int mesh_id, std::shared_ptr<void> ptr)
 {
  id_meshentry[mesh_id].load_point = ptr;
 }
 
-std::shared_ptr<void> MeshLibrary::getLoadPoint(MeshId mesh_id)
+std::shared_ptr<void> MeshLibrary::getLoadPoint(int mesh_id)
 {
  return id_meshentry[mesh_id].load_point;
 }
 
 
-void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data)
+void MeshLibrary::getMeshData(int mesh_id, std::vector<MeshData>& data)
 {
  auto filename = std::string(MESH_LIB_FOLDER) + "/" + id_meshentry[mesh_id].name;
  std::ifstream file;
@@ -175,7 +175,7 @@ void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data)
  archive(data);
 }
 
-void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats)
+void MeshLibrary::getMeshData(int mesh_id, std::vector<MeshData>& data, std::vector<int>& def_mats)
 {
  auto filename = std::string(MESH_LIB_FOLDER) + "/" + id_meshentry[mesh_id].name;
  std::ifstream file;
@@ -187,7 +187,7 @@ void MeshLibrary::getMeshData(MeshId mesh_id, std::vector<MeshData>& data, std::
  archive(def_mats);
 }
 
-std::unordered_map<MeshId, MeshLibrary::MeshEntry>& MeshLibrary::getEntriesRef()
+std::unordered_map<int, MeshLibrary::MeshEntry>& MeshLibrary::getEntriesRef()
 {
  return id_meshentry;
 }

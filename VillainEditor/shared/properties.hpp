@@ -23,7 +23,7 @@
 
 namespace villain {
 
-class MeshId;
+class MeshComponent;
 class Mesh;
 class Shader;
 class Material;

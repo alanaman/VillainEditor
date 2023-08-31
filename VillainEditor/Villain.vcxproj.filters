@@ -45,12 +45,6 @@
     <ClCompile Include="asset_library\meshlibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game\bullet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="game\gunner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\opengl\context_opengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,19 +75,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene\actor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="scene\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scene\collection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene\entity.cpp">
+    <ClCompile Include="shared\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene\properties.cpp">
+    <ClCompile Include="shared\properties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scene\scene.cpp">
@@ -102,7 +93,7 @@
     <ClCompile Include="scene\static_mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene\transform.cpp">
+    <ClCompile Include="shared\transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VillainEditor.cpp">
@@ -133,6 +124,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gui\asset_browser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game\dll_importer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\alternate_impl\mesh_component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1064,12 +1064,6 @@
     <ClInclude Include="events.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game\bullet.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game\gunner.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="graphics\context.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1112,19 +1106,16 @@
     <ClInclude Include="input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene\actor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="scene\camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scene\collection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene\entity.hpp">
+    <ClInclude Include="shared\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene\properties.hpp">
+    <ClInclude Include="shared\properties.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scene\scene.hpp">
@@ -1133,7 +1124,7 @@
     <ClInclude Include="scene\static_mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene\transform.hpp">
+    <ClInclude Include="shared\transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VillainEditor.hpp">
@@ -1173,6 +1164,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gui\asset_browser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\actor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\dll_handover_interface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\alternate_impl\mesh_component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game\dll_importer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

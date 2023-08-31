@@ -9,7 +9,7 @@ std::string ShaderLibrary::readShaderFromFile(std::string& filepath)
 {
  std::ifstream shaderFile(filepath.c_str());
  if (!shaderFile.is_open())
-  ERROR("Cannot find file: " + filepath);
+  VLLN_ERR("Cannot find file: " + filepath);
  std::stringstream shaderData;
  shaderData << shaderFile.rdbuf();
  shaderFile.close();
@@ -83,7 +83,7 @@ void ShaderLibrary::init()
 std::shared_ptr<Shader> ShaderLibrary::getDefaultShader()
 {
  if (default_shader == NULL)
-  ERROR("default shader not initialized");
+  VLLN_ERR("default shader not initialized");
  return default_shader;
 }
 

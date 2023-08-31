@@ -3,14 +3,27 @@
 
 namespace villain {
 
-std::shared_ptr<Mesh> Mesh::create(const MeshId mesh_id)
+std::shared_ptr<Mesh> Mesh::create(const int mesh_id)
 {
- if (mesh_id == (MeshId)-1)
-  ERROR("mesh does not exist in library:check mesh name");
+ if (mesh_id == -1)
+  VLLN_ERR("mesh does not exist in library:check mesh path/id");
  return std::make_shared<MeshOpengl>(mesh_id);
 }
 
-MeshOpengl::MeshOpengl(MeshId mesh_id)
+std::shared_ptr<Mesh> Mesh::create(const std::string& path)
+{
+ int mesh_id = MeshLibrary::getId(path);
+ if (mesh_id == -1)
+  VLLN_ERR("mesh does not exist in library:check mesh path");
+ return std::make_shared<MeshOpengl>(mesh_id);
+}
+
+std::shared_ptr<Mesh> Mesh::create(const MeshComponent& meshComp)
+{
+ return std::make_shared<MeshOpengl>(meshComp);
+}
+
+MeshOpengl::MeshOpengl(int mesh_id)
  :Mesh(mesh_id), mesh_ref(NULL)
 {
  if (MeshLibrary::hasUsers(mesh_id))
@@ -19,6 +32,20 @@ MeshOpengl::MeshOpengl(MeshId mesh_id)
   MeshLibrary::incrementUsers(mesh_id);
  }
  material_ids = MeshLibrary::getDefaultMaterialIds(mesh_id);
+}
+
+MeshOpengl::MeshOpengl(const MeshComponent& meshComp)
+ :Mesh(meshComp), mesh_ref(NULL)
+{
+ if (MeshLibrary::hasUsers(mesh_id))
+ {
+  mesh_ref = std::static_pointer_cast<std::vector<MeshMemoryRef>>(MeshLibrary::getLoadPoint(mesh_id));
+  MeshLibrary::incrementUsers(mesh_id);
+ }
+ //only load material ids if actor doesnt load it from save
+ //might have to update this condition
+ if(material_ids.size()==0)
+  material_ids = MeshLibrary::getDefaultMaterialIds(mesh_id);
 }
 
 void MeshOpengl::loadMesh()
@@ -130,7 +157,7 @@ void MeshOpengl::unLoadMesh()
 void MeshOpengl::draw(std::shared_ptr<Entity> parent)
 {
  if (!isLoaded())
-  ERROR("load mesh before draw call");
+  VLLN_ERR("load mesh before draw call");
 
  auto& meshparts = (*mesh_ref);
  for (int i = 0; i < meshparts.size(); i++)

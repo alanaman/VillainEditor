@@ -7,7 +7,7 @@ Properties PropertiesPanel::m_properties;
 
 std::shared_ptr<Entity> PropertiesPanel::selected_entity = NULL;
 int PropertiesPanel::selected_material_id = -1;
-MeshId PropertiesPanel::selected_mesh_id = -1;
+int PropertiesPanel::selected_mesh_id = -1;
 std::shared_ptr<Shader> PropertiesPanel::selected_shader = NULL;
 std::vector<int> PropertiesPanel::mesh_def_mats;
 bool PropertiesPanel::is_context_default = true;
@@ -40,7 +40,7 @@ void PropertiesPanel::clear()
  mesh_def_mats.clear();
 }
 
-void PropertiesPanel::onMeshSelection(MeshId mesh_id)
+void PropertiesPanel::onMeshSelection(int mesh_id)
 {
  clear();
  is_context_default = true;
@@ -101,7 +101,7 @@ void PropertiesPanel::renderInstanceProperties()
    //break;
   
   default:
-   ERROR("unimplemented type");
+   VLLN_ERR("unimplemented type");
    break;
   }
  }//end for loop

@@ -90,7 +90,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);VILLAIN_EDITOR</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)shared;$(ProjectDir);$(ProjectDir)external;$(ProjectDir)external\glm;$(SolutionDir)external\assimp\include;$(SolutionDir)external\glfw\include;$(ProjectDir)external\nativefiledialog-extended\src\include;$(ProjectDir)graphics\opengl\GLAD\include;$(SolutionDir)external\assimp_config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -114,7 +114,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);VILLAIN_EDITOR</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)shared;$(ProjectDir);$(ProjectDir)external;$(ProjectDir)external\glm;$(SolutionDir)external\assimp\include;$(SolutionDir)external\glfw\include;$(ProjectDir)external\nativefiledialog-extended\src\include;$(ProjectDir)graphics\opengl\GLAD\include;$(SolutionDir)external\assimp_config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -138,7 +138,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);VILLAIN_EDITOR</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)shared;$(ProjectDir);$(ProjectDir)external;$(ProjectDir)external\glm;$(SolutionDir)external\assimp\include;$(SolutionDir)external\glfw\include;$(ProjectDir)external\nativefiledialog-extended\src\include;$(ProjectDir)graphics\opengl\GLAD\include;$(SolutionDir)external\assimp_config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -162,7 +162,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);VILLAIN_EDITOR</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)shared;$(ProjectDir);$(ProjectDir)external;$(ProjectDir)external\glm;$(SolutionDir)external\assimp\include;$(SolutionDir)external\glfw\include;$(ProjectDir)external\nativefiledialog-extended\src\include;$(ProjectDir)graphics\opengl\GLAD\include;$(SolutionDir)external\assimp_config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -196,8 +196,6 @@
     <ClCompile Include="asset_library\actor_library.cpp" />
     <ClCompile Include="asset_library\meshlibrary.cpp" />
     <ClCompile Include="external\nativefiledialog-extended\src\nfd_win.cpp" />
-    <ClCompile Include="game\bullet.cpp" />
-    <ClCompile Include="game\gunner.cpp" />
     <ClCompile Include="graphics\material.cpp" />
     <ClCompile Include="graphics\opengl\context_opengl.cpp" />
     <ClCompile Include="graphics\opengl\GLAD\src\glad.c" />
@@ -211,14 +209,16 @@
     <ClCompile Include="gui\outliner.cpp" />
     <ClCompile Include="gui\properties_gui.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="scene\actor.cpp" />
     <ClCompile Include="scene\camera.cpp" />
     <ClCompile Include="scene\collection.cpp" />
-    <ClCompile Include="scene\entity.cpp" />
-    <ClCompile Include="scene\properties.cpp" />
+    <ClCompile Include="shared\actor.cpp" />
+    <ClCompile Include="game\dll_importer.cpp" />
+    <ClCompile Include="shared\entity.cpp" />
+    <ClCompile Include="shared\alternate_impl\mesh_component.cpp" />
+    <ClCompile Include="shared\properties.cpp" />
     <ClCompile Include="scene\scene.cpp" />
     <ClCompile Include="scene\static_mesh.cpp" />
-    <ClCompile Include="scene\transform.cpp" />
+    <ClCompile Include="shared\transform.cpp" />
     <ClCompile Include="shared\name_handler.cpp" />
     <ClCompile Include="VillainEditor.cpp" />
     <ClCompile Include="window\glfw\window_glfw.cpp" />
@@ -535,15 +535,16 @@
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.h" />
     <ClInclude Include="external\nativefiledialog-extended\src\include\nfd.hpp" />
+    <ClInclude Include="game\dll_importer.hpp" />
     <ClInclude Include="graphics\material.hpp" />
     <ClInclude Include="gui\asset_browser.hpp" />
     <ClInclude Include="gui\properties_gui.hpp" />
+    <ClInclude Include="shared\actor.hpp" />
+    <ClInclude Include="shared\dll_handover_interface.hpp" />
     <ClInclude Include="shared\logging.hpp" />
     <ClInclude Include="asset_library\actor_library.hpp" />
     <ClInclude Include="asset_library\meshlibrary.hpp" />
     <ClInclude Include="events.hpp" />
-    <ClInclude Include="game\bullet.hpp" />
-    <ClInclude Include="game\gunner.hpp" />
     <ClInclude Include="graphics\context.hpp" />
     <ClInclude Include="graphics\mesh.hpp" />
     <ClInclude Include="graphics\opengl\context_opengl.hpp" />
@@ -558,14 +559,14 @@
     <ClInclude Include="gui\gui_layer.hpp" />
     <ClInclude Include="gui\outliner.hpp" />
     <ClInclude Include="input.hpp" />
-    <ClInclude Include="scene\actor.hpp" />
     <ClInclude Include="scene\camera.hpp" />
     <ClInclude Include="scene\collection.hpp" />
-    <ClInclude Include="scene\entity.hpp" />
-    <ClInclude Include="scene\properties.hpp" />
+    <ClInclude Include="shared\entity.hpp" />
+    <ClInclude Include="shared\alternate_impl\mesh_component.hpp" />
+    <ClInclude Include="shared\properties.hpp" />
     <ClInclude Include="scene\scene.hpp" />
     <ClInclude Include="scene\static_mesh.hpp" />
-    <ClInclude Include="scene\transform.hpp" />
+    <ClInclude Include="shared\transform.hpp" />
     <ClInclude Include="shared\name_handler.hpp" />
     <ClInclude Include="VillainEditor.hpp" />
     <ClInclude Include="window\filedialog.hpp" />

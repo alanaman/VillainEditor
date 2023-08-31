@@ -75,7 +75,7 @@ GLuint ShaderOpengl::CreateShader(GLenum eShaderType, const std::string& strShad
    case GL_GEOMETRY_SHADER: strShaderType = "geometry"; break;
    case GL_FRAGMENT_SHADER: strShaderType = "fragment"; break;
   }
-  ERROR("Compile failure in " << strShaderType << " shader:" << strInfoLog);
+  VLLN_ERR("Compile failure in " << strShaderType << " shader:" << strInfoLog);
   delete[] strInfoLog;
  }
  return shader;
@@ -98,7 +98,7 @@ GLuint ShaderOpengl::CreateProgram(const std::vector<GLuint>& shaderList)
 
    GLchar* strInfoLog = new GLchar[infoLogLength + 1];
    glGetProgramInfoLog(program, infoLogLength, NULL, strInfoLog);
-   ERROR("GLSL Linker failure: " << strInfoLog);
+   VLLN_ERR("GLSL Linker failure: " << strInfoLog);
    delete[] strInfoLog;
  }
 

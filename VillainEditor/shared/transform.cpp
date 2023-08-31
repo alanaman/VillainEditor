@@ -1,7 +1,6 @@
 #include "transform.hpp"
 #include "logging.hpp"
 #include "transform.hpp"
-#include "properties.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -46,7 +45,7 @@ namespace villain {
   return rotation;
  }
 
- glm::mat4 Transform::getTransformMatrix()
+ glm::mat4 Transform::getTransformMatrix() const
  {
   auto transformation = glm::mat4(1.0f);
 

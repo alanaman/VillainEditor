@@ -30,7 +30,7 @@ public:
  glm::vec3& getRotationRef();
  glm::vec3 getRotation() const;
 
- glm::mat4 getTransformMatrix();
+ glm::mat4 getTransformMatrix() const;
 
 
  template<class Archive>

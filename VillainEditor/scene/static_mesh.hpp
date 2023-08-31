@@ -23,7 +23,7 @@ public:
  static std::shared_ptr<StaticMesh> create(std::shared_ptr<Mesh>& mesh);
  static std::shared_ptr<StaticMesh> create(std::string name, std::shared_ptr<Mesh>& mesh);
 
- std::shared_ptr<Mesh>* getMeshRef();
+ std::shared_ptr<Mesh> getMeshRef();
  virtual void collectProperties(Properties& properties) override;
 
  template<class Archive>

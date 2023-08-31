@@ -31,7 +31,7 @@ void Scene::updateOnFrame(const float& deltatime)
  mRenderer.renderFrame();
 }
 
-std::shared_ptr<StaticMesh> Scene::addStaticMesh(const MeshId mesh_id)
+std::shared_ptr<StaticMesh> Scene::addStaticMesh(const int mesh_id)
 {
  auto mesh = Mesh::create(mesh_id);
  auto static_mesh = StaticMesh::create("NewStaticMesh", mesh);
@@ -43,9 +43,10 @@ std::shared_ptr<StaticMesh> Scene::addStaticMesh(const MeshId mesh_id)
 void Scene::addActor(std::shared_ptr<Actor> actor)
 {
  mActors.push_back(actor);
- std::vector<std::shared_ptr<Mesh>*> meshes;
+ std::vector<MeshComponent*> meshes;
  actor->collectMeshes(meshes);
- mRenderer.submitMeshes(meshes, actor);
+ for (auto meshCompPtr : meshes)
+  mRenderer.submitMesh(*meshCompPtr, actor);
 }
 
 void Scene::startPlay()
@@ -154,9 +155,11 @@ void Scene::loadScene()
  }
  for (auto& actor : mActors)
  {
-  std::vector<std::shared_ptr<Mesh>*> meshes;
+  std::vector<MeshComponent*> meshes;
   actor->collectMeshes(meshes);
-  mRenderer.submitMeshes(meshes, actor);
+
+  for(auto meshCompPtr:meshes)
+   mRenderer.submitMesh(*meshCompPtr, actor);
  }
 
  Editor::getEditorInstance()->onSceneReload();

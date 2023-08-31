@@ -53,3 +53,5 @@ bin_int
 
 .vs
 .vscode
+/Game/x64/Debug
+/x64/Debug

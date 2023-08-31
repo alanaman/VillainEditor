@@ -58,7 +58,7 @@ void Material::setShader(std::shared_ptr<Shader> shader)
    new_prop = std::make_shared<Parameter<glm::vec3>>(param.first, glm::vec3(1,0,0));
    break;
   default:
-   ERROR("unimplemented type");
+   VLLN_ERR("unimplemented type");
    break;
   }
   m_parameters.addParameter(new_prop);

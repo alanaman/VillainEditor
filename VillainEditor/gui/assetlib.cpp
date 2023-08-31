@@ -4,7 +4,7 @@ namespace villain {
 AssetLibrary::AssetLibrary()
  :
  mesh_list(MeshLibrary::getEntriesRef()),
- actor_list(ActorLibrary::actor_list())
+ actor_list(ActorLibrary::actor_list)
 {
 }
 void AssetLibrary::render()
@@ -53,7 +53,7 @@ void AssetLibrary::renderMeshLib()
 
   if (ImGui::BeginDragDropSource())
   {
-   ImGui::SetDragDropPayload("ASSET_LIB_MESH", &mesh.first, sizeof(MeshId));
+   ImGui::SetDragDropPayload("ASSET_LIB_MESH", &mesh.first, sizeof(int));
    ImGui::Text(("Add static mesh: " + mesh.second.name).c_str());
    ImGui::EndDragDropSource();
   }
@@ -71,21 +71,21 @@ void AssetLibrary::renderMeshLib()
 void AssetLibrary::renderActorLib()
 {
  int i = 0;
- for (auto actor = actor_list.begin(); actor != actor_list.end(); actor++)
+ for (int i=0;i<actor_list.size();i++)
  {
-  ImGui::Selectable(actor->first.c_str());
+  ImGui::Selectable(actor_list[i].c_str());
 
   if (ImGui::BeginDragDropSource())
   {
    ImGui::SetDragDropPayload("ASSET_LIB_ACTOR", &i, sizeof(int));
-   ImGui::Text(("Add actor : " + actor->first).c_str());
+   ImGui::Text(("Add actor : " + actor_list[i]).c_str());
    ImGui::EndDragDropSource();
   }
 
   if (ImGui::BeginPopupContextItem())
   {
    if (ImGui::Selectable("Delete"))
-    INFO("pressed delete on " << actor->first);
+    INFO("pressed delete on " << actor_list[i]);
 
    ImGui::EndPopup();
   }

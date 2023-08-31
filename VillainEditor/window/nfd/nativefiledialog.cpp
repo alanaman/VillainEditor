@@ -21,7 +21,7 @@ std::string FileBrowser::selectFile()
  }
  else if (NFD_GetError())
  {
-  ERROR(NFD_GetError());
+  VLLN_ERR(NFD_GetError());
  }
 
  NFD_Quit();
@@ -42,7 +42,7 @@ std::string FileBrowser::saveFile()
  }
  else if (NFD_GetError())
  {
-  ERROR(NFD_GetError());
+  VLLN_ERR(NFD_GetError());
  }
 
  NFD_Quit();
@@ -63,7 +63,7 @@ std::string FileBrowser::selectDirectory()
  }
  else if(NFD_GetError())
  {
-  ERROR(NFD_GetError());
+  VLLN_ERR(NFD_GetError());
  }
 
  NFD_Quit();

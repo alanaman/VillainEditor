@@ -11,7 +11,7 @@ void ContextOpengl::initiate() const
  int status = gladLoadGL();
  if (!status)
  {
-  ERROR("Could not initialize GLAD");
+  VLLN_ERR("Could not initialize GLAD");
   exit(1);
  }
 }
